@@ -20,37 +20,6 @@ fn kmp_table<T:Eq>(p:&Vec<T>) -> Vec<usize> {
     t
 }
 
-// fn kmp_search<T:Eq>(p:&Vec<T>, s:Vec<T>) -> Option<usize> {
-    // let t = kmp_table(p);
-    
-    // let pat_len = p.len();
-    // let tgt_len = s.len();
-    
-    // let mut tgt_i = 0;
-    // let mut pat_i = 0;
-
-    // let mut res = 0;
-
-    // while tgt_i < tgt_len && pat_i < pat_len {
-    //     if s[tgt_i] == p[pat_i] {
-    //         if res == 0 {
-    //             res = tgt_i;
-    //         }
-    //         tgt_i = tgt_i + 1;
-    //         pat_i = pat_i + 1;
-    //         if pat_i >= pat_len {
-    //             return Some(res);
-    //         }            
-
-    //     } else if pat_i != 0 {
-    //         pat_i = t[pat_i - 1];
-    //     }
-    //     tgt_i = tgt_i + 1;
-    //     res = 0;
-    // } 
-    // None
-
-
 fn kmp_search(pattern:&str, target:&str) -> i32  {
     let target: Vec<char> = target.chars().collect();
     let mut t_i: usize = 0;
@@ -86,8 +55,6 @@ fn kmp_search(pattern:&str, target:&str) -> i32  {
 }
 
 pub fn search(pat: &str, str: &str) -> i32 {
-    let p:Vec<char> = pat.chars().collect();
-    let s:Vec<char> = str.chars().collect();
     let res = kmp_search(pat, str);
     println!("kmp_search: pat = {}, str = {}, res = {:?}", pat, str, res);
     res
