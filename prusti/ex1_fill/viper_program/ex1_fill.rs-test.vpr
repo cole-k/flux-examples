@@ -1,0 +1,1859 @@
+domain Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_ {
+  
+  
+}
+
+domain Snap$m_VecWrapperI32$_beg_$_end_ {
+  
+  function cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_0: Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_): Snap$m_VecWrapperI32$_beg_$_end_
+  
+  function Snap$m_VecWrapperI32$_beg_$_end_$0$field$f$v__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self: Snap$m_VecWrapperI32$_beg_$_end_): Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_
+  
+  axiom Snap$m_VecWrapperI32$_beg_$_end_$0$injectivity {
+    (forall _l_0: Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_, _r_0: Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_ :: { cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_l_0),cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_r_0) } cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_l_0) == cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_r_0) ==> _l_0 == _r_0)
+  }
+  
+  axiom Snap$m_VecWrapperI32$_beg_$_end_$0$field$f$v$axiom {
+    (forall _0: Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_ :: { Snap$m_VecWrapperI32$_beg_$_end_$0$field$f$v__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_0)) } Snap$m_VecWrapperI32$_beg_$_end_$0$field$f$v__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_0)) == _0)
+  }
+}
+
+field f$v: Ref
+
+field tuple_0: Ref
+
+field tuple_1: Ref
+
+field val_bool: Bool
+
+field val_int: Int
+
+field val_ref: Ref
+
+function m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(_1: Snap$m_VecWrapperI32$_beg_$_end_): Int
+  requires true
+  requires true
+  ensures true
+  ensures 0 <= result
+  ensures result <= 18446744073709551615
+
+
+function m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(_1: Snap$m_VecWrapperI32$_beg_$_end_, _2: Int): Int
+  requires true
+  requires _2 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(_1)
+  requires 0 <= _2
+  requires _2 <= 18446744073709551615
+  ensures true
+  ensures -2147483648 <= result
+  ensures result <= 2147483647
+
+
+function snap$__$TY$__m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self: Ref): Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_
+  requires acc(m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self), read$())
+
+
+function snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(self: Ref): Snap$m_VecWrapperI32$_beg_$_end_
+  requires acc(m_VecWrapperI32$_beg_$_end_(self), read$())
+{
+  (unfolding acc(m_VecWrapperI32$_beg_$_end_(self), read$()) in cons$0$__$TY$__Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(snap$__$TY$__m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_$Snap$m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self.f$v)))
+}
+
+function read$(): Perm
+  ensures none < result
+  ensures result < write
+
+
+predicate DeadBorrowToken$(borrow: Int) 
+
+predicate bool(self: Ref) {
+  acc(self.val_bool, write)
+}
+
+predicate i32(self: Ref) {
+  acc(self.val_int, write) && (-2147483648 <= self.val_int && self.val_int <= 2147483647)
+}
+
+predicate m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self: Ref) 
+
+predicate m_VecWrapperI32$_beg_$_end_(self: Ref) {
+  acc(self.f$v, write) && acc(m_Vec$_beg_$i32$_sep_$m_Global$_beg_$_end_$_end_(self.f$v), write)
+}
+
+predicate tuple0$(self: Ref) {
+  true
+}
+
+predicate usize(self: Ref) {
+  acc(self.val_int, write) && (0 <= self.val_int && self.val_int <= 18446744073709551615)
+}
+
+method m_test() returns (_0: Ref)
+{
+  var __t0: Bool
+  var __t1: Bool
+  var __t2: Bool
+  var __t3: Bool
+  var __t4: Bool
+  var __t5: Bool
+  var __t6: Bool
+  var __t7: Bool
+  var __t8: Bool
+  var __t9: Bool
+  var __t10: Bool
+  var __t11: Bool
+  var __t12: Bool
+  var __t13: Bool
+  var __t14: Bool
+  var __t15: Bool
+  var __t16: Bool
+  var __t17: Bool
+  var __t18: Bool
+  var __t19: Bool
+  var __t20: Bool
+  var __t21: Bool
+  var __t22: Bool
+  var __t23: Bool
+  var __t24: Bool
+  var __t25: Bool
+  var __t26: Bool
+  var __t27: Bool
+  var __t28: Bool
+  var __t29: Bool
+  var __t30: Bool
+  var __t31: Bool
+  var __t32: Bool
+  var __t33: Bool
+  var __t34: Bool
+  var __t35: Bool
+  var __t36: Bool
+  var __t37: Bool
+  var __t38: Bool
+  var __t39: Bool
+  var __t40: Bool
+  var __t41: Bool
+  var __t42: Bool
+  var __t43: Bool
+  var __t44: Bool
+  var __t45: Bool
+  var __t46: Bool
+  var __t47: Bool
+  var __t48: Bool
+  var __t49: Bool
+  var __t50: Bool
+  var __t51: Bool
+  var __t52: Bool
+  var _old$l38$0: Ref
+  var __t53: Bool
+  var __t54: Bool
+  var __t55: Bool
+  var __t56: Bool
+  var __t57: Bool
+  var __t58: Bool
+  var __t59: Bool
+  var __t60: Bool
+  var __t61: Bool
+  var __t62: Bool
+  var _1: Ref
+  var _2: Ref
+  var _3: Ref
+  var _6: Ref
+  var _7: Ref
+  var _8: Ref
+  var _9: Int
+  var _10: Ref
+  var _11: Ref
+  var _13: Ref
+  var _18: Ref
+  var _22: Ref
+  var _23: Ref
+  var _24: Ref
+  var _25: Int
+  var _26: Ref
+  var _30: Ref
+  var _32: Ref
+  var _33: Int
+  var _34: Int
+  var _35: Ref
+  var _37: Ref
+  var _42: Ref
+  var _43: Ref
+  var _44: Int
+  var _45: Int
+  var _46: Ref
+  var _47: Ref
+  var _48: Int
+  var _50: Ref
+  var _54: Ref
+  var _55: Ref
+  var _56: Ref
+  var _58: Ref
+  var _62: Ref
+  var _66: Ref
+  var _67: Ref
+  var _69: Ref
+  var _70: Ref
+  var _71: Int
+  var _72: Int
+  label start
+  // ========== start ==========
+  
+  // Def path: "ex1_fill::test"
+  
+  // Span: ex1_fill.rs:64:1: 92:2 (#0)
+  
+  __t0 := false
+  __t1 := false
+  __t2 := false
+  __t3 := false
+  __t4 := false
+  __t5 := false
+  __t6 := false
+  __t7 := false
+  __t8 := false
+  __t9 := false
+  __t10 := false
+  __t11 := false
+  __t12 := false
+  __t13 := false
+  __t14 := false
+  __t15 := false
+  __t16 := false
+  __t17 := false
+  __t18 := false
+  __t19 := false
+  __t20 := false
+  __t21 := false
+  __t22 := false
+  __t23 := false
+  __t24 := false
+  __t25 := false
+  __t26 := false
+  __t27 := false
+  __t28 := false
+  __t29 := false
+  __t30 := false
+  __t31 := false
+  __t32 := false
+  __t33 := false
+  __t34 := false
+  __t35 := false
+  __t36 := false
+  __t37 := false
+  __t38 := false
+  __t39 := false
+  __t40 := false
+  // Preconditions:
+  
+  inhale acc(i32(_1), write)
+  inhale true
+  label pre
+  // ========== bb0 ==========
+  
+  __t0 := true
+  // [mir] StorageLive(_2)
+  
+  // [mir] _2 = VecWrapperI32::new() -> [return: bb1, unwind: bb47]
+  
+  label l0
+  _2 := builtin$havoc_ref()
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write)
+  inhale true
+  inhale m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) == 0
+  label l1
+  // ========== bb1 ==========
+  
+  __t1 := true
+  // [mir] FakeRead(ForLet(None), _2)
+  
+  // [mir] StorageLive(_3)
+  
+  // [mir] _3 = _1
+  
+  _3 := builtin$havoc_ref()
+  inhale acc(_3.val_int, write)
+  unfold acc(i32(_1), write)
+  _3.val_int := _1.val_int
+  label l2
+  // [mir] FakeRead(ForLet(None), _3)
+  
+  // [mir] StorageLive(_4)
+  
+  // [mir] goto -> bb2
+  
+  // ========== loop2_start ==========
+  
+  // ========== loop2_group1_bb2 ==========
+  
+  // This is a loop head
+  
+  __t2 := true
+  // [mir] falseUnwind -> [real: bb3, cleanup: bb46]
+  
+  // ========== loop2_group1_bb3 ==========
+  
+  __t3 := true
+  // [mir] StorageLive(_6)
+  
+  // [mir] StorageLive(_7)
+  
+  // [mir] _7 = toss() -> [return: bb7, unwind: bb46]
+  
+  label l3
+  _7 := builtin$havoc_ref()
+  inhale acc(bool(_7), write)
+  inhale true
+  label l4
+  // ========== loop2_group1_bb7 ==========
+  
+  __t4 := true
+  // [mir] switchInt(move _7) -> [false: bb4, otherwise: bb5]
+  
+  unfold acc(bool(_7), write)
+  __t41 := _7.val_bool
+  if (!__t41) {
+    goto bb0
+  }
+  goto return
+  label bb0
+  // ========== l6 ==========
+  
+  // MIR edge bb7 --> bb4
+  
+  // ========== loop2_group1_bb4 ==========
+  
+  __t7 := true
+  // [mir] _6 = const false
+  
+  _6 := builtin$havoc_ref()
+  inhale acc(_6.val_bool, write)
+  _6.val_bool := false
+  // [mir] goto -> bb6
+  
+  goto bb1
+  label bb1
+  // ========== loop2_group1_bb6 ==========
+  
+  __t8 := true
+  // [mir] StorageDead(_8)
+  
+  // [mir] StorageDead(_7)
+  
+  // [mir] switchInt(move _6) -> [false: bb10, otherwise: bb9]
+  
+  __t43 := _6.val_bool
+  if (__t43) {
+    goto loop2_group1_bb2
+  }
+  goto loop2_start
+  label l10
+  // ========== l47 ==========
+  
+  // MIR edge bb21 --> bb23
+  
+  // ========== l73 ==========
+  
+  // drop Acc(_45.val_int, write) (Acc(_45.val_int, write))
+  
+  // drop Acc(old[l44](_35.val_ref), write) (Acc(old[l44](_35.val_ref), write))
+  
+  // drop Acc(_44.val_int, write) (Acc(_44.val_int, write))
+  
+  // drop Acc(_43.val_bool, write) (Acc(_43.val_bool, write))
+  
+  // drop Acc(_46.val_ref, write) (Acc(_46.val_ref, write))
+  
+  // drop Acc(_42.val_bool, write) (Acc(_42.val_bool, write))
+  
+  // drop Acc(_50.tuple_0, write) (Acc(_50.tuple_0, write))
+  
+  // drop Acc(_50.tuple_1.val_bool, write) (Acc(_50.tuple_1.val_bool, write))
+  
+  // drop Acc(_50.tuple_1, write) (Acc(_50.tuple_1, write))
+  
+  goto l11
+  label l11
+  // ========== bb23 ==========
+  
+  __t27 := true
+  // [mir] StorageLive(_52)
+  
+  // [mir] _31 = const ()
+  
+  // [mir] StorageDead(_52)
+  
+  // [mir] StorageDead(_32)
+  
+  // [mir] StorageDead(_31)
+  
+  // [mir] goto -> bb31
+  
+  // ========== loop31_start ==========
+  
+  // ========== loop31_group1_bb31 ==========
+  
+  // This is a loop head
+  
+  __t28 := true
+  // [mir] falseUnwind -> [real: bb32, cleanup: bb46]
+  
+  // ========== loop31_group1_bb32 ==========
+  
+  __t29 := true
+  // [mir] StorageLive(_54)
+  
+  // [mir] StorageLive(_55)
+  
+  // [mir] StorageLive(_56)
+  
+  // [mir] _56 = &_2
+  
+  _56 := builtin$havoc_ref()
+  inhale acc(_56.val_ref, write)
+  _56.val_ref := _2
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_56.val_ref), read$())
+  label l49
+  // [mir] _55 = VecWrapperI32::is_empty(move _56) -> [return: bb33, unwind: bb46]
+  
+  label l50
+  assert true
+  exhale acc(_56.val_ref, write)
+  _55 := builtin$havoc_ref()
+  inhale acc(bool(_55), write)
+  // transfer perm _56.val_ref --> old[l50](_56.val_ref) // unchecked: true
+  
+  inhale true
+  unfold acc(bool(_55), write)
+  inhale _55.val_bool == (m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l50](_56.val_ref))) == 0)
+  label l51
+  // ========== l52 ==========
+  
+  // MIR edge bb32 --> bb33
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L16,L9,)
+
+  
+  if (__t29 && __t29) {
+    // expire loan L9
+    
+    // transfer perm old[l50](_56.val_ref) --> old[l49](_56.val_ref) // unchecked: false
+    
+    exhale acc(m_VecWrapperI32$_beg_$_end_(old[l49](_56.val_ref)), read$())
+    inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  }
+  // ========== loop31_group1_bb33 ==========
+  
+  __t30 := true
+  // [mir] StorageDead(_56)
+  
+  // [mir] _54 = Not(move _55)
+  
+  _54 := builtin$havoc_ref()
+  inhale acc(_54.val_bool, write)
+  _54.val_bool := !_55.val_bool
+  // [mir] StorageDead(_55)
+  
+  // [mir] switchInt(move _54) -> [false: bb35, otherwise: bb34]
+  
+  __t57 := _54.val_bool
+  if (__t57) {
+    goto loop2_inv_pre
+  }
+  goto loop2_group2_bb9
+  label l16
+  // ========== l48 ==========
+  
+  // MIR edge bb21 --> bb22
+  
+  // ========== loop19_group5_bb22 ==========
+  
+  __t20 := true
+  // [mir] StorageLive(_36)
+  
+  // [mir] StorageLive(_37)
+  
+  // [mir] _37 = const false
+  
+  _37 := builtin$havoc_ref()
+  inhale acc(_37.val_bool, write)
+  _37.val_bool := false
+  // [mir] switchInt(move _37) -> [false: bb25, otherwise: bb24]
+  
+  __t56 := _37.val_bool
+  // Ignore default target bb24, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop19_end_body ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb19)
+  
+  fold acc(usize(_30), write)
+  // obtain acc(usize(_30), write)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), read)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(usize(_30), write)
+  assert _30.val_int < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2))
+  fold acc(usize(_30), write)
+  assert true
+  exhale acc(usize(_30), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), read$()) && acc(i32(_1), read$()))
+  inhale false
+  goto end_of_method
+  label l5
+  // ========== loop2_group4_bb6 ==========
+  
+  __t8 := true
+  // [mir] StorageDead(_8)
+  
+  // [mir] StorageDead(_7)
+  
+  // [mir] switchInt(move _6) -> [false: bb10, otherwise: bb9]
+  
+  __t49 := _6.val_bool
+  if (__t49) {
+    goto loop2_group3_bb18
+  }
+  goto l6
+  label l6
+  // ========== l26 ==========
+  
+  // MIR edge bb6 --> bb10
+  
+  // ========== l72 ==========
+  
+  // drop Acc(_26.tuple_0, write) (Acc(_26.tuple_0, write))
+  
+  // drop Acc(_18.val_bool, write) (Acc(_18.val_bool, write))
+  
+  // drop Acc(_26.tuple_1.val_bool, write) (Acc(_26.tuple_1.val_bool, write))
+  
+  // drop Acc(_25.val_int, write) (Acc(_25.val_int, write))
+  
+  // drop Pred(_22, write) (Pred(_22, write))
+  
+  // drop Acc(_26.tuple_1, write) (Acc(_26.tuple_1, write))
+  
+  goto loop2_group1_bb5
+  label loop2_group1_bb2
+  // ========== l11 ==========
+  
+  // MIR edge bb6 --> bb9
+  
+  // ========== loop2_group2_bb9 ==========
+  
+  __t9 := true
+  // [mir] StorageLive(_12)
+  
+  // [mir] StorageLive(_13)
+  
+  // [mir] _13 = const false
+  
+  _13 := builtin$havoc_ref()
+  inhale acc(_13.val_bool, write)
+  _13.val_bool := false
+  // [mir] switchInt(move _13) -> [false: bb12, otherwise: bb11]
+  
+  __t44 := _13.val_bool
+  // Ignore default target bb11, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop2_inv_pre ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb2)
+  
+  fold acc(i32(_3), write)
+  // obtain acc(i32(_3), write)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), write)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(i32(_1), write)
+  unfold acc(i32(_3), write)
+  assert _1.val_int <= _3.val_int && _3.val_int < 2147483646 && (let _LET_0 == (_1.val_int) in (forall _2_quant_85a7ff73856d4fafbd601c8c732174c0_101: Int :: 0 <= _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 && _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 <= 18446744073709551615 ==> _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_0 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_85a7ff73856d4fafbd601c8c732174c0_101)))
+  fold acc(i32(_1), write)
+  fold acc(i32(_3), write)
+  assert true
+  exhale acc(i32(_3), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$()))
+  _10 := builtin$havoc_ref()
+  _11 := builtin$havoc_ref()
+  _13 := builtin$havoc_ref()
+  _18 := builtin$havoc_ref()
+  _22 := builtin$havoc_ref()
+  _23 := builtin$havoc_ref()
+  _24 := builtin$havoc_ref()
+  _25 := builtin$havoc_int()
+  _26 := builtin$havoc_ref()
+  _3 := builtin$havoc_ref()
+  _6 := builtin$havoc_ref()
+  _7 := builtin$havoc_ref()
+  _8 := builtin$havoc_ref()
+  _9 := builtin$havoc_int()
+  __t10 := builtin$havoc_bool()
+  __t11 := builtin$havoc_bool()
+  __t12 := builtin$havoc_bool()
+  __t13 := builtin$havoc_bool()
+  __t14 := builtin$havoc_bool()
+  __t15 := builtin$havoc_bool()
+  __t2 := builtin$havoc_bool()
+  __t3 := builtin$havoc_bool()
+  __t4 := builtin$havoc_bool()
+  __t45 := builtin$havoc_bool()
+  __t46 := builtin$havoc_bool()
+  __t47 := builtin$havoc_bool()
+  __t48 := builtin$havoc_bool()
+  __t49 := builtin$havoc_bool()
+  __t5 := builtin$havoc_bool()
+  __t50 := builtin$havoc_bool()
+  __t6 := builtin$havoc_bool()
+  __t7 := builtin$havoc_bool()
+  __t8 := builtin$havoc_bool()
+  __t9 := builtin$havoc_bool()
+  // ========== loop2_inv_post ==========
+  
+  // Inhale the loop invariant of block bb2
+  
+  inhale acc(i32(_3), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$()))
+  inhale true
+  unfold acc(i32(_3), write)
+  unfold acc(i32(_1), write)
+  inhale _1.val_int <= _3.val_int && _3.val_int < 2147483646 && (let _LET_1 == (_1.val_int) in (forall _2_quant_85a7ff73856d4fafbd601c8c732174c0_101: Int :: 0 <= _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 && _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 <= 18446744073709551615 ==> _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_1 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_85a7ff73856d4fafbd601c8c732174c0_101)))
+  // ========== loop2_group3_bb12 ==========
+  
+  __t10 := true
+  // [mir] _12 = const ()
+  
+  // [mir] goto -> bb13
+  
+  // ========== loop2_group3_bb13 ==========
+  
+  __t11 := true
+  // [mir] StorageDead(_13)
+  
+  // [mir] StorageDead(_12)
+  
+  // [mir] StorageLive(_17)
+  
+  // [mir] StorageLive(_18)
+  
+  // [mir] _18 = const false
+  
+  _18 := builtin$havoc_ref()
+  inhale acc(_18.val_bool, write)
+  _18.val_bool := false
+  // [mir] switchInt(move _18) -> [false: bb15, otherwise: bb14]
+  
+  __t45 := _18.val_bool
+  // Ignore default target bb14, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop2_group3_bb15 ==========
+  
+  __t12 := true
+  // [mir] _17 = const ()
+  
+  // [mir] goto -> bb16
+  
+  // ========== loop2_group3_bb16 ==========
+  
+  __t13 := true
+  // [mir] StorageDead(_18)
+  
+  // [mir] StorageDead(_17)
+  
+  // [mir] StorageLive(_22)
+  
+  // [mir] StorageLive(_23)
+  
+  // [mir] _23 = &mut _2
+  
+  _23 := builtin$havoc_ref()
+  inhale acc(_23.val_ref, write)
+  _23.val_ref := _2
+  label l12
+  // [mir] StorageLive(_24)
+  
+  // [mir] _24 = _3
+  
+  _24 := builtin$havoc_ref()
+  inhale acc(_24.val_int, write)
+  _24.val_int := _3.val_int
+  label l13
+  // [mir] _22 = VecWrapperI32::push(move _23, move _24) -> [return: bb17, unwind: bb46]
+  
+  label l14
+  fold acc(i32(_24), write)
+  assert true
+  exhale acc(_23.val_ref, write) && (acc(m_VecWrapperI32$_beg_$_end_(_23.val_ref), write) && acc(i32(_24), write))
+  _22 := builtin$havoc_ref()
+  inhale acc(m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref)), write)
+  inhale acc(tuple0$(_22), write)
+  inhale true
+  inhale !(old[l14](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_23.val_ref))) + 1 < 0 || old[l14](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_23.val_ref))) + 1 > 18446744073709551615) && m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) == old[l14](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_23.val_ref))) + 1 && ((let _LET_3 == (m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1) in (let _LET_4 == (old[l14](_23.val_ref)) in (let _LET_2 == (m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1 < 0 || m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1 > 18446744073709551615) in (forall _2_quant_c3ca1258a66f40c984aa1969114168a8_101: Int :: 0 <= _2_quant_c3ca1258a66f40c984aa1969114168a8_101 && _2_quant_c3ca1258a66f40c984aa1969114168a8_101 <= 18446744073709551615 ==> !_LET_2 && _2_quant_c3ca1258a66f40c984aa1969114168a8_101 < _LET_3 ==> m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_LET_4), _2_quant_c3ca1258a66f40c984aa1969114168a8_101) == old[l14](m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_23.val_ref), _2_quant_c3ca1258a66f40c984aa1969114168a8_101)))))) && (!(m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1 < 0 || m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1 > 18446744073709551615) && m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref)), m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l14](_23.val_ref))) - 1) == old[l14](_24.val_int)))
+  label l15
+  // ========== l16 ==========
+  
+  // MIR edge bb16 --> bb17
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L21,L4,)
+
+  
+  // ========== loop2_group3_bb17 ==========
+  
+  __t14 := true
+  // [mir] StorageDead(_24)
+  
+  // [mir] StorageDead(_23)
+  
+  // [mir] StorageDead(_22)
+  
+  // [mir] StorageLive(_25)
+  
+  // [mir] _25 = _3
+  
+  _25 := builtin$havoc_int()
+  _25 := _3.val_int
+  label l17
+  // [mir] _26 = CheckedAdd(_25, const 1_i32)
+  
+  _26 := builtin$havoc_ref()
+  inhale acc(_26.tuple_0, write)
+  inhale acc(_26.tuple_0.val_int, write)
+  inhale acc(_26.tuple_1, write)
+  inhale acc(_26.tuple_1.val_bool, write)
+  _26.tuple_0.val_int := _25 + 1
+  _26.tuple_1.val_bool := _25 + 1 < -2147483648 || _25 + 1 > 2147483647
+  // [mir] assert(!move (_26.1: bool), "attempt to compute `{} + {}`, which would overflow", move _25, const 1_i32) -> [success: bb18, unwind: bb46]
+  
+  __t46 := _26.tuple_1.val_bool
+  // Rust assertion: attempt to add with overflow
+  
+  assert !__t46
+  // ========== loop2_group3_bb18 ==========
+  
+  __t15 := true
+  // [mir] _3 = move (_26.0: i32)
+  
+  _3 := _26.tuple_0
+  label l18
+  // [mir] _5 = const ()
+  
+  // [mir] StorageDead(_25)
+  
+  // [mir] StorageDead(_6)
+  
+  // [mir] goto -> bb2
+  
+  // ========== loop2_group4_bb2 ==========
+  
+  // This is a loop head
+  
+  __t2 := true
+  // [mir] falseUnwind -> [real: bb3, cleanup: bb46]
+  
+  // ========== loop2_group4_bb3 ==========
+  
+  __t3 := true
+  // [mir] StorageLive(_6)
+  
+  // [mir] StorageLive(_7)
+  
+  // [mir] _7 = toss() -> [return: bb7, unwind: bb46]
+  
+  label l19
+  _7 := builtin$havoc_ref()
+  inhale acc(bool(_7), write)
+  inhale true
+  label l20
+  // ========== loop2_group4_bb7 ==========
+  
+  __t4 := true
+  // [mir] switchInt(move _7) -> [false: bb4, otherwise: bb5]
+  
+  unfold acc(bool(_7), write)
+  __t47 := _7.val_bool
+  if (!__t47) {
+    goto loop2_group1_bb7
+  }
+  goto loop2_group1_bb3
+  label loop2_group1_bb3
+  // ========== l21 ==========
+  
+  // MIR edge bb7 --> bb5
+  
+  // ========== loop2_group4_bb5 ==========
+  
+  __t5 := true
+  // [mir] StorageLive(_8)
+  
+  // [mir] StorageLive(_9)
+  
+  // [mir] _9 = _3
+  
+  _9 := builtin$havoc_int()
+  _9 := _3.val_int
+  label l23
+  // [mir] StorageLive(_10)
+  
+  // [mir] _11 = CheckedSub(const core::num::<impl i32>::MAX, const 1_i32)
+  
+  _11 := builtin$havoc_ref()
+  inhale acc(_11.tuple_0, write)
+  inhale acc(_11.tuple_0.val_int, write)
+  inhale acc(_11.tuple_1, write)
+  inhale acc(_11.tuple_1.val_bool, write)
+  _11.tuple_0.val_int := 2147483646
+  _11.tuple_1.val_bool := false
+  // [mir] assert(!move (_11.1: bool), "attempt to compute `{} - {}`, which would overflow", const core::num::<impl i32>::MAX, const 1_i32) -> [success: bb8, unwind: bb46]
+  
+  __t48 := _11.tuple_1.val_bool
+  // Rust assertion: attempt to subtract with overflow
+  
+  assert !__t48
+  // ========== loop2_group4_bb8 ==========
+  
+  __t6 := true
+  // [mir] _10 = move (_11.0: i32)
+  
+  _10 := _11.tuple_0
+  label l24
+  // [mir] _8 = Lt(move _9, move _10)
+  
+  _8 := builtin$havoc_ref()
+  inhale acc(_8.val_bool, write)
+  _8.val_bool := _9 < _10.val_int
+  // [mir] StorageDead(_10)
+  
+  // [mir] StorageDead(_9)
+  
+  // [mir] _6 = move _8
+  
+  _6 := _8
+  label l25
+  // [mir] goto -> bb6
+  
+  // ========== l71 ==========
+  
+  // drop Acc(_10.val_int, write) (Acc(_10.val_int, write))
+  
+  // drop Acc(_11.tuple_0, write) (Acc(_11.tuple_0, write))
+  
+  // drop Acc(_11.tuple_1.val_bool, write) (Acc(_11.tuple_1.val_bool, write))
+  
+  // drop Acc(_9.val_int, write) (Acc(_9.val_int, write))
+  
+  // drop Acc(_11.tuple_1, write) (Acc(_11.tuple_1, write))
+  
+  goto l5
+  label loop2_group1_bb4
+  // ========== l33 ==========
+  
+  // MIR edge bb21 --> bb22
+  
+  // ========== loop19_group2_bb22 ==========
+  
+  __t20 := true
+  // [mir] StorageLive(_36)
+  
+  // [mir] StorageLive(_37)
+  
+  // [mir] _37 = const false
+  
+  _37 := builtin$havoc_ref()
+  inhale acc(_37.val_bool, write)
+  _37.val_bool := false
+  // [mir] switchInt(move _37) -> [false: bb25, otherwise: bb24]
+  
+  __t52 := _37.val_bool
+  // Ignore default target bb24, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop19_inv_pre ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb19)
+  
+  fold acc(usize(_30), write)
+  // obtain acc(usize(_30), write)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), read)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(usize(_30), write)
+  assert _30.val_int < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2))
+  fold acc(usize(_30), write)
+  assert true
+  exhale acc(usize(_30), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), read$()) && acc(i32(_1), read$()))
+  _30 := builtin$havoc_ref()
+  _32 := builtin$havoc_ref()
+  _33 := builtin$havoc_int()
+  _34 := builtin$havoc_int()
+  _35 := builtin$havoc_ref()
+  _37 := builtin$havoc_ref()
+  _42 := builtin$havoc_ref()
+  _43 := builtin$havoc_ref()
+  _44 := builtin$havoc_int()
+  _45 := builtin$havoc_int()
+  _46 := builtin$havoc_ref()
+  _47 := builtin$havoc_ref()
+  _48 := builtin$havoc_int()
+  _50 := builtin$havoc_ref()
+  __t17 := builtin$havoc_bool()
+  __t18 := builtin$havoc_bool()
+  __t19 := builtin$havoc_bool()
+  __t20 := builtin$havoc_bool()
+  __t21 := builtin$havoc_bool()
+  __t22 := builtin$havoc_bool()
+  __t23 := builtin$havoc_bool()
+  __t24 := builtin$havoc_bool()
+  __t25 := builtin$havoc_bool()
+  __t53 := builtin$havoc_bool()
+  __t54 := builtin$havoc_bool()
+  __t55 := builtin$havoc_bool()
+  __t56 := builtin$havoc_bool()
+  // ========== loop19_inv_post ==========
+  
+  // Inhale the loop invariant of block bb19
+  
+  inhale acc(usize(_30), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), read$()) && acc(i32(_1), read$()))
+  inhale true
+  unfold acc(usize(_30), write)
+  inhale _30.val_int < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2))
+  // ========== loop19_group3_bb25 ==========
+  
+  __t21 := true
+  // [mir] _36 = const ()
+  
+  // [mir] goto -> bb26
+  
+  // ========== loop19_group3_bb26 ==========
+  
+  __t22 := true
+  // [mir] StorageDead(_37)
+  
+  // [mir] StorageDead(_36)
+  
+  // [mir] StorageLive(_41)
+  
+  // [mir] StorageLive(_42)
+  
+  // [mir] StorageLive(_43)
+  
+  // [mir] StorageLive(_44)
+  
+  // [mir] _44 = _1
+  
+  _44 := builtin$havoc_int()
+  unfold acc(i32(_1), write)
+  _44 := _1.val_int
+  label l34
+  // [mir] StorageLive(_45)
+  
+  // [mir] StorageLive(_46)
+  
+  // [mir] StorageLive(_47)
+  
+  // [mir] _47 = &_2
+  
+  _47 := builtin$havoc_ref()
+  inhale acc(_47.val_ref, write)
+  _47.val_ref := _2
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_47.val_ref), read$())
+  label l35
+  // [mir] StorageLive(_48)
+  
+  // [mir] _48 = _30
+  
+  _48 := builtin$havoc_int()
+  _48 := _30.val_int
+  label l36
+  // [mir] _46 = VecWrapperI32::get(move _47, move _48) -> [return: bb27, unwind: bb46]
+  
+  label l37
+  assert _48 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_47.val_ref))
+  assert _48 >= 0 && 18446744073709551615 >= _48
+  assert true
+  exhale acc(_47.val_ref, write) && (_48 >= 0 && 18446744073709551615 >= _48)
+  // transfer perm _47.val_ref --> old[l37](_47.val_ref) // unchecked: true
+  
+  _46 := builtin$havoc_ref()
+  inhale acc(_46.val_ref, write) && acc(i32(_46.val_ref), read$())
+  inhale true
+  unfold acc(i32(_46.val_ref), read$())
+  inhale _46.val_ref.val_int == m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l37](_47.val_ref)), old[l37](_48))
+  exhale acc(m_VecWrapperI32$_beg_$_end_(old[l37](_47.val_ref)), read$())
+  label l38
+  // ========== loop19_group3_bb27 ==========
+  
+  __t23 := true
+  // [mir] StorageDead(_48)
+  
+  // [mir] StorageDead(_47)
+  
+  // [mir] _45 = (*_46)
+  
+  _45 := builtin$havoc_int()
+  _45 := _46.val_ref.val_int
+  label l39
+  // expire_borrows ReborrowingDAG(L18,L19,L8,)
+
+  
+  if (__t22) {
+    // expire loan L18
+    
+    _old$l38$0 := _46.val_ref
+    inhale acc(DeadBorrowToken$(18), write) && acc(i32(_old$l38$0), read$()) --* acc(m_VecWrapperI32$_beg_$_end_(old[l37](_47.val_ref)), read$())
+    fold acc(i32(_old$l38$0), read$())
+    inhale acc(DeadBorrowToken$(18), write)
+    apply acc(DeadBorrowToken$(18), write) && acc(i32(_old$l38$0), read$()) --* acc(m_VecWrapperI32$_beg_$_end_(old[l37](_47.val_ref)), read$())
+  }
+  if (__t22 && (__t22 && __t22)) {
+    // expire loan L8
+    
+    // transfer perm old[l37](_47.val_ref) --> old[l35](_47.val_ref) // unchecked: false
+    
+    exhale acc(m_VecWrapperI32$_beg_$_end_(old[l35](_47.val_ref)), read$())
+    inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  }
+  // [mir] _43 = Le(move _44, move _45)
+  
+  _43 := builtin$havoc_ref()
+  inhale acc(_43.val_bool, write)
+  _43.val_bool := _44 <= _45
+  // [mir] StorageDead(_45)
+  
+  // [mir] StorageDead(_44)
+  
+  // [mir] _42 = Not(move _43)
+  
+  _42 := builtin$havoc_ref()
+  inhale acc(_42.val_bool, write)
+  _42.val_bool := !_43.val_bool
+  // [mir] StorageDead(_46)
+  
+  // [mir] StorageDead(_43)
+  
+  // [mir] switchInt(move _42) -> [false: bb29, otherwise: bb28]
+  
+  __t53 := _42.val_bool
+  if (__t53) {
+    goto loop2_group3_bb17
+  }
+  goto loop2_group1_bb6
+  label loop2_group1_bb5
+  // ========== bb10 ==========
+  
+  __t16 := true
+  // [mir] StorageLive(_28)
+  
+  // [mir] _4 = const ()
+  
+  // [mir] StorageDead(_28)
+  
+  // [mir] StorageDead(_6)
+  
+  // [mir] StorageDead(_4)
+  
+  // [mir] StorageLive(_30)
+  
+  // [mir] _30 = const 0_usize
+  
+  _30 := builtin$havoc_ref()
+  inhale acc(_30.val_int, write)
+  _30.val_int := 0
+  // [mir] FakeRead(ForLet(None), _30)
+  
+  // [mir] StorageLive(_31)
+  
+  // [mir] goto -> bb19
+  
+  // ========== loop19_start ==========
+  
+  // ========== loop19_group1_bb19 ==========
+  
+  // This is a loop head
+  
+  __t17 := true
+  // [mir] falseUnwind -> [real: bb20, cleanup: bb46]
+  
+  // ========== loop19_group1_bb20 ==========
+  
+  __t18 := true
+  // [mir] StorageLive(_32)
+  
+  // [mir] StorageLive(_33)
+  
+  // [mir] _33 = _30
+  
+  _33 := builtin$havoc_int()
+  _33 := _30.val_int
+  label l28
+  // [mir] StorageLive(_34)
+  
+  // [mir] StorageLive(_35)
+  
+  // [mir] _35 = &_2
+  
+  _35 := builtin$havoc_ref()
+  inhale acc(_35.val_ref, write)
+  _35.val_ref := _2
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_35.val_ref), read$())
+  label l29
+  // [mir] _34 = VecWrapperI32::len(move _35) -> [return: bb21, unwind: bb46]
+  
+  label l30
+  _34 := builtin$havoc_int()
+  inhale _34 >= 0 && 18446744073709551615 >= _34
+  inhale _34 >= 0 && 18446744073709551615 >= _34
+  inhale _34 == m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_35.val_ref))
+  // transfer perm _35.val_ref --> old[l30](_35.val_ref) // unchecked: false
+  
+  // ========== l31 ==========
+  
+  // MIR edge bb20 --> bb21
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L20,L5,)
+
+  
+  if (__t18 && __t18) {
+    // expire loan L5
+    
+    // transfer perm old[l30](_35.val_ref) --> old[l29](_35.val_ref) // unchecked: false
+    
+    exhale acc(m_VecWrapperI32$_beg_$_end_(old[l29](_35.val_ref)), read$())
+    inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  }
+  // ========== loop19_group1_bb21 ==========
+  
+  __t19 := true
+  // [mir] StorageDead(_35)
+  
+  // [mir] _32 = Lt(move _33, move _34)
+  
+  _32 := builtin$havoc_ref()
+  inhale acc(_32.val_bool, write)
+  _32.val_bool := _33 < _34
+  // [mir] StorageDead(_34)
+  
+  // [mir] StorageDead(_33)
+  
+  // [mir] switchInt(move _32) -> [false: bb23, otherwise: bb22]
+  
+  __t51 := _32.val_bool
+  if (__t51) {
+    goto loop2_group1_bb4
+  }
+  goto loop2_group1_bb8
+  label loop2_group1_bb6
+  // ========== l40 ==========
+  
+  // MIR edge bb27 --> bb29
+  
+  // ========== loop19_group3_bb29 ==========
+  
+  __t24 := true
+  // [mir] _41 = const ()
+  
+  // [mir] StorageDead(_42)
+  
+  // [mir] StorageDead(_41)
+  
+  // [mir] _50 = CheckedAdd(_30, const 1_usize)
+  
+  _50 := builtin$havoc_ref()
+  inhale acc(_50.tuple_0, write)
+  inhale acc(_50.tuple_0.val_int, write)
+  inhale acc(_50.tuple_1, write)
+  inhale acc(_50.tuple_1.val_bool, write)
+  _50.tuple_0.val_int := _30.val_int + 1
+  _50.tuple_1.val_bool := _30.val_int + 1 < 0 || _30.val_int + 1 > 18446744073709551615
+  // [mir] assert(!move (_50.1: bool), "attempt to compute `{} + {}`, which would overflow", _30, const 1_usize) -> [success: bb30, unwind: bb46]
+  
+  __t54 := _50.tuple_1.val_bool
+  // Rust assertion: attempt to add with overflow
+  
+  assert !__t54
+  // ========== loop19_group3_bb30 ==========
+  
+  __t25 := true
+  // [mir] _30 = move (_50.0: usize)
+  
+  _30 := _50.tuple_0
+  label l42
+  // [mir] _5 = const ()
+  
+  // [mir] StorageDead(_32)
+  
+  // [mir] goto -> bb19
+  
+  // ========== loop19_group4_bb19 ==========
+  
+  // This is a loop head
+  
+  __t17 := true
+  // [mir] falseUnwind -> [real: bb20, cleanup: bb46]
+  
+  // ========== loop19_group4_bb20 ==========
+  
+  __t18 := true
+  // [mir] StorageLive(_32)
+  
+  // [mir] StorageLive(_33)
+  
+  // [mir] _33 = _30
+  
+  _33 := builtin$havoc_int()
+  _33 := _30.val_int
+  label l43
+  // [mir] StorageLive(_34)
+  
+  // [mir] StorageLive(_35)
+  
+  // [mir] _35 = &_2
+  
+  _35 := builtin$havoc_ref()
+  inhale acc(_35.val_ref, write)
+  _35.val_ref := _2
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_35.val_ref), read$())
+  label l44
+  // [mir] _34 = VecWrapperI32::len(move _35) -> [return: bb21, unwind: bb46]
+  
+  label l45
+  _34 := builtin$havoc_int()
+  inhale _34 >= 0 && 18446744073709551615 >= _34
+  inhale _34 >= 0 && 18446744073709551615 >= _34
+  inhale _34 == m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_35.val_ref))
+  // transfer perm _35.val_ref --> old[l45](_35.val_ref) // unchecked: false
+  
+  // ========== l46 ==========
+  
+  // MIR edge bb20 --> bb21
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L20,L5,)
+
+  
+  if (__t18 && __t18) {
+    // expire loan L5
+    
+    // transfer perm old[l45](_35.val_ref) --> old[l44](_35.val_ref) // unchecked: false
+    
+    exhale acc(m_VecWrapperI32$_beg_$_end_(old[l44](_35.val_ref)), read$())
+    inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  }
+  // ========== loop19_group4_bb21 ==========
+  
+  __t19 := true
+  // [mir] StorageDead(_35)
+  
+  // [mir] _32 = Lt(move _33, move _34)
+  
+  _32 := builtin$havoc_ref()
+  inhale acc(_32.val_bool, write)
+  _32.val_bool := _33 < _34
+  // [mir] StorageDead(_34)
+  
+  // [mir] StorageDead(_33)
+  
+  // [mir] switchInt(move _32) -> [false: bb23, otherwise: bb22]
+  
+  __t55 := _32.val_bool
+  if (__t55) {
+    goto l16
+  }
+  goto l10
+  label loop2_group1_bb7
+  // ========== l22 ==========
+  
+  // MIR edge bb7 --> bb4
+  
+  // ========== loop2_group4_bb4 ==========
+  
+  __t7 := true
+  // [mir] _6 = const false
+  
+  _6 := builtin$havoc_ref()
+  inhale acc(_6.val_bool, write)
+  _6.val_bool := false
+  // [mir] goto -> bb6
+  
+  goto l5
+  label loop2_group1_bb8
+  // ========== l32 ==========
+  
+  // MIR edge bb21 --> bb23
+  
+  goto l11
+  label loop2_group2_bb9
+  // ========== l53 ==========
+  
+  // MIR edge bb33 --> bb35
+  
+  goto loop2_group3_bb15
+  label loop2_group3_bb12
+  // ========== l62 ==========
+  
+  // MIR edge bb42 --> bb44
+  
+  // ========== loop31_group3_bb44 ==========
+  
+  __t37 := true
+  // [mir] _68 = const ()
+  
+  // [mir] StorageDead(_69)
+  
+  // [mir] StorageDead(_68)
+  
+  // [mir] _5 = const ()
+  
+  // [mir] StorageDead(_66)
+  
+  // [mir] StorageDead(_54)
+  
+  // [mir] goto -> bb31
+  
+  // ========== loop31_group4_bb31 ==========
+  
+  // This is a loop head
+  
+  __t28 := true
+  // [mir] falseUnwind -> [real: bb32, cleanup: bb46]
+  
+  // ========== loop31_group4_bb32 ==========
+  
+  __t29 := true
+  // [mir] StorageLive(_54)
+  
+  // [mir] StorageLive(_55)
+  
+  // [mir] StorageLive(_56)
+  
+  // [mir] _56 = &_2
+  
+  _56 := builtin$havoc_ref()
+  inhale acc(_56.val_ref, write)
+  _56.val_ref := _2
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_56.val_ref), read$())
+  label l63
+  // [mir] _55 = VecWrapperI32::is_empty(move _56) -> [return: bb33, unwind: bb46]
+  
+  label l64
+  assert true
+  exhale acc(_56.val_ref, write)
+  _55 := builtin$havoc_ref()
+  inhale acc(bool(_55), write)
+  // transfer perm _56.val_ref --> old[l64](_56.val_ref) // unchecked: true
+  
+  inhale true
+  unfold acc(bool(_55), write)
+  inhale _55.val_bool == (m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l64](_56.val_ref))) == 0)
+  label l65
+  // ========== l66 ==========
+  
+  // MIR edge bb32 --> bb33
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L16,L9,)
+
+  
+  if (__t29 && __t29) {
+    // expire loan L9
+    
+    // transfer perm old[l64](_56.val_ref) --> old[l63](_56.val_ref) // unchecked: false
+    
+    exhale acc(m_VecWrapperI32$_beg_$_end_(old[l63](_56.val_ref)), read$())
+    inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write - read$())
+  }
+  // ========== loop31_group4_bb33 ==========
+  
+  __t30 := true
+  // [mir] StorageDead(_56)
+  
+  // [mir] _54 = Not(move _55)
+  
+  _54 := builtin$havoc_ref()
+  inhale acc(_54.val_bool, write)
+  _54.val_bool := !_55.val_bool
+  // [mir] StorageDead(_55)
+  
+  // [mir] switchInt(move _54) -> [false: bb35, otherwise: bb34]
+  
+  __t61 := _54.val_bool
+  if (__t61) {
+    goto loop2_group3_bb16
+  }
+  goto loop2_group3_bb13
+  label loop2_group3_bb13
+  // ========== l67 ==========
+  
+  // MIR edge bb33 --> bb35
+  
+  // ========== l74 ==========
+  
+  // drop Acc(_66.val_int, write) (Acc(_66.val_int, write))
+  
+  // drop Acc(_72.val_int, write) (Acc(_72.val_int, write))
+  
+  // drop Acc(_70.val_bool, write) (Acc(_70.val_bool, write))
+  
+  // drop Acc(_62.val_bool, write) (Acc(_62.val_bool, write))
+  
+  // drop Acc(_71.val_int, write) (Acc(_71.val_int, write))
+  
+  // drop Acc(_69.val_bool, write) (Acc(_69.val_bool, write))
+  
+  goto loop2_group3_bb15
+  label loop2_group3_bb15
+  // ========== bb35 ==========
+  
+  __t39 := true
+  // [mir] StorageLive(_75)
+  
+  // [mir] _0 = const ()
+  
+  // [mir] StorageDead(_75)
+  
+  // [mir] StorageDead(_54)
+  
+  // [mir] StorageDead(_30)
+  
+  // [mir] StorageDead(_3)
+  
+  // [mir] drop(_2) -> [return: bb45, unwind: bb47]
+  
+  // ========== bb45 ==========
+  
+  __t40 := true
+  // [mir] StorageDead(_2)
+  
+  // [mir] return
+  
+  // ========== return ==========
+  
+  // Target of any 'return' statement.
+  
+  // Exhale postcondition
+  
+  label l70
+  // Fold predicates for &mut args and transfer borrow permissions to old
+  
+  // Fold the result
+  
+  fold acc(tuple0$(_0), write)
+  // obtain acc(tuple0$(_0), write)
+  
+  // Assert possible strengthening
+  
+  // Assert functional specification of postcondition
+  
+  // Assert type invariants
+  
+  assert true
+  // Exhale permissions of postcondition (1/3)
+  
+  // Exhale permissions of postcondition (2/3)
+  
+  exhale acc(tuple0$(_0), write)
+  // Exhale permissions of postcondition (3/3)
+  
+  goto end_of_method
+  label loop2_group3_bb16
+  // ========== l68 ==========
+  
+  // MIR edge bb33 --> bb34
+  
+  // ========== loop31_group5_bb34 ==========
+  
+  __t31 := true
+  // [mir] StorageLive(_57)
+  
+  // [mir] StorageLive(_58)
+  
+  // [mir] _58 = const false
+  
+  _58 := builtin$havoc_ref()
+  inhale acc(_58.val_bool, write)
+  _58.val_bool := false
+  // [mir] switchInt(move _58) -> [false: bb37, otherwise: bb36]
+  
+  __t62 := _58.val_bool
+  // Ignore default target bb36, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop31_end_body ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb31)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), write)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(i32(_1), write)
+  assert m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) > 0 && (let _LET_9 == (_1.val_int) in (forall _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101: Int :: 0 <= _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 && _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 <= 18446744073709551615 ==> _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_9 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101)))
+  fold acc(i32(_1), write)
+  assert true
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$())
+  inhale false
+  goto end_of_method
+  label loop2_group3_bb17
+  // ========== l41 ==========
+  
+  // MIR edge bb27 --> bb28
+  
+  // ========== bb28 ==========
+  
+  __t26 := true
+  // [mir] core::panicking::panic(const "assertion failed: val <= *vec.get(i)") -> bb46
+  
+  // Rust panic - const "assertion failed: val <= *vec.get(i)"
+  
+  assert false
+  goto end_of_method
+  label loop2_group3_bb18
+  // ========== l27 ==========
+  
+  // MIR edge bb6 --> bb9
+  
+  // ========== loop2_group5_bb9 ==========
+  
+  __t9 := true
+  // [mir] StorageLive(_12)
+  
+  // [mir] StorageLive(_13)
+  
+  // [mir] _13 = const false
+  
+  _13 := builtin$havoc_ref()
+  inhale acc(_13.val_bool, write)
+  _13.val_bool := false
+  // [mir] switchInt(move _13) -> [false: bb12, otherwise: bb11]
+  
+  __t50 := _13.val_bool
+  // Ignore default target bb11, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop2_end_body ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb2)
+  
+  fold acc(i32(_3), write)
+  // obtain acc(i32(_3), write)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), write)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(i32(_1), write)
+  unfold acc(i32(_3), write)
+  assert _1.val_int <= _3.val_int && _3.val_int < 2147483646 && (let _LET_5 == (_1.val_int) in (forall _2_quant_85a7ff73856d4fafbd601c8c732174c0_101: Int :: 0 <= _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 && _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 <= 18446744073709551615 ==> _2_quant_85a7ff73856d4fafbd601c8c732174c0_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_5 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_85a7ff73856d4fafbd601c8c732174c0_101)))
+  fold acc(i32(_3), write)
+  fold acc(i32(_1), write)
+  assert true
+  exhale acc(i32(_3), write) && (acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$()))
+  inhale false
+  goto end_of_method
+  label loop2_inv_post
+  // ========== l61 ==========
+  
+  // MIR edge bb42 --> bb43
+  
+  // ========== bb43 ==========
+  
+  __t38 := true
+  // [mir] core::panicking::panic(const "assertion failed: val <= v") -> bb46
+  
+  // Rust panic - const "assertion failed: val <= v"
+  
+  assert false
+  goto end_of_method
+  label loop2_inv_pre
+  // ========== l54 ==========
+  
+  // MIR edge bb33 --> bb34
+  
+  // ========== loop31_group2_bb34 ==========
+  
+  __t31 := true
+  // [mir] StorageLive(_57)
+  
+  // [mir] StorageLive(_58)
+  
+  // [mir] _58 = const false
+  
+  _58 := builtin$havoc_ref()
+  inhale acc(_58.val_bool, write)
+  _58.val_bool := false
+  // [mir] switchInt(move _58) -> [false: bb37, otherwise: bb36]
+  
+  __t58 := _58.val_bool
+  // Ignore default target bb36, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop31_inv_pre ==========
+  
+  // Assert and exhale the loop body invariant (loop head: bb31)
+  
+  // obtain acc(m_VecWrapperI32$_beg_$_end_(_2), write)
+  
+  fold acc(i32(_1), write)
+  // obtain acc(i32(_1), read)
+  
+  unfold acc(i32(_1), write)
+  assert m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) > 0 && (let _LET_6 == (_1.val_int) in (forall _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101: Int :: 0 <= _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 && _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 <= 18446744073709551615 ==> _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_6 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101)))
+  fold acc(i32(_1), write)
+  assert true
+  exhale acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$())
+  _54 := builtin$havoc_ref()
+  _55 := builtin$havoc_ref()
+  _56 := builtin$havoc_ref()
+  _58 := builtin$havoc_ref()
+  _62 := builtin$havoc_ref()
+  _66 := builtin$havoc_ref()
+  _67 := builtin$havoc_ref()
+  _69 := builtin$havoc_ref()
+  _70 := builtin$havoc_ref()
+  _71 := builtin$havoc_int()
+  _72 := builtin$havoc_int()
+  __t28 := builtin$havoc_bool()
+  __t29 := builtin$havoc_bool()
+  __t30 := builtin$havoc_bool()
+  __t31 := builtin$havoc_bool()
+  __t32 := builtin$havoc_bool()
+  __t33 := builtin$havoc_bool()
+  __t34 := builtin$havoc_bool()
+  __t35 := builtin$havoc_bool()
+  __t36 := builtin$havoc_bool()
+  __t37 := builtin$havoc_bool()
+  __t59 := builtin$havoc_bool()
+  __t60 := builtin$havoc_bool()
+  __t61 := builtin$havoc_bool()
+  __t62 := builtin$havoc_bool()
+  // ========== loop31_inv_post ==========
+  
+  // Inhale the loop invariant of block bb31
+  
+  inhale acc(m_VecWrapperI32$_beg_$_end_(_2), write) && acc(i32(_1), read$())
+  inhale true
+  unfold acc(i32(_1), write)
+  inhale m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) > 0 && (let _LET_7 == (_1.val_int) in (forall _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101: Int :: 0 <= _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 && _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 <= 18446744073709551615 ==> _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2)) ==> _LET_7 <= m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_2), _2_quant_c1bd8d0d48e245f198d0d66b6cad069a_101)))
+  // ========== loop31_group3_bb37 ==========
+  
+  __t32 := true
+  // [mir] _57 = const ()
+  
+  // [mir] goto -> bb38
+  
+  // ========== loop31_group3_bb38 ==========
+  
+  __t33 := true
+  // [mir] StorageDead(_58)
+  
+  // [mir] StorageDead(_57)
+  
+  // [mir] StorageLive(_61)
+  
+  // [mir] StorageLive(_62)
+  
+  // [mir] _62 = const false
+  
+  _62 := builtin$havoc_ref()
+  inhale acc(_62.val_bool, write)
+  _62.val_bool := false
+  // [mir] switchInt(move _62) -> [false: bb40, otherwise: bb39]
+  
+  __t59 := _62.val_bool
+  // Ignore default target bb39, as it is only used by Prusti to type-check a loop invariant.
+  
+  // ========== loop31_group3_bb40 ==========
+  
+  __t34 := true
+  // [mir] _61 = const ()
+  
+  // [mir] goto -> bb41
+  
+  // ========== loop31_group3_bb41 ==========
+  
+  __t35 := true
+  // [mir] StorageDead(_62)
+  
+  // [mir] StorageDead(_61)
+  
+  // [mir] StorageLive(_66)
+  
+  // [mir] StorageLive(_67)
+  
+  // [mir] _67 = &mut _2
+  
+  _67 := builtin$havoc_ref()
+  inhale acc(_67.val_ref, write)
+  _67.val_ref := _2
+  label l55
+  // [mir] _66 = VecWrapperI32::pop(move _67) -> [return: bb42, unwind: bb46]
+  
+  label l56
+  assert m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref)) > 0
+  assert true
+  exhale acc(_67.val_ref, write) && acc(m_VecWrapperI32$_beg_$_end_(_67.val_ref), write)
+  _66 := builtin$havoc_ref()
+  inhale acc(m_VecWrapperI32$_beg_$_end_(old[l56](_67.val_ref)), write)
+  inhale acc(i32(_66), write)
+  inhale true
+  unfold acc(i32(_66), write)
+  inhale !(old[l56](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref))) - 1 < 0 || old[l56](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref))) - 1 > 18446744073709551615) && m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l56](_67.val_ref))) == old[l56](m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref))) - 1 && ((let _LET_8 == (old[l56](_67.val_ref)) in (forall _2_quant_8469e038e3174236b08cf04be376d1e5_101: Int :: 0 <= _2_quant_8469e038e3174236b08cf04be376d1e5_101 && _2_quant_8469e038e3174236b08cf04be376d1e5_101 <= 18446744073709551615 ==> _2_quant_8469e038e3174236b08cf04be376d1e5_101 < m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_LET_8)) ==> m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_LET_8), _2_quant_8469e038e3174236b08cf04be376d1e5_101) == old[l56](m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref), _2_quant_8469e038e3174236b08cf04be376d1e5_101)))) && (!(m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l56](_67.val_ref))) - 1 < 0 || m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(old[l56](_67.val_ref))) - 1 > 18446744073709551615) && _66.val_int == old[l56](m_lookup__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref), m_len__$TY$__Snap$m_VecWrapperI32$_beg_$_end_$$int$(snap$__$TY$__m_VecWrapperI32$_beg_$_end_$Snap$m_VecWrapperI32$_beg_$_end_(_67.val_ref)) - 1))))
+  label l57
+  // ========== l58 ==========
+  
+  // MIR edge bb41 --> bb42
+  
+  // Expire borrows
+  
+  // expire_borrows ReborrowingDAG(L17,L13,)
+
+  
+  // ========== loop31_group3_bb42 ==========
+  
+  __t36 := true
+  // [mir] StorageDead(_67)
+  
+  // [mir] FakeRead(ForLet(None), _66)
+  
+  // [mir] StorageLive(_68)
+  
+  // [mir] StorageLive(_69)
+  
+  // [mir] StorageLive(_70)
+  
+  // [mir] StorageLive(_71)
+  
+  // [mir] _71 = _1
+  
+  _71 := builtin$havoc_int()
+  _71 := _1.val_int
+  label l59
+  // [mir] StorageLive(_72)
+  
+  // [mir] _72 = _66
+  
+  _72 := builtin$havoc_int()
+  _72 := _66.val_int
+  label l60
+  // [mir] _70 = Le(move _71, move _72)
+  
+  _70 := builtin$havoc_ref()
+  inhale acc(_70.val_bool, write)
+  _70.val_bool := _71 <= _72
+  // [mir] StorageDead(_72)
+  
+  // [mir] StorageDead(_71)
+  
+  // [mir] _69 = Not(move _70)
+  
+  _69 := builtin$havoc_ref()
+  inhale acc(_69.val_bool, write)
+  _69.val_bool := !_70.val_bool
+  // [mir] StorageDead(_70)
+  
+  // [mir] switchInt(move _69) -> [false: bb44, otherwise: bb43]
+  
+  __t60 := _69.val_bool
+  if (!__t60) {
+    goto loop2_group3_bb12
+  }
+  goto loop2_inv_post
+  label loop2_start
+  // ========== l10 ==========
+  
+  // MIR edge bb6 --> bb10
+  
+  goto loop2_group1_bb5
+  label return
+  // ========== l5 ==========
+  
+  // MIR edge bb7 --> bb5
+  
+  // ========== loop2_group1_bb5 ==========
+  
+  __t5 := true
+  // [mir] StorageLive(_8)
+  
+  // [mir] StorageLive(_9)
+  
+  // [mir] _9 = _3
+  
+  _9 := builtin$havoc_int()
+  _9 := _3.val_int
+  label l7
+  // [mir] StorageLive(_10)
+  
+  // [mir] _11 = CheckedSub(const core::num::<impl i32>::MAX, const 1_i32)
+  
+  _11 := builtin$havoc_ref()
+  inhale acc(_11.tuple_0, write)
+  inhale acc(_11.tuple_0.val_int, write)
+  inhale acc(_11.tuple_1, write)
+  inhale acc(_11.tuple_1.val_bool, write)
+  _11.tuple_0.val_int := 2147483646
+  _11.tuple_1.val_bool := false
+  // [mir] assert(!move (_11.1: bool), "attempt to compute `{} - {}`, which would overflow", const core::num::<impl i32>::MAX, const 1_i32) -> [success: bb8, unwind: bb46]
+  
+  __t42 := _11.tuple_1.val_bool
+  // Rust assertion: attempt to subtract with overflow
+  
+  assert !__t42
+  // ========== loop2_group1_bb8 ==========
+  
+  __t6 := true
+  // [mir] _10 = move (_11.0: i32)
+  
+  _10 := _11.tuple_0
+  label l8
+  // [mir] _8 = Lt(move _9, move _10)
+  
+  _8 := builtin$havoc_ref()
+  inhale acc(_8.val_bool, write)
+  _8.val_bool := _9 < _10.val_int
+  // [mir] StorageDead(_10)
+  
+  // [mir] StorageDead(_9)
+  
+  // [mir] _6 = move _8
+  
+  _6 := _8
+  label l9
+  // [mir] goto -> bb6
+  
+  // ========== l69 ==========
+  
+  // drop Acc(_9.val_int, write) (Acc(_9.val_int, write))
+  
+  // drop Acc(_10.val_int, write) (Acc(_10.val_int, write))
+  
+  // drop Acc(_11.tuple_0, write) (Acc(_11.tuple_0, write))
+  
+  // drop Acc(_11.tuple_1.val_bool, write) (Acc(_11.tuple_1.val_bool, write))
+  
+  // drop Acc(_11.tuple_1, write) (Acc(_11.tuple_1, write))
+  
+  goto bb1
+  label end_of_method
+}
+
+method builtin$havoc_bool() returns (ret: Bool)
+
+
+method builtin$havoc_int() returns (ret: Int)
+
+
+method builtin$havoc_ref() returns (ret: Ref)
