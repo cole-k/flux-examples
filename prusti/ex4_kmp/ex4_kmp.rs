@@ -2,7 +2,7 @@ extern crate prusti_contracts;
 use prusti_contracts::*;
 
 pub struct StrWrapper {
-    v: Vec<char>
+    v: Vec<char>,
 }
 
 /// Need this because Prusti doesn't seem to be able to handle polymorphic types
@@ -24,7 +24,7 @@ impl StrWrapper {
 }
 
 pub struct VecWrapperUSize {
-    v: Vec<usize>
+    v: Vec<usize>,
 }
 
 /// Need this because Prusti doesn't seem to be able to handle polymorphic types
@@ -62,7 +62,6 @@ pub enum TrustedOption {
 }
 
 impl TrustedOption {
-
     #[pure]
     pub fn is_none(&self) -> bool {
         match self {
@@ -84,7 +83,6 @@ impl TrustedOption {
             TrustedOption::None => unreachable!(),
         }
     }
-
 }
 
 /// Prusti cannot reason about vector initialization, so this wrapper is necessary to ensure that Prusti knows that the vecwrapper has the correct size and is filled with zeros
@@ -92,47 +90,44 @@ impl TrustedOption {
 #[ensures(result.len() == len)]
 #[ensures(forall(|x: usize| x < result.len() ==> result.lookup(x) == 0))]
 pub fn init_vec_wrapper_usize(len: usize) -> VecWrapperUSize {
-    VecWrapperUSize{ v: vec![0; len]}
+    VecWrapperUSize { v: vec![0; len] }
 }
 
-// rust port of https://github.com/ucsd-progsys/liquidhaskell/blob/develop/tests/pos/kmpVec.hs 
+// rust port of https://github.com/ucsd-progsys/liquidhaskell/blob/develop/tests/pos/kmpVec.hs
 #[requires(p.len() > 0)]
 #[ensures(result.len() == p.len())]
-#[ensures(forall(|x: usize| x < result.len() ==> result.lookup(x) <= x))]
-fn kmp_table(p:&StrWrapper) -> VecWrapperUSize {
-    let     m = p.len();
+#[ensures(forall(|x: usize| x < result.len() ==> result.lookup(x) <= p.len()))]
+fn kmp_table(p: &StrWrapper) -> VecWrapperUSize {
+    let m = p.len();
     let mut t = init_vec_wrapper_usize(m);
     let mut i = 1;
     let mut j = 0;
     while i < m {
-        body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) <= x));
-        body_invariant!(j < i);
+        body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) <= i));
+        body_invariant!(j <= i);
         body_invariant!(i < p.len());
-        body_invariant!(j < p.len() - 1);
-        body_invariant!(i < t.len());
         body_invariant!(m == t.len());
         body_invariant!(t.len() == p.len());
-        body_invariant!(p.len() > 0);
 
         if p.lookup(i) == p.lookup(j) {
             t.store(i, j + 1);
-            i    = i + 1;
-            j    = j + 1;
+            i = i + 1;
+            j = j + 1;
         } else if j == 0 {
             let zero = 0;
             t.store(i, zero);
-            i    = i + 1;
+            i = i + 1;
         } else {
             //check_assert(&p,&t,i,j);
-            j = t.lookup(j-1);
+            j = t.lookup(j - 1);
         }
-    };
+    }
     t
 }
 
 #[requires((pattern.len() > 1) && (target.len() > 0) && (target.len() >= pattern.len()))]
 #[ensures(result.is_some() ==> result.peek() < target.len())]
-fn kmp_search(pattern:StrWrapper, target:StrWrapper) -> TrustedOption  {
+fn kmp_search(pattern: StrWrapper, target: StrWrapper) -> TrustedOption {
     let mut t_i: usize = 0;
     let mut p_i: usize = 0;
     let target_len: usize = target.len();
@@ -144,10 +139,9 @@ fn kmp_search(pattern:StrWrapper, target:StrWrapper) -> TrustedOption  {
     while (t_i <= target_len - 1) && (p_i <= pattern_len - 1) {
         body_invariant!(t_i < target_len);
         body_invariant!(p_i < pattern_len);
-        body_invariant!(target.len() >= pattern.len());
         body_invariant!(t.len() == pattern.len());
         body_invariant!(p_i < target_len);
-        body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) <= x));
+        body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) <= target.len()));
         body_invariant!(result_idx <= t_i);
 
         if target.lookup(t_i) == pattern.lookup(p_i) {
@@ -156,8 +150,8 @@ fn kmp_search(pattern:StrWrapper, target:StrWrapper) -> TrustedOption  {
             }
             t_i = t_i + 1;
             p_i = p_i + 1;
-            if p_i >= pattern_len{
-                return TrustedOption::Some(result_idx)
+            if p_i >= pattern_len {
+                return TrustedOption::Some(result_idx);
             }
         } else {
             if p_i == 0 {
@@ -178,6 +172,4 @@ fn kmp_search(pattern:StrWrapper, target:StrWrapper) -> TrustedOption  {
     //res
 }*/
 
-pub fn main() {
-
-}
+pub fn main() {}
