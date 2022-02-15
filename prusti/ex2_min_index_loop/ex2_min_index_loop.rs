@@ -24,26 +24,26 @@ impl VecWrapperI32 {
 }
 
 // Note: reduce helper function inlined because support for closures not yet in Prusti
-
-// These two clauses ensure that the vector isn't mutated
+#[requires(vec.len() > 0)]
 #[ensures(vec.len() == old(vec.len()))]
-#[ensures(forall(|i: usize| i < vec.len() ==> old(vec.lookup(i)) == vec.lookup(i)))]
-// This clause ensures that the minindex does indeed point to a minimal element
-#[ensures(forall(|i: usize|
-    (i < vec.len() ==> (vec.lookup(result) <= vec.lookup(i)))))]
+#[ensures(result < vec.len())]
+// Removed as these are for full correctness, not just array bounds
+//#[ensures(forall(|i: usize| i < vec.len() ==> old(vec.lookup(i)) == vec.lookup(i)))]
+//#[ensures(forall(|i: usize|
+//    (i < vec.len() ==> (vec.lookup(result) <= vec.lookup(i)))))]
 fn min_index(vec:VecWrapperI32) -> usize {
     let mut res = 0;
     let sz = vec.len();
     let mut i = 0;
 
     while i < sz {
-        body_invariant!((i != 0 ==> res < i) && (i == 0 ==> res == 0));
-        body_invariant!(sz == vec.len());
         body_invariant!(i < sz);
         body_invariant!(res < sz);
-        body_invariant!(forall(|y: usize| y < vec.len() ==> old(vec.lookup(y)) == vec.lookup(y)));
-        body_invariant!(forall(|x: usize|
-            (x < i ==> (vec.lookup(res) <= vec.lookup(x)))));
+
+        // Removed as these are for full correctness, not just array bounds
+        //body_invariant!(forall(|y: usize| y < vec.len() ==> old(vec.lookup(y)) == vec.lookup(y)));
+        //body_invariant!(forall(|x: usize|
+        //    (x < i ==> (vec.lookup(res) <= vec.lookup(x)))));
 
         res = if vec.lookup(i) < vec.lookup(res) {
             i
