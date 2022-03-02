@@ -59,4 +59,3 @@ pub fn search(pat: &str, str: &str) -> i32 {
     println!("kmp_search: pat = {}, str = {}, res = {:?}", pat, str, res);
     res
 }
-

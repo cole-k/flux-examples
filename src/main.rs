@@ -1,12 +1,13 @@
 mod util;
 
+mod rvec;
 mod ex1_fill;
 mod ex2_min_index_loop;
 mod ex3_min_index_iter;
 mod ex4_kmp;
+mod test01;
 
-
-
+/*
 
 enum List(K) {
     Cons(i32{K} , Box<List>),
@@ -23,7 +24,7 @@ enum List /* <L, K> */ {
 fn foo(){
 
     let mut list = List::Nil;
-    
+
     // list: @L1#  K           L1 |-> a                 a:{a = Nil}
 
     for i in 0..5 {
@@ -31,7 +32,7 @@ fn foo(){
         // list: @L1#, i: @I         L1# |-> a, I |-> b           b:{len v = 0}
 
         list = List::Cons(i, Box::new(list));
-       
+
         // list: @L2, i: @I         L1 |-> ???,  L2 |-> ???
 
         println!("{}", i)
@@ -45,7 +46,7 @@ fn foo(){
     }
 
 }
-
+*/
 
 fn main() {
     println!("Hello, world!");

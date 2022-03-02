@@ -11,6 +11,17 @@
 | Knight's Tour | [Prusti](https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knights_tour.rs) | [Prusti Tests](https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta) |
 | Knuth Shuffle | [Prusti](https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knuth_shuffle.rs), [Liquid Rust](https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/knuth_shuffle.rs) | [Prusti Tests](https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta) |
 
+## Dsolve Examples
+
+- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
+- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bcopy.ml
+- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bsearch.ml
+- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod.ml
+- [] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod2.ml
+- [] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
+- [] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
+
+
 ## Crates.io Examples
 TODO: Filling in possibilities for now, will narrow down later
 
@@ -32,4 +43,3 @@ TODO: Filling in possibilities for now, will narrow down later
 | [as_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L623) | N/A | NO | Rust CStrings invariantly have len >= 1 (null terminator) |
 | [drop](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L778) | std/ffi/cstring | N/A | NO | See above |
 | [to_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L1347) | std/ffi/cstring | N/A | NO | See above, may be very similar to as_bytes |
-
