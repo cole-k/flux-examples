@@ -125,7 +125,7 @@ fn kmp_table(p: &StrWrapper) -> VecWrapperUSize {
     t
 }
 
-#[requires((pattern.len() > 1) && (target.len() > 0) && (target.len() >= pattern.len()))]
+#[requires((pattern.len() > 0) && (target.len() > 0) && (target.len() >= pattern.len()))]
 #[ensures(result.is_some() ==> result.peek() < target.len())]
 fn kmp_search(pattern: StrWrapper, target: StrWrapper) -> TrustedOption {
     let mut t_i: usize = 0;

@@ -1,5 +1,14 @@
 # Examples
 
+## Run liquid-rust
+To run liquid-rust in one of the examples copy the `liquid-rust` script to somewhere in your path
+and edit the file to define the `LIQUID_RUST` variable to point to the root of the liquid-rust repository.
+Then you should be able to run it on examples like so
+
+```bash
+$ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
+```
+
 ## Comparisons with Prusti
 | Example Name | Versions | Source |
 | ------------ | -------- | ------ |
@@ -43,3 +52,4 @@ TODO: Filling in possibilities for now, will narrow down later
 | [as_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L623) | N/A | NO | Rust CStrings invariantly have len >= 1 (null terminator) |
 | [drop](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L778) | std/ffi/cstring | N/A | NO | See above |
 | [to_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L1347) | std/ffi/cstring | N/A | NO | See above, may be very similar to as_bytes |
+

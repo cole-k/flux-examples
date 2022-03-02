@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+# Path to root of liquid rust repository
+LIQUID_RUST=
+
+CWD=`pwd`
+cd $LIQUID_RUST
+TOOLCHAIN=`rustup show active-toolchain | cut -d' ' -f 1`
+
+cd "$CWD"
+rustup run "$TOOLCHAIN" cargo run --manifest-path "$LIQUID_RUST/Cargo.toml" -- $@
