@@ -1,7 +1,7 @@
 # Examples
 
 ## Run liquid-rust
-To run liquid-rust in one of the examples copy the `liquid-rust` script to somewhere in your path
+To run liquid-rust in one of the examples copy the [liquid-rust](liquid-rust) script to somewhere in your path
 and edit the file to define the `LIQUID_RUST` variable to point to the root of the liquid-rust repository.
 Then you should be able to run it on examples like so
 
@@ -22,14 +22,13 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 
 ## Dsolve Examples
 
-- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
-- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bcopy.ml
-- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bsearch.ml
-- [] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod.ml
-- [] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod2.ml
-- [] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
-- [] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
-
+- [ ] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
+- [ ] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bcopy.ml
+- [ ] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bsearch.ml
+- [ ] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod.ml
+- [ ] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod2.ml
+- [ ] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
+- [ ] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
 
 ## Crates.io Examples
 TODO: Filling in possibilities for now, will narrow down later
