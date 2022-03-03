@@ -8,7 +8,11 @@ use rvec::RVec;
 
 // CREDIT: https://shane-o.dev/blog/binary-search-rust
 
-#[lr::sig(fn(k: i32, items: &n@RVec<i32>{0 <= n}) -> usize{v: 0 <= v  && v <= n})]
+// ALSO WORKS
+
+// SAFE: [lr::sig(fn(k: i32, items: &n@RVec<i32>{0 <= n}) -> usize{v: 0 <= v  && v <= n})]
+
+#[lr::sig(fn(k: i32, items: &RVec<i32>) -> usize)]
 pub fn binary_search(k: i32, items: &RVec<i32>) -> usize {
   let size = items.len();
   if size <= 0 {
