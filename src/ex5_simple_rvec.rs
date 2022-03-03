@@ -6,7 +6,7 @@
 pub mod rvec;
 use rvec::RVec;
 
-#[lr::ty(fn<len: int{len >= 2}>(l: RVec<i32>@len; ref<l>, bool) -> i32@0; l: RVec<i32>@len)]
+#[lr::sig(fn(vec: &mut n@RVec<i32>{2 <= n}, b: bool) -> i32[0]; vec: RVec<i32>[n])]
 pub fn test1(vec: &mut RVec<i32>, b: bool) -> i32 {
     let r;
     if b {
