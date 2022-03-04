@@ -24,7 +24,7 @@ pub fn binary_search(k: i32, items: &RVec<i32>) -> usize {
 
   while low <= high {
       // SAFE   let middle = (high + low) / 2;
-      // UNSAFE let middle = high + ((high - low) / 2);
+      // let middle = high + ((high - low) / 2);
       let middle = low + ((high - low) / 2);
       let current = items.get(middle);
       if *current == k {
