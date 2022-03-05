@@ -46,6 +46,12 @@ impl<T> RVec<T> {
         &mut self.inner[i]
     }
 
+    #[lr::sig(fn(self:&mut n@RVec<T>, i:usize{0 <= i && i < n}, v: T) -> i32)]
+    pub fn set(&mut self, i: usize, v: T) {
+        self.inner[i] = T;
+        0
+    }
+
     #[lr::assume]
     #[lr::ty(fn<len: int {len > 0}>(self: RVec<T>@len; ref<self>) -> T; self: RVec<T>@{len - 1})]
     pub fn pop(&mut self) -> T {

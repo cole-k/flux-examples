@@ -39,6 +39,13 @@ impl<T> RVec<T> {
     }
 
     #[lr::assume]
+    #[lr::sig(fn(self:&mut n@RVec<T>, i:usize{0 <= i && i < n}, v: T) -> i32)]
+    pub fn set(&mut self, i: usize, v: T) -> i32 {
+        self.inner[i] = v;
+        0
+    }
+
+    #[lr::assume]
     #[lr::ty(
     fn<len:int>(self: RVec<T>@len; ref<self>, usize{v: 0 <= v && v < len}) -> &weak T; self: RVec<T>@len)
     ]
@@ -63,6 +70,8 @@ impl<T> RVec<T> {
         self.inner.swap(a, b);
         0
     }
+
+
 
     #[lr::assume]
     #[lr::ty(fn<len: int>(T, usize @ len) -> RVec<T>@len)]
