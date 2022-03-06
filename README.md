@@ -22,11 +22,14 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 
 ## Dsolve Examples
 
-- [~] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
-- [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bcopy.ml
-- [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bsearch.ml
-- [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod.ml
-- [~] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
+`~` means the .rs port exists but has not been kicked through LR.
+
+- [~] src/arraymax.rs
+- [+] src/bcopy.rs
+- [+] src/bsearch.rs
+- [+] src/dotprod.rs
+- [~] src/fft.rs
+- [~] src/kmeans.rs
 - [ ] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
 
 ## Crates.io Examples
