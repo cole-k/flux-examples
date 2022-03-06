@@ -12,3 +12,4 @@ pub mod dotprod;
 pub mod bcopy;
 pub mod bsearch;
 pub mod fft;
+pub mod kmeans;
