@@ -6,14 +6,27 @@
 pub mod rvec;
 use rvec::RVec;
 
-type Point = RVec<f32>;
+/////////////////////////////////////////////////////////////
+
+#[lr::sig(fn() -> f32)]
+pub fn f32_max() -> f32 {
+    100000.0 // TODO: actual max!
+}
+
+#[lr::sig(fn(n:f32, d:usize) -> f32)]
+fn f32_div(n:f32, _d:usize) -> f32 {
+    n // TODO: actual divide!
+}
+
+/////////////////////////////////////////////////////////////
 
 /// distance between two points
+#[lr::sig(fn(x:& n@RVec<f32>, y:&RVec<f32>[n]) -> f32)]
 pub fn dist(x: &RVec<f32>, y:&RVec<f32>) -> f32 {
     let mut res = 0.0;
     let mut i = 0;
     while i < x.len() {
-        let di = x.get(i) - y.get(i);
+        let di = *x.get(i) - *y.get(i);
         res += di*di;
         i += 1;
     }
@@ -21,28 +34,48 @@ pub fn dist(x: &RVec<f32>, y:&RVec<f32>) -> f32 {
 }
 
 /// adding two points (updates the first)
-fn add(x:&mut RVec<f32>, y:&RVec<f32>) -> i32 {
+#[lr::sig(fn(x:&mut n@RVec<f32>, y:&RVec<f32>[n]) -> i32)]
+pub fn add(x:&mut RVec<f32>, y:&RVec<f32>) -> i32 {
     let mut i = 0;
-    while i < x.len() {
-        *x.get_mut(i) += *y.get(i);
+    let n = x.len();
+    while i < n {
+        let xi = *x.get(i);
+        let yi = *y.get(i);
+        *x.get_mut(i) = xi + yi;
         i += 1;
     }
     0
 }
 
 /// normalizing a point (cluster) by size
-fn normal(x:&mut RVec<f32>, n: usize) -> i32 {
+#[lr::sig(fn(x:&mut RVec<f32>, n: usize) -> i32)]
+pub fn normal(x:&mut RVec<f32>, n: usize) -> i32 {
     let mut i = 0;
     while i < x.len() {
         let xi = *x.get(i);
-        *x.get_mut(i) = xi / (n as f32);
+        *x.get_mut(i) = f32_div(xi,n);
         i += 1;
     }
     0
 }
 
+/// creating (empty) 0-center for each cluster
+#[lr::sig(fn(n: usize, k: usize{0 <= k}) -> RVec<RVec<f32>[n]>[k])]
+pub fn init_centers(n: usize, k: usize) -> RVec<RVec<f32>> {
+  let mut res = RVec::new();
+  let mut i = 0;
+  while i < k {
+      res.push(RVec::from_elem_n(0.0, n));
+      i += 1;
+  }
+  res
+}
+
+
+/*
+
 /// finding the nearest center to a point
-fn nearest(cs: &RVec<Point>, p: &Point) -> usize {
+fn nearest(cs: &RVec<RVec<f32>>, p: &RVec<f32>) -> usize {
     let mut res = 0;
     let mut min = f32::MAX;
     let mut i = 0;
@@ -58,16 +91,6 @@ fn nearest(cs: &RVec<Point>, p: &Point) -> usize {
     res
 }
 
-/// creating (empty) 0-center for each cluster
-fn init_centers(n: usize, k: usize) -> RVec<Point> {
-  let mut res = RVec::new();
-  let mut i = 0;
-  while i < k {
-      res.push(RVec::from_elem_n(0.0, n));
-      i += 1;
-  }
-  res
-}
 
 /// updating the centers
 fn kmeans_step(n:usize, cs: RVec<Point>, ps: &RVec<&Point>) -> RVec<Point> {
@@ -103,3 +126,4 @@ pub fn kmeans(n:usize, cs: RVec<Point>, ps: &RVec<&Point>, iters: i32) -> RVec<P
     }
     res
 }
+*/

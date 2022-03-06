@@ -1,9 +1,9 @@
 #![allow(dead_code)]
 
-#[lr::opaque]
-pub struct RMap<K, V> {
-    inner: std::collections::HashMap<K, V>
-}
+// #[lr::opaque]
+// pub struct RMap<K, V> {
+//     inner: std::collections::HashMap<K, V>
+// }
 
 #[lr::opaque]
 #[lr::refined_by(len: int)]
@@ -92,4 +92,5 @@ impl<T> RVec<T> {
         }
         vec
     }
+
 }
