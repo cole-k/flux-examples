@@ -21,8 +21,8 @@ fn f32_div(n:f32, _d:usize) -> f32 {
 /////////////////////////////////////////////////////////////
 
 /// distance between two points
-#[lr::sig(fn(x:& n@RVec<f32>, y:&RVec<f32>[n]) -> f32)]
-pub fn dist(x: &RVec<f32>, y:&RVec<f32>) -> f32 {
+#[lr::sig(fn(x:&n@RVec<f32>, y:&RVec<f32>{v:v == n}) -> f32)]
+pub fn dist(x:&RVec<f32>, y:&RVec<f32>) -> f32 {
     let mut res = 0.0;
     let mut i = 0;
     while i < x.len() {
@@ -31,6 +31,23 @@ pub fn dist(x: &RVec<f32>, y:&RVec<f32>) -> f32 {
         i += 1;
     }
     res
+}
+
+#[lr::sig(fn(n:usize, x:&RVec<f32>[n], y:&RVec<f32>[n]) -> f32)]
+pub fn ndist(n:usize, x:&RVec<f32>, y:&RVec<f32>) -> f32 {
+    let mut res = 0.0;
+    let mut i = 0;
+    while i < n {
+        let di = *x.get(i) - *y.get(i);
+        res += di*di;
+        i += 1;
+    }
+    res
+}
+
+#[lr::sig(fn(x:&RVec<f32>, y:&RVec<f32>) -> f32)]
+pub fn junk_dist(_x:&RVec<f32>, _y:&RVec<f32>) -> f32 {
+    1.0
 }
 
 /// adding two points (updates the first)
@@ -72,16 +89,21 @@ pub fn init_centers(n: usize, k: usize) -> RVec<RVec<f32>> {
 }
 
 
-/*
 
 /// finding the nearest center to a point
-fn nearest(cs: &RVec<RVec<f32>>, p: &RVec<f32>) -> usize {
+// #[lr::sig(fn(n:usize, p:&RVec<f32>[n], cs: &RVec<RVec<f32>[n]>) -> usize)]
+#[lr::sig(fn(p:&n@RVec<f32>, cs: &k@RVec<RVec<f32>[n]>{0 < k}) -> usize{v:0 <= v && v < k})]
+pub fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
+    // let n = p.len();
+    let k = cs.len();
     let mut res = 0;
-    let mut min = f32::MAX;
+    let mut min = f32_max();
     let mut i = 0;
-    while i < cs.len() {
+    while i < k {
         let ci = cs.get(i);
+        // let di = junk_dist(ci, p);
         let di = dist(ci, p);
+        // let di = ndist(n, ci, p);
         if di < min {
             res = i;
             min = di;
@@ -91,6 +113,7 @@ fn nearest(cs: &RVec<RVec<f32>>, p: &RVec<f32>) -> usize {
     res
 }
 
+/*
 
 /// updating the centers
 fn kmeans_step(n:usize, cs: RVec<Point>, ps: &RVec<&Point>) -> RVec<Point> {
