@@ -51,7 +51,7 @@ pub fn junk_dist(_x:&RVec<f32>, _y:&RVec<f32>) -> f32 {
 }
 
 /// adding two points (updates the first)
-#[lr::sig(fn(x:&mut n@RVec<f32>, y:&RVec<f32>[n]) -> i32)]
+#[lr::sig(fn(x:&mut n@RVec<f32>, y:&RVec<f32>{v:v==n}) -> i32)]
 pub fn add(x:&mut RVec<f32>, y:&RVec<f32>) -> i32 {
     let mut i = 0;
     let n = x.len();
@@ -91,7 +91,6 @@ pub fn init_centers(n: usize, k: usize) -> RVec<RVec<f32>> {
 
 
 /// finding the nearest center to a point
-// #[lr::sig(fn(n:usize, p:&RVec<f32>[n], cs: &RVec<RVec<f32>[n]>) -> usize)]
 #[lr::sig(fn(p:&n@RVec<f32>, cs: &k@RVec<RVec<f32>[n]>{0 < k}) -> usize{v:0 <= v && v < k})]
 pub fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
     // let n = p.len();
@@ -101,9 +100,7 @@ pub fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
     let mut i = 0;
     while i < k {
         let ci = cs.get(i);
-        // let di = junk_dist(ci, p);
         let di = dist(ci, p);
-        // let di = ndist(n, ci, p);
         if di < min {
             res = i;
             min = di;
@@ -113,34 +110,44 @@ pub fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
     res
 }
 
-/*
+// TODO: the `n` is not needed, except to prevent a silly parse error!
+#[lr::sig(fn(n: usize, cs: &mut k@RVec<RVec<f32>[n]>, weights: &RVec<usize>[k]) -> i32)]
+pub fn normalize_centers(_n: usize, cs: &mut RVec<RVec<f32>>, weights: &RVec<usize>) -> i32 {
+    let k = cs.len();
+    let mut i = 0;
+    while i < k {
+        normal(cs.get_mut(i), *weights.get(i));
+        i += 1;
+    }
+    0
+}
 
 /// updating the centers
-fn kmeans_step(n:usize, cs: RVec<Point>, ps: &RVec<&Point>) -> RVec<Point> {
+#[lr::sig(fn(n:usize, cs: k@RVec<RVec<f32>[n]>{0 < k}, ps: &RVec<RVec<f32>[n]>) -> RVec<RVec<f32>[n]>[k])]
+pub fn kmeans_step(n:usize, cs: RVec<RVec<f32>>, ps: &RVec<RVec<f32>>) -> RVec<RVec<f32>> {
     let k = cs.len();
 
     let mut res_points = init_centers(n, k);
+
     let mut res_size = RVec::from_elem_n(0, k);
 
     let mut i = 0;
     while i < ps.len() {
-        let p = *ps.get(i);
-        let j= nearest(&cs, p);
+        let p = ps.get(i);
+        let j= nearest(p, &cs);
         add(res_points.get_mut(j), p);
         *res_size.get_mut(j) += 1;
         i += 1;
     }
 
-    let mut i = 0;
-    while i < k {
-        normal(res_points.get_mut(i), *res_size.get(i));
-        i += 1;
-    }
+    normalize_centers(n, &mut res_points, &res_size);
+
     res_points
 }
 
 /// kmeans: iterating the center-update-steps
-pub fn kmeans(n:usize, cs: RVec<Point>, ps: &RVec<&Point>, iters: i32) -> RVec<Point> {
+#[lr::sig(fn(n:usize, cs: k@RVec<RVec<f32>[n]>{0 < k}, ps: &RVec<RVec<f32>[n]>, iters: i32) -> RVec<RVec<f32>[n]>[k])]
+pub fn kmeans(n:usize, cs: RVec<RVec<f32>>, ps: &RVec<RVec<f32>>, iters: i32) -> RVec<RVec<f32>> {
     let mut i = 0;
     let mut res = cs;
     while i < iters {
@@ -149,4 +156,3 @@ pub fn kmeans(n:usize, cs: RVec<Point>, ps: &RVec<&Point>, iters: i32) -> RVec<P
     }
     res
 }
-*/
