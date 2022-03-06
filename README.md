@@ -22,11 +22,11 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 
 ## Dsolve Examples
 
-- [-] HOFs https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
+- [~] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/arraymax.ml
 - [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bcopy.ml
 - [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/bsearch.ml
 - [+] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/dotprod.ml
-- [ ] *AG* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
+- [~] *RJ* https://github.com/ucsd-progsys/dsolve/blob/master/tests/PLDI2008/fft.ml
 - [ ] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
 
 ## Crates.io Examples
