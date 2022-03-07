@@ -6,7 +6,6 @@
 pub mod rvec;
 use rvec::RVec;
 
-
 #[lr::sig(fn(src: &n@RVec<f32>{0 <= n}) -> RVec<f32>[n])]
 pub fn clone(src: &RVec<f32>) -> RVec<f32> {
   let n = src.len();
@@ -30,22 +29,31 @@ fn two_pi() -> f32 {
   2.0 * pi()
 }
 
+#[lr::assume]
 #[lr::sig(fn(n:usize) -> f32)]
-fn float_of_int(_n:usize) -> f32 {
-  1.0
+fn float_of_int(n:usize) -> f32 {
+  n as f32
 }
 
+#[lr::assume]
 #[lr::sig(fn(x:f32) -> f32)]
-fn cos(_x:f32) -> f32 {
-  1.0
+pub fn fabs(x:f32) -> f32 {
+  f32::abs(x)
 }
 
+#[lr::assume]
 #[lr::sig(fn(x:f32) -> f32)]
-fn sin(_x:f32) -> f32 {
-  1.0
+fn cos(x:f32) -> f32 {
+  f32::cos(x)
 }
 
-#[lr::sig(fn(px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32 where 2 <= n)]
+#[lr::assume]
+#[lr::sig(fn(x:f32) -> f32)]
+fn sin(x:f32) -> f32 {
+  f32::sin(x)
+}
+
+#[lr::sig(fn(px: &mut n@RVec<f32>, py: &mut RVec<f32>{v:v == n}) -> i32 where 2 <= n)]
 pub fn fft(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   loop_a(px, py);
   loop_b(px, py);
@@ -171,6 +179,10 @@ fn loop_c(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
     j = loop_c1(j, n/2);
     // let mut k = n / 2;
     // while k < j {
+    //
+    //   INV:   0 <= k + k <= n
+    //   QUAL:  2k <= n
+    //
     //   j = j - k;
     //   k = k / 2;
     // }
@@ -188,109 +200,65 @@ pub fn loop_c1(j:usize, k: usize) -> usize {
   }
 }
 
-/*
-fn loop_b1(px: &mut RVec<f32>, py: &mut RVec<f32>,
-          i0: usize, i1: usize, id: usize
-        ) -> i32 {
-  let n = px.len() - 1;
-  if i1 <= n {
-    let r1 = *px.get(i0);
-    *px.get_mut(i0) = r1 + px.get(i1);
-    *px.get_mut(i1) = r1 - px.get(i1);
-
-    let r1 = *py.get(i0);
-    *py.get_mut(i0) = r1 + py.get(i1);
-    *py.get_mut(i1) = r1 - py.get(i1);
-    loop_b1(px, py, i0 + id, i1 + id, id);
+#[lr::sig(fn (np:usize) -> f32 where 2 <= np)]
+pub fn fft_test(np:usize) -> f32 {
+  let enp = float_of_int(np);
+  let n2 = np / 2;
+  let npm = n2 - 1;
+  let mut pxr = RVec::from_elem_n(0.0, np+1);
+  let mut pxi = RVec::from_elem_n(0.0, np+1);
+  let t = pi() / enp;
+  *pxr.get_mut(1) = (enp - 1.0) * 0.5;
+  *pxi.get_mut(1) = 0.0;
+  *pxr.get_mut(n2+1) = 0.0 - 0.5;
+  *pxi.get_mut(n2+1) = 0.0;
+  let mut i = 1;
+  while i <= npm {
+    let j = np - i;
+    *pxr.get_mut(i+1) = 0.0 - 0.5;
+    *pxr.get_mut(j+1) = 0.0 - 0.5;
+    let z = t * float_of_int(i);
+    let y = 0.5 * cos(z) / sin(z);
+    *pxi.get_mut(i+1) = 0.0 - y;
+    *pxi.get_mut(j+1) = y;
+    i += 1;
   }
-  0
-}
 
-fn loop_b2(px: &mut RVec<f32>, py: &mut RVec<f32>,
-           is: usize, id: usize) -> i32 {
-  let n = px.len() - 1;
-  if is < n {
-    // loop_b1(px, py, is, is + 1, id);
-    let mut i0 = is;
-    let mut i1 = is + 1;
-    while i1 <= n {
-      let r1 = *px.get(i0);
-      *px.get_mut(i0) = r1 + px.get(i1);
-      *px.get_mut(i1) = r1 - px.get(i1);
+  fft(&mut pxr, &mut pxi);
 
-      let r1 = *py.get(i0);
-      *py.get_mut(i0) = r1 + py.get(i1);
-      *py.get_mut(i1) = r1 - py.get(i1);
-
-      i0 = i0 + id;
-      i1 = i1 + id;
+  let mut zr = 0.0;
+  let mut zi = 0.0;
+  let mut _kr = 0;
+  let mut _ki = 0;
+  let mut i = 0;
+  while i < np {
+    let a = fabs(*pxr.get(i+1) - float_of_int(i));
+    if zr < a {
+      zr = a;
+      _kr = i;
     }
-    loop_b2(px, py, 2 * id - 1, 4 * id);
+    let a = fabs(*pxi.get(i+1));
+    if zi < a {
+      zi = a;
+      _ki = i;
+    }
+    i += 1;
+  }
+  if fabs(zr) < fabs(zi) { zi } else { zr }
+}
+
+#[lr::sig(fn() -> i32)]
+pub fn doit() -> i32 {
+  let mut i = 4;
+  let mut np = 16;
+  while i <= 16 {
+    fft_test(np);
+    i  = i + 1;
+    np = np * 2;
   }
   0
 }
 
-fn loop_a2(px: &mut RVec<f32>, py: &mut RVec<f32>,
-         n2: usize, n4: usize, j:usize,
-         cc1: f32, ss1: f32, cc3: f32, ss3:f32,
-         is: usize, id: usize,
-        ) -> i32 {
-
-  let n = px.len();
-  if is < n {
-    let i1 = is + n4;
-    let i2 = i1 + n4;
-    let i3 = i2 + n4;
-    loop_a1(px, py, is, id, n4, cc1, ss1, cc3, ss3);
-    loop_a2(px, py, n2, n4, j, cc1, ss1, cc3, ss3, 2 * id - n2 + j, 4 * id);
-  }
-  0
-}
-
-fn loop_a1(px: &mut RVec<f32>, py: &mut RVec<f32>,
-         is: usize, id: usize, n4: usize,
-         cc1: f32, ss1: f32, cc3: f32, ss3:f32
-        ) -> i32 {
-
-  let n = px.len();
-
-  let mut i0 = is;
-  let mut i1 = i0 + n4;
-  let mut i2 = i1 + n4;
-  let mut i3 = i2 + n4;
-
-  while i3 <= n {
-
-    let r1 = px.get(i0) - px.get(i2);
-    *px.get_mut(i0) = px.get(i0) + px.get(i2);
-
-    let r2 = px.get(i1) - px.get(i3);
-    *px.get_mut(i1) = px.get(i1) + px.get(i3);
-
-    let s1 = py.get(i0) - py.get(i2);
-    *py.get_mut(i0) = py.get(i0) + py.get(i2);
-
-    let s2 = py.get(i1) - py.get(i3);
-    *py.get_mut(i1) = py.get(i1) + py.get(i3);
-
-    let s3 = r1 - s2;
-    let r1 = r1 + s2;
-    let s2 = r2 - s1;
-    let r2 = r2 + s1;
-
-    *px.get_mut(i2) = r1 * cc1 - s2 * ss1;
-    *py.get_mut(i2) = (0. - s2) * cc1 - r1 * ss1;
-    *px.get_mut(i3) = s3 * cc3 + r2 * ss3;
-    *py.get_mut(i3) = r2 * cc3 - s3 * ss3;
-
-    i0 = i0 + id;
-    i1 = i1 + id;
-    i2 = i2 + id;
-    i3 = i3 + id;
-  }
-  0
-}
-*/
 
 /* ORIGINAL DML Code below
 
@@ -382,6 +350,7 @@ let fabs r = if r >. 0.0 then r else (-. r)
 ;;
 let ffttest np =
   let none_ = print_int np and none_ = print_string "... " in
+  (* A *)
   let enp = float_of_int np and n2 = np / 2 in
   let npm = n2 - 1
   and pxr = make_vect (np+1) 0.0
@@ -399,6 +368,8 @@ let ffttest np =
     pxi..(i+1) <-  (-. y); pxi..(j+1) <- y
   done;
   fft pxr pxi np;
+
+  (* B *)
   let rec loop i zr zi kr ki =
     if ge_int i np then (zr, zi) else
     let a = fabs(pxr..(i+1) -. (float_of_int i)) in
