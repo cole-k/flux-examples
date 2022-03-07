@@ -13,3 +13,4 @@ pub mod bcopy;
 pub mod bsearch;
 pub mod fft;
 pub mod kmeans;
+pub mod simplex;

@@ -2,67 +2,138 @@
 #![feature(register_tool)]
 #![register_tool(lr)]
 
-#[path = "lib/rvec.rs"]
-pub mod rvec;
-use rvec::RVec;
+#[path = "lib/rmat.rs"]
+pub mod rmat;
+use rmat::RMat;
 
 #[lr::sig(fn(x:i32{0 <= x}) -> i32{v: 0 < v})]
 pub fn incr(x:i32) -> i32 {
   x + 1
 }
 
+#[lr::sig(fn() -> i32)]
+pub fn test() -> i32 {
+  let pi: f32 = 3.14;
+  let mut m  = RMat::new(5, 10, pi);
+
+  let v1 = *m.get(3, 7);
+  *m.get_mut(4, 8) = v1 + v1;
+
+  // let v2 = *m.get(3, 17);        //~ ERROR precondition might not hold
+  // *m.get_mut(14, 8) = v2 + v2;   //~ ERROR precondition might not hold
+
+  0
+}
+
+/* step 1 */
+
+#[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{ 0 < n}) -> bool)]
+pub fn is_neg(arr2: &RMat<f32>, _m:usize, n: usize) -> bool {
+  let mut j = 1;
+  while j < n - 1 {
+    if *arr2.get(0, j) < 0.0 {
+      return true
+    }
+    j += 1;
+  }
+  false
+}
+
+/* step 2 */
+
+#[lr::sig(fn (m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n]) -> bool)]
+pub fn unb1(m:usize, n:usize, arr2: &RMat<f32>) -> bool {
+  let mut i = 0;
+  let mut j = 1;
+
+  // INV: 0 < i <= m, 0 <= j < n
+  while j < n - 1 {
+    if *arr2.get(0, j) < 0.0 {
+      i = i + 1;
+      loop {
+        if i < m {
+          if *arr2.get(i, j) < 0.0 {
+            i = i + 1
+          } else {
+            i = 0;
+            j = j + 1;
+            break;
+          }
+        } else {
+          return true
+        }
+      }
+    } else {
+      i = 0;
+      j = j + 1;
+    }
+  }
+  false
+}
+
+
+/* step 3 */
+
+#[lr::sig(fn (m:usize{0<m}, n:usize{2<n}, arr2: &RMat<f32>[m,n]) -> usize{v: 0<v && v+1<n})]
+pub fn enter_var(_m:usize, n:usize, arr2: &RMat<f32>) -> usize {
+  let mut c  = *arr2.get(0, 1);
+  let mut j  = 1;
+  let mut j_ = 2;
+  while j_ < n - 1 {
+    // INV j+1 < n, j_ < n
+    let c_ = *arr2.get(0, j_);
+	  if c_ < c {
+      j = j_;
+      c = c_;
+    }
+    j_ += 1
+  }
+  j
+}
+
+/* step 4 */
+
+#[lr::sig(fn(m:usize, n:usize, arr2: &RMat<f32>[m, n], j:usize{0 < j && j < n}, i0:usize{0 < i0 && i0 < m}, r0:f32) -> usize{v:0 < v && v < m})]
+pub fn depart_var(m:usize, n:usize, arr2: &RMat<f32>, j:usize, i0:usize, r0:f32) -> usize {
+  let mut i  = i0;
+  let mut r  = r0;
+  let mut i_ = i + 1;
+  while i_ < m {
+    let c_ = *arr2.get(i_, j);
+    if 0.0 < c_ {
+        let r_ = *arr2.get(i_, n-1) / c_;
+        if r_ < r {
+          i = i_;
+          r = r_;
+        }
+        i_ += 1;
+    } else {
+      i_ += 1
+    }
+  }
+  i
+}
+
+#[warn(unconditional_recursion)]
+#[lr::assume]
+#[lr::sig(fn() -> usize{v:false})]
+pub fn die() -> usize {
+  panic!("die")
+}
+
+#[lr::sig(fn (m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n], j: usize{0 < j && j < n}) -> usize{v:0 < v && v < m})]
+pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMat<f32>, j: usize) -> usize {
+  let mut i = 1;
+  while i < m {
+    let c = *arr2.get(i, j);
+    if 0.0 < c {
+      return i
+    }
+    i += 1;
+  }
+  die() // abort ("init_ratio: negative coefficients!")
+}
 /*
-let rec is_neg_aux arr2 n j =
-  if j < n - 1 then
-    if Bigarray.Array2.get arr2 0 j < 0.0 then true
-    else is_neg_aux arr2 n (j+1)
-  else false
-in
-
-let is_neg arr2 n = is_neg_aux arr2 n 1
-in
-
-(* step 2 *)
-(* pmr: oh no - mutual recursion! *)
-let rec unb1 arr2 m n i j =
-  if j < n-1 then
-    if (Bigarray.Array2.get arr2 0 j) < 0.0 then unb2 arr2 m n (i+1) j
-    else unb1 arr2 m n 0 (j+1)
-  else false
-
-and unb2 arr2 m n i j =
-  if i < m then
-    if Bigarray.Array2.get arr2 i j < 0.0 then unb2 arr2 m n (i+1) j
-    else unb1 arr2 m n 0 (j+1)
-  else true
-in
-
-(* step 3 *)
-
-let rec enter_var arr2 n j c j' =
-  if j' < n-1 then
-    let c' = Bigarray.Array2.get arr2 0 j' in begin
-	if c' < c then enter_var arr2 n j' c' (j'+1)
-	else enter_var arr2 n j c (j'+1)
-      end
-  else j
-in
-
-(* step 4 *)
-
-let rec depart_var arr2 m n j i r i' =
-  if i' < m then begin
-    let c' = Bigarray.Array2.get arr2 i' j in
-      if c' > 0.0 then
-        let r' = (Bigarray.Array2.get arr2 i' (n-1)) /. c' in begin
-            if r' < r then depart_var arr2 m n j i' r' (i'+1)
-            else depart_var arr2 m n j i r (i'+1)
-          end
-      else depart_var arr2 m n j i r (i'+1)
-    end
-  else i
-in
-
 (*let rec init_ratio_left arr2 m n j i =
   if i < m then
     let c = Bigarray.Array2.get arr2 i j in
@@ -159,7 +230,13 @@ in
     (Random.int 20 + 1)
     (Random.int 30 + 1) in
     main arr;;
+*/
 
+
+
+
+
+/*
 (*
 (* An implementation of the simplex method in DML *)
 

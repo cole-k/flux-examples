@@ -29,8 +29,11 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 - [+] src/bsearch.rs
 - [+] src/dotprod.rs
 - [+] src/kmeans.rs
-- [~] src/fft.rs
-- [ ] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
+- [+] src/fft.rs
+- [ ] *AG* src/simplex.rs
+
+
+
 
 ## Crates.io Examples
 TODO: Filling in possibilities for now, will narrow down later
