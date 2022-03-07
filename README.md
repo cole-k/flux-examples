@@ -24,12 +24,12 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 
 `~` means the .rs port exists but has not been kicked through LR.
 
-- [~] src/arraymax.rs
+- [~] src/arraymax.rs (requires HOF/`Fn` support)
 - [+] src/bcopy.rs
 - [+] src/bsearch.rs
 - [+] src/dotprod.rs
+- [+] src/kmeans.rs
 - [~] src/fft.rs
-- [~] src/kmeans.rs
 - [ ] *AG* https://github.com/ucsd-progsys/dsolve/tree/master/tests/PLDI2008/simplex.ml
 
 ## Crates.io Examples
