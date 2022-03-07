@@ -133,30 +133,33 @@ pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMat<f32>, j: usize) -> usize {
   }
   die() // abort ("init_ratio: negative coefficients!")
 }
+
+#[lr::sig(fn(m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n],
+             j: usize{0 < j && j < n}, i:usize{0 < i && i < m}
+            ) -> f32)]
+pub fn init_ratio_c(_m:usize, n:usize, arr2: &RMat<f32>, j: usize, i: usize) -> f32 {
+  *arr2.get(i, j) / *arr2.get(i, n-1)
+}
+
+pub fn simplex(m:usize, n:usize, arr2:&mut RMat<f32>) -> i32 {
+  while is_neg(arr2, m, n) {
+    if unb1(m, n, arr2) {
+      die();
+      return 0
+    } else {
+      let j = enter_var(m, n, arr2);
+      let i = init_ratio_i(m, n, arr2, j);
+      let r = init_ratio_c(m, n, arr2, j, i);
+      let i = depart_var(m, n, arr2, j, i, r);
+
+      // let _none = row_op arr2 m n i j in
+    }
+  }
+  0
+}
+
+
 /*
-(*let rec init_ratio_left arr2 m n j i =
-  if i < m then
-    let c = Bigarray.Array2.get arr2 i j in
-      if c > 0.0 then i
-      else init_ratio_left arr2 m n j (i+1)
-  else assert false
-in
-
-let rec init_ratio_right arr2 m n j i =
-  if i < m then
-    let c = Bigarray.Array2.get arr2 i j in
-      if c > 0.0 then (Bigarray.Array2.get arr2 i (n-1)) /. c
-      else init_ratio_right arr2 m n j (i+1)
-  else assert false
-in*)
-
-let rec init_ratio arr2 m n j i =
-  if i < m then
-    let c = Bigarray.Array2.get arr2 i j in
-      if c > 0.0 then (i, (Bigarray.Array2.get arr2 i (n-1)) /. c)
-      else init_ratio arr2 m n j (i+1)
-  else assert false
-in
 
 (* step 5 *)
 
@@ -190,8 +193,9 @@ let rec row_op_aux3 arr2 m n i j i' =
   if i' < m then
     if i' <> i then
       let _none = row_op_aux2 arr2 n i i' j in
-	row_op_aux3 arr2 m n i j (i'+1)
-    else row_op_aux3 arr2 m n i j (i'+1)
+	    row_op_aux3 arr2 m n i j (i'+1)
+    else
+      row_op_aux3 arr2 m n i j (i'+1)
   else ()
 in
 
