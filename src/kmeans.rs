@@ -11,13 +11,13 @@ use rvec::RVec;
 #[lr::assume]
 #[lr::sig(fn() -> f32)]
 fn f32_max() -> f32 {
-    f32::MAX // 100000.0 // TODO: actual max!
+    f32::MAX
 }
 
 #[lr::assume]
 #[lr::sig(fn(n:f32, d:usize) -> f32)]
 fn f32_div(n:f32, d:usize) -> f32 {
-    n / (d as f32) // TODO: actual divide!
+    n / (d as f32)
 }
 
 /////////////////////////////////////////////////////////////

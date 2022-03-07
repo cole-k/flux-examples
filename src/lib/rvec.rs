@@ -1,10 +1,5 @@
 #![allow(dead_code)]
 
-// #[lr::opaque]
-// pub struct RMap<K, V> {
-//     inner: std::collections::HashMap<K, V>
-// }
-
 #[lr::opaque]
 #[lr::refined_by(len: int)]
 pub struct RVec<T> {

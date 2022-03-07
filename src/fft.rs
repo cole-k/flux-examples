@@ -7,7 +7,7 @@ pub mod rvec;
 use rvec::RVec;
 
 
-#[lr::sig(fn(src: &n@RVec<f32>) -> RVec<f32>[n])]
+#[lr::sig(fn(src: &n@RVec<f32>{0 <= n}) -> RVec<f32>[n])]
 pub fn clone(src: &RVec<f32>) -> RVec<f32> {
   let n = src.len();
   let mut dst: RVec<f32> = RVec::new();
@@ -20,26 +20,32 @@ pub fn clone(src: &RVec<f32>) -> RVec<f32> {
   dst
 }
 
+#[lr::sig(fn() -> f32)]
 fn pi() -> f32 {
   3.14159265358979323846
 }
 
+#[lr::sig(fn() -> f32)]
 fn two_pi() -> f32 {
   2.0 * pi()
 }
 
+#[lr::sig(fn(n:usize) -> f32)]
 fn float_of_int(_n:usize) -> f32 {
   1.0
 }
 
+#[lr::sig(fn(x:f32) -> f32)]
 fn cos(_x:f32) -> f32 {
   1.0
 }
 
+#[lr::sig(fn(x:f32) -> f32)]
 fn sin(_x:f32) -> f32 {
   1.0
 }
 
+#[lr::sig(fn(px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32 where 2 <= n)]
 pub fn fft(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   loop_a(px, py);
   loop_b(px, py);
@@ -47,6 +53,7 @@ pub fn fft(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   0
 }
 
+#[lr::sig(fn(px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32)]
 fn loop_a(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   let n = px.len() - 1;
   let mut n2 = n;
@@ -69,19 +76,23 @@ fn loop_a(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
       let mut is = j;
       let mut id = 2 * n2;
       while is < n {
+        // INV 0 <= is, 0 <= n2 <= id
         let mut i0 = is;
         let mut i1 = i0 + n4;
         let mut i2 = i1 + n4;
         let mut i3 = i2 + n4;
+
         while i3 <= n {
-          let r1 = px.get(i0) - px.get(i2);
-          *px.get_mut(i0) = px.get(i0) + px.get(i2);
-          let r2 = px.get(i1) - px.get(i3);
-          *px.get_mut(i1) = px.get(i1) + px.get(i3);
-          let s1 = py.get(i0) - py.get(i2);
-          *py.get_mut(i0) = py.get(i0) + py.get(i2);
-          let s2 = py.get(i1) - py.get(i3);
-          *py.get_mut(i1) = py.get(i1) + py.get(i3);
+          // INV 0 <= i0 <= i1 <= i2 <= i3, 0 <= id
+
+          let r1 = *px.get(i0) - *px.get(i2);
+          *px.get_mut(i0) = *px.get(i0) + *px.get(i2);
+          let r2 = *px.get(i1) - *px.get(i3);
+          *px.get_mut(i1) = *px.get(i1) + *px.get(i3);
+          let s1 = *py.get(i0) - *py.get(i2);
+          *py.get_mut(i0) = *py.get(i0) + *py.get(i2);
+          let s2 = *py.get(i1) - *py.get(i3);
+          *py.get_mut(i1) = *py.get(i1) + *py.get(i3);
 
           let s3 = r1 - s2;
           let r1 = r1 + s2;
@@ -91,6 +102,7 @@ fn loop_a(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
           *py.get_mut(i2) = (0. - s2) * cc1 - r1 * ss1;
           *px.get_mut(i3) = s3 * cc3 + r2 * ss3;
           *py.get_mut(i3) = r2 * cc3 - s3 * ss3;
+
           i0 = i0 + id;
           i1 = i1 + id;
           i2 = i2 + id;
@@ -110,23 +122,24 @@ fn loop_a(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   0
 }
 
+#[lr::sig(fn (px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32)]
 fn loop_b(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   let n = px.len() - 1;
-  // loop_b2(px, py, 1, 4)
   let mut is = 1;
   let mut id = 4;
   while is < n {
-    // loop_b1(px, py, is, is + 1, id);
+    // INV: 0 <= is, 4 <= id
     let mut i0 = is;
     let mut i1 = is + 1;
     while i1 <= n {
+      // INV: 0 <= i0 <= i1, 0 <= id
       let r1 = *px.get(i0);
-      *px.get_mut(i0) = r1 + px.get(i1);
-      *px.get_mut(i1) = r1 - px.get(i1);
+      *px.get_mut(i0) = r1 + *px.get(i1);
+      *px.get_mut(i1) = r1 - *px.get(i1);
 
       let r1 = *py.get(i0);
-      *py.get_mut(i0) = r1 + py.get(i1);
-      *py.get_mut(i1) = r1 - py.get(i1);
+      *py.get_mut(i0) = r1 + *py.get(i1);
+      *py.get_mut(i1) = r1 - *py.get(i1);
 
       i0 = i0 + id;
       i1 = i1 + id;
@@ -137,11 +150,14 @@ fn loop_b(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   0
 }
 
+
+#[lr::sig(fn (px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32 where 2 <= n)]
 fn loop_c(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
   let n = px.len() - 1;
   let mut i = 1;
   let mut j = 1;
   while i < n {
+    // INV: 0 <= i, 0 <= j <= n
     if i < j {
       let xt = *px.get(j);
       *px.get_mut(j) = *px.get(i);
@@ -153,15 +169,22 @@ fn loop_c(px: &mut RVec<f32>, py: &mut RVec<f32>) -> i32 {
     }
     i += 1;
     j = loop_c1(j, n/2);
+    // let mut k = n / 2;
+    // while k < j {
+    //   j = j - k;
+    //   k = k / 2;
+    // }
+    // j = j + k;
   }
   0
 }
 
-fn loop_c1(j:usize, k: usize) -> usize {
-  if k >= j {
+#[lr::sig(fn (j:usize{0<=j}, k: usize{0<=k}) -> usize{v:0<=v && v<=k+k})]
+pub fn loop_c1(j:usize, k: usize) -> usize {
+  if j <= k {
     j + k
   } else {
-    loop_c1(j-k, k/ 2)
+    loop_c1(j-k, k/2)
   }
 }
 
