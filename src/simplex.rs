@@ -6,25 +6,6 @@
 pub mod rmat;
 use rmat::RMat;
 
-#[lr::sig(fn(x:i32{0 <= x}) -> i32{v: 0 < v})]
-pub fn incr(x:i32) -> i32 {
-  x + 1
-}
-
-#[lr::sig(fn() -> i32)]
-pub fn test() -> i32 {
-  let pi: f32 = 3.14;
-  let mut m  = RMat::new(5, 10, pi);
-
-  let v1 = *m.get(3, 7);
-  *m.get_mut(4, 8) = v1 + v1;
-
-  // let v2 = *m.get(3, 17);        //~ ERROR precondition might not hold
-  // *m.get_mut(14, 8) = v2 + v2;   //~ ERROR precondition might not hold
-
-  0
-}
-
 /* step 1 */
 
 #[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{ 0 < n}) -> bool)]
@@ -114,12 +95,7 @@ pub fn depart_var(m:usize, n:usize, arr2: &RMat<f32>, j:usize, i0:usize, r0:f32)
   i
 }
 
-#[warn(unconditional_recursion)]
-#[lr::assume]
-#[lr::sig(fn() -> usize{v:false})]
-pub fn die() -> usize {
-  panic!("die")
-}
+
 
 #[lr::sig(fn (m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n], j: usize{0 < j && j < n}) -> usize{v:0 < v && v < m})]
 pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMat<f32>, j: usize) -> usize {
@@ -131,7 +107,7 @@ pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMat<f32>, j: usize) -> usize {
     }
     i += 1;
   }
-  die() // abort ("init_ratio: negative coefficients!")
+  rmat::die() // abort ("init_ratio: negative coefficients!")
 }
 
 #[lr::sig(fn(m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n],
@@ -141,104 +117,54 @@ pub fn init_ratio_c(_m:usize, n:usize, arr2: &RMat<f32>, j: usize, i: usize) -> 
   *arr2.get(i, j) / *arr2.get(i, n-1)
 }
 
+/* step 5 */
+
+#[lr::sig(fn (m:usize, n:usize, arr2:&mut RMat<f32>[m,n], i:usize{0 < i && i < m}, j:usize{0 < j && j < n}) -> i32)]
+fn row_op(m:usize, n:usize, arr2:&mut RMat<f32>, i:usize, j:usize) -> i32 {
+
+  // norm(m, n, arr2, i, j);
+  // RJ: rename `jj` to `j` to see an error!
+  let c = *arr2.get(i, j);
+  let mut jj = 1;
+  while jj < n {
+    *arr2.get_mut(i, jj) /= c;
+    jj += 1;
+  }
+
+  // ro_op_aux3(m, n, arr2, i, j, 0)
+  let mut i_ = 0;
+  while i_ < m {
+    if i_ != i {
+      let c_ = *arr2.get(i_, j);
+      let mut j = 1;
+      while j < n {
+        let cj  = *arr2.get(i, j);
+        let cj_ = *arr2.get(i_, j);
+        *arr2.get_mut(i_, j) = cj_ - cj * c_;
+        j += 1
+      }
+    }
+    i_ += 1
+  }
+  0
+}
+
+#[lr::sig(fn (m:usize{1 < m}, n:usize{2 < n}, arr2:&mut RMat<f32>[m, n]) -> i32)]
 pub fn simplex(m:usize, n:usize, arr2:&mut RMat<f32>) -> i32 {
   while is_neg(arr2, m, n) {
     if unb1(m, n, arr2) {
-      die();
+      rmat::die();
       return 0
     } else {
       let j = enter_var(m, n, arr2);
       let i = init_ratio_i(m, n, arr2, j);
       let r = init_ratio_c(m, n, arr2, j, i);
       let i = depart_var(m, n, arr2, j, i, r);
-
-      // let _none = row_op arr2 m n i j in
+      row_op(m, n, arr2, i, j);
     }
   }
   0
 }
-
-
-/*
-
-(* step 5 *)
-
-let rec norm_aux arr2 n i c j =
-  if j < n then
-    let _none = Bigarray.Array2.set arr2 i j ((Bigarray.Array2.get arr2 i j) /. c) in
-      norm_aux arr2 n i c (j+1)
-  else ()
-in
-
-let norm arr2 n i j =
-  let c = Bigarray.Array2.get arr2 i j in
-    norm_aux arr2 n i c 1
-in
-
-let rec row_op_aux1 arr2 n i i' c j =
-  if j < n then
-    let cj =  Bigarray.Array2.get arr2 i j in
-    let cj' =  Bigarray.Array2.get arr2 i' j in
-    let _none = Bigarray.Array2.set arr2 i' j (cj' -. cj *. c) in
-      row_op_aux1 arr2 n i i' c (j+1)
-  else ()
-in
-
-let row_op_aux2 arr2 n i i' j =
-  let c' = Bigarray.Array2.get arr2 i' j in
-    row_op_aux1 arr2 n i i' c' 1
-in
-
-let rec row_op_aux3 arr2 m n i j i' =
-  if i' < m then
-    if i' <> i then
-      let _none = row_op_aux2 arr2 n i i' j in
-	    row_op_aux3 arr2 m n i j (i'+1)
-    else
-      row_op_aux3 arr2 m n i j (i'+1)
-  else ()
-in
-
-let row_op arr2 m n i j =
-    let _none = norm arr2 n i j in
-      row_op_aux3 arr2 m n i j 0
-in
-
-let rec simplex arr2 m n =
-  if is_neg arr2 n then
-    if unb1 arr2 m n 0 1 then assert false
-    else
-      let j = enter_var arr2 n 1 (Bigarray.Array2.get arr2 0 1) 2 in
-      (*let i = init_ratio_left arr2 m n j 1 in
-      let r = init_ratio_right arr2 m n j 1 in*)
-      let zz = init_ratio arr2 m n j 1 in
-      let i = fst zz in
-      let r = snd zz in
-      let i = depart_var arr2 m n j i r (i+1) in
-      let _none = row_op arr2 m n i j in
-	simplex arr2 m n
-  else ()
-in
-
-let main a =
-  let m = Bigarray.Array2.dim1 a in
-  let n = Bigarray.Array2.dim2 a in
-    if m > 1 then begin
-      if n > 2 then simplex a m n
-      else assert false
-    end
-    else assert false
-in
-  Random.self_init();
-  let arr = Bigarray.Array2.create Bigarray.float64 Bigarray.c_layout
-    (Random.int 20 + 1)
-    (Random.int 30 + 1) in
-    main arr;;
-*/
-
-
-
-
 
 /*
 (*
