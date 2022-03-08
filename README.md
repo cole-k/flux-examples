@@ -1,6 +1,7 @@
 # Examples
 
 ## Run liquid-rust
+
 To run liquid-rust in one of the examples copy the [liquid-rust](liquid-rust) script to somewhere in your path
 and edit the file to define the `LIQUID_RUST` variable to point to the root of the liquid-rust repository.
 Then you should be able to run it on examples like so
@@ -10,29 +11,50 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 ```
 
 ## Comparisons with Prusti
-| Example Name | Versions | Source |
-| ------------ | -------- | ------ |
-| Fill         | [Prusti](https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill/ex1_fill.rs) | Made up? |
-| Min Index (Loop-based) | [Prusti](https://github.com/liquid-rust/examples/blob/main/prusti/ex2_min_index_loop/ex2_min_index_loop.rs), [Liquid Rust](https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/ex2_min_index_loop.rs) | Made up? |
-| KMP | [Prusti](https://github.com/liquid-rust/examples/blob/main/prusti/ex4_kmp/ex4_kmp.rs), [Liquid Rust](https://github.com/liquid-rust/liquid-rust/blob/main/liquid-rust-tests/tests/pos/kmp.rs) | Made up? |
-| Union-Find | [Prusti](https://github.com/liquid-rust/examples/blob/main/prusti/union_find/partition_vec.rs) | https://github.com/DDOtten/partitions |
-| Heapsort | [Prusti](https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Heapsort.rs), [Liquid Rust](https://github.com/liquid-rust/liquid-rust/blob/main/liquid-rust-tests/tests/pos/heapsort.rs) | [Prusti Tests](https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta) |
-| Knight's Tour | [Prusti](https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knights_tour.rs) | [Prusti Tests](https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta) |
-| Knuth Shuffle | [Prusti](https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knuth_shuffle.rs), [Liquid Rust](https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/knuth_shuffle.rs) | [Prusti Tests](https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta) |
+
+| Example Name  | Prusti          | LR              | Source               |
+|:--------------|:----------------|:----------------|:---------------------|
+| Fill          | [Pr][pr-fil]    |                 | toy                  |
+| Min Index     | [Pr][pr-min]    | [LR][lr-min]    | toy                  |
+| KMP           | [Pr][pr-kmp]    | [LR][lr-kmp]    | [LH][src-kmp]        |
+| Union-Find    | [Pr][pr-uf]     |                 | [src][src-uf]        |
+| Heap-Sort     | [Pr][pr-hps]    | [LR][lr-hps]    | [rosetta][src-hps]   |
+| Knight's Tour | [Pr][pr-knt]    |                 | [rosetta][src-knt]   |
+| Knuth Shuffle | [Pr][pr-shuf]   | [LR][lr-shuf]   | [rosetta][src-shuf]  |
+| Copy          |                 | [LR][lr-bc]     | DML                  |
+| BinSearch     |                 | [LR][lr-bc]     | DML                  |
+| Dot-Product   |                 | [LR][lr-dot]    | DML                  |
+| FFT           |                 | [LR][lr-fft]    | DML                  |
+| Simplex       |                 | [LR][lr-splx]   | DML                  |
+| Kmeans        |                 | [LR][lr-kmeans] | self                 |
+
+[lr-bc]:     https://github.com/liquid-rust/examples/blob/main/src/bcopy.rs
+[lr-bs]:     https://github.com/liquid-rust/examples/blob/main/src/bsearch.rs
+[lr-dot]:    https://github.com/liquid-rust/examples/blob/main/src/dotprod.rs
+[lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/src/kmeans.rs
+[lr-fft]:    https://github.com/liquid-rust/examples/blob/main/src/fft.rs
+[lr-splx]:   https://github.com/liquid-rust/examples/blob/main/src/simplex.rs
+[pr-fil]: https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill/ex1_fill.rs
+[pr-min]: https://github.com/liquid-rust/examples/blob/main/prusti/ex2_min_index_loop/ex2_min_index_loop.rs
+[lr-min]: https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/ex2_min_index_loop.rs
+[pr-kmp]: https://github.com/liquid-rust/examples/blob/main/prusti/ex4_kmp/ex4_kmp.rs
+[lr-kmp]: https://github.com/liquid-rust/liquid-rust/blob/main/liquid-rust-tests/tests/pos/kmp.rs
+[pr-uf]:  https://github.com/liquid-rust/examples/blob/main/prusti/union_find/partition_vec.rs
+[src-uf]: https://github.com/DDOtten/partitions
+[src-kmp]: https://github.com/ucsd-progsys/liquidhaskell/blob/develop/tests/pos/kmpVec.hs
+[pr-hps]: https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Heapsort.rs
+[lr-hps]: https://github.com/liquid-rust/liquid-rust/blob/main/liquid-rust-tests/tests/pos/heapsort.rs
+[src-hps]: https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta
+[pr-knt]: https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knights_tour.rs
+[src-knt]: https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta
+[pr-shuf]: https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Knuth_shuffle.rs
+[lr-shuf]: https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/knuth_shuffle.rs
+[src-shuf]: https://github.com/viperproject/prusti-dev/tree/master/prusti-tests/tests/verify/pass/rosetta
+
 
 ## Dsolve Examples
 
-`~` means the .rs port exists but has not been kicked through LR.
-
 - [~] src/arraymax.rs (requires HOF/`Fn` support)
-- [+] src/bcopy.rs
-- [+] src/bsearch.rs
-- [+] src/dotprod.rs
-- [+] src/kmeans.rs
-- [+] src/fft.rs
-- [ ] *AG* src/simplex.rs
-
-
 
 
 ## Crates.io Examples
