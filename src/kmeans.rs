@@ -78,7 +78,6 @@ fn init_centers(n: usize, k: usize) -> RVec<RVec<f32>> {
 /// finding the nearest center to a point
 #[lr::sig(fn(p:&n@RVec<f32>, cs: &k@RVec<RVec<f32>[n]>{0 < k}) -> usize{v:0 <= v && v < k})]
 fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
-    // let n = p.len();
     let k = cs.len();
     let mut res = 0;
     let mut min = f32_max();
@@ -94,6 +93,23 @@ fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
     }
     res
 }
+
+
+#[lr::sig(fn () -> i32)]
+fn foo() -> i32 {
+    let mut x = 1;
+    let mut y = 1;
+    let mut vec = RVec::new();
+    vec.push(&mut x);
+    vec.push(&mut y);
+    0
+    // let mut i = 0;
+    // while i < vec.len() {
+    //     let ri = vec[i];
+    //     let rj = vec[i];
+    // }
+}
+
 
 // TODO: the `n` is not needed, except to prevent a silly parse error!
 #[lr::sig(fn(n: usize, cs: &mut k@RVec<RVec<f32>[n]>, weights: &RVec<usize>[k]) -> i32)]
