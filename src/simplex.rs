@@ -8,7 +8,7 @@ use rmat::RMat;
 
 /* step 1 */
 
-#[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{ 0 < n}) -> bool)]
+#[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{0 < n}) -> bool)]
 pub fn is_neg(arr2: &RMat<f32>, _m:usize, n: usize) -> bool {
   let mut j = 1;
   while j < n - 1 {
@@ -94,8 +94,6 @@ pub fn depart_var(m:usize, n:usize, arr2: &RMat<f32>, j:usize, i0:usize, r0:f32)
   }
   i
 }
-
-
 
 #[lr::sig(fn (m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n], j: usize{0 < j && j < n}) -> usize{v:0 < v && v < m})]
 pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMat<f32>, j: usize) -> usize {
