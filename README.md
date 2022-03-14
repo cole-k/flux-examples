@@ -22,7 +22,7 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 | Knight's Tour | [Pr][pr-knt]    |                 | [rosetta][src-knt]   |
 | Knuth Shuffle | [Pr][pr-shuf]   | [LR][lr-shuf]   | [rosetta][src-shuf]  |
 | Copy          |                 | [LR][lr-bc]     | DML                  |
-| BinSearch     |                 | [LR][lr-bc]     | DML                  |
+| BinSearch     | [Pr][pr-bs]     | [LR][lr-bc]     | DML                  |
 | Dot-Product   |                 | [LR][lr-dot]    | DML                  |
 | FFT           |                 | [LR][lr-fft]    | DML                  |
 | Simplex       |                 | [LR][lr-splx]   | DML                  |
@@ -30,6 +30,7 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 
 [lr-bc]:     https://github.com/liquid-rust/examples/blob/main/src/bcopy.rs
 [lr-bs]:     https://github.com/liquid-rust/examples/blob/main/src/bsearch.rs
+[pr-bs]:     https://github.com/liquid-rust/examples/blob/main/prusti/bsearch/bsearch.rs
 [lr-dot]:    https://github.com/liquid-rust/examples/blob/main/src/dotprod.rs
 [lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/src/kmeans.rs
 [lr-fft]:    https://github.com/liquid-rust/examples/blob/main/src/fft.rs
