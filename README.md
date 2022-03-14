@@ -25,7 +25,7 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 | BinSearch     | [Pr][pr-bs]     | [LR][lr-bc]     | DML                  |
 | Dot-Product   |                 | [LR][lr-dot]    | DML                  |
 | FFT           |                 | [LR][lr-fft]    | DML                  |
-| Simplex       |                 | [LR][lr-splx]   | DML                  |
+| Simplex       | [Pr][pr-splx]   | [LR][lr-splx]   | DML                  |
 | Kmeans        |                 | [LR][lr-kmeans] | self                 |
 
 [lr-bc]:     https://github.com/liquid-rust/examples/blob/main/src/bcopy.rs
@@ -35,6 +35,7 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 [lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/src/kmeans.rs
 [lr-fft]:    https://github.com/liquid-rust/examples/blob/main/src/fft.rs
 [lr-splx]:   https://github.com/liquid-rust/examples/blob/main/src/simplex.rs
+[pr-splx]:   https://github.com/liquid-rust/examples/blob/main/prusti/simplex/simplex.rs
 [pr-fil]: https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill/ex1_fill.rs
 [pr-min]: https://github.com/liquid-rust/examples/blob/main/prusti/ex2_min_index_loop/ex2_min_index_loop.rs
 [lr-min]: https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/ex2_min_index_loop.rs
