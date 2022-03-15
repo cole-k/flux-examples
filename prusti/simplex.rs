@@ -63,12 +63,12 @@ impl RMatI32 {
   #[ensures(*result == old(self.get(i,j)))]
   #[after_expiry(
       self.cols() == old(self.cols()) &&
-      self.rows() == old(self.rows()) &&
+      self.rows() == old(self.rows()) /*&&
       self.get(i,j) == before_expiry(*result) &&
       forall(
           |i: usize, j: usize| (i < self.rows() && j < self.cols()) ==>
           self.get(i, j) == old(self.get(i, j))
-      )
+      )*/
   )]
   pub fn get_mut(&mut self, i: usize, j: usize) -> &mut i32 {
       &mut self.inner[i][j]

@@ -120,7 +120,7 @@ impl VecWrapperF32 {
 }
 
 //#[lr::sig(fn(src: &n@RVec<f32>{0 <= n}) -> RVec<f32>[n])]
-#[ensures(result.len() == src.len())]
+/*#[ensures(result.len() == src.len())]
 pub fn clone(src: &VecWrapperF32) -> VecWrapperF32 {
   let n = src.len();
   let mut dst: VecWrapperF32 = VecWrapperF32::new();
@@ -133,7 +133,7 @@ pub fn clone(src: &VecWrapperF32) -> VecWrapperF32 {
     i += 1;
   }
   dst
-}
+}*/
 
 //#[lr::sig(fn(px: &mut n@VecWrapperF32, py: &mut VecWrapperF32{v:v == n}) -> i32 where 2 <= n)]
 #[requires(px.len() >= 2)]
@@ -145,10 +145,11 @@ pub fn fft(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
   0
 }
 
-#[requires(px.len() >= 2)]
+// #[lr::sig(fn(px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32)]
 #[requires(px.len() == py.len())]
+#[ensures(px.len() == old(px.len()))]
+#[ensures(py.len() == old(py.len()))]
 fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
-  /*
   let n = px.len() - 1;
   let px_len = px.len();
   let py_len = py.len();
@@ -184,8 +185,9 @@ fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
       assert!(py.len() == py_len);
 
       while is < n {
-        body_invariant!(px.len() == px_len);
-        body_invariant!(py.len() == py_len);
+        //body_invariant!(px.len() == px_len);
+        //body_invariant!(py.len() == py_len);
+        body_invariant!(n < px.len() && n < py.len());
         // INV 0 <= is, 0 <= n2 <= id
         let mut i0 = is;
         let mut i1 = i0 + n4;
@@ -193,10 +195,17 @@ fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
         let mut i3 = i2 + n4;
 
         while i3 <= n {
-          body_invariant!(px.len() == px_len);
-          body_invariant!(py.len() == py_len);
+          //body_invariant!(px.len() == px_len);
+          //body_invariant!(py.len() == py_len);
+          body_invariant!(n < px.len() && n < py.len());
+          body_invariant!(i0 <= i1 && i1 <= i2 && i2 <= i3 && i3 <= n);
           // INV 0 <= i0 <= i1 <= i2 <= i3, 0 <= id
 
+          assert!(i2 <= n);
+          assert!(i1 <= n);
+          assert!(i0 <= i1);
+          assert!(i0 <= n);
+          assert!(i0 < px.len());
           let r1 = px.lookup(i0).sub(px.lookup(i2));
           let tmp = px.lookup(i0).add(px.lookup(i2));
           px.store(i0, tmp);
@@ -234,12 +243,14 @@ fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
     }
     n2 = n2/2;
     n4 = n4/2;
-  }*/
+  }
   0
 }
-
+/*
 //#[lr::sig(fn (px: &mut n@RVec<f32>, py: &mut RVec<f32>[n]) -> i32)]
 #[requires(px.len() == py.len())]
+#[ensures(px.len() == old(px.len()))]
+#[ensures(py.len() == old(py.len()))]
 fn loop_b(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
   let n = px.len() - 1;
   let mut is = 1;
@@ -252,6 +263,7 @@ fn loop_b(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
     while i1 <= n {
       //body_invariant!(i0 <= i1);
       body_invariant!(n < px.len() && n < py.len());
+      body_invariant!(i0 <= i1);
       // INV: 0 <= i0 <= i1, 0 <= id
       let r1 = px.lookup(i0);
       let tmp = r1.add(px.lookup(i1));
@@ -286,7 +298,7 @@ fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
     body_invariant!(n < px.len() && n < py.len());
     // INV: 0 <= i, 0 <= j <= n
     if i < j {
-      body_invariant!(j <= n && j <= n);
+      body_invariant!(j <= n);
       body_invariant!(n < px.len() && n < py.len());
       let xt = px.lookup(j);
       let tmp = px.lookup(i);
@@ -299,7 +311,7 @@ fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
       px.store(i, xt);
     }
     i += 1;
-    j = loop_c1(j, n/2);
+    //j = loop_c1(j, n/2);
     // let mut k = n / 2;
     // while k < j {
     //
@@ -314,15 +326,21 @@ fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
   0
 }
 
+#[trusted]
+#[ensures(result <= k)]
+pub fn div_by_2(k: usize) -> usize {
+  k / 2
+}
+
 //#[lr::sig(fn (j:usize{0<=j}, k: usize{0<=k}) -> usize{v:0<=v && v<=k+k})]
 #[ensures(result <= k+k)]
 pub fn loop_c1(j:usize, k: usize) -> usize {
   if j <= k {
     j + k
   } else {
-    loop_c1(j-k, k/2)
+    loop_c1(j-k, div_by_2(k))
   }
-}
+}*/
 /*
 #[lr::sig(fn (np:usize) -> f32 where 2 <= np)]
 pub fn fft_test(np:usize) -> f32 {

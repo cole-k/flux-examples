@@ -23,25 +23,26 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 | Knuth Shuffle | [Pr][pr-shuf]   | [LR][lr-shuf]   | [rosetta][src-shuf]  |
 | Copy          |                 | [LR][lr-bc]     | DML                  |
 | BinSearch     | [Pr][pr-bs]     | [LR][lr-bc]     | DML                  |
-| Dot-Product   |                 | [LR][lr-dot]    | DML                  |
+| Dot-Product   | [Pr][pr-dot]    | [LR][lr-dot]    | DML                  |
 | FFT           |                 | [LR][lr-fft]    | DML                  |
 | Simplex       | [Pr][pr-splx]   | [LR][lr-splx]   | DML                  |
 | Kmeans        |                 | [LR][lr-kmeans] | self                 |
 
-[lr-bc]:     https://github.com/liquid-rust/examples/blob/main/src/bcopy.rs
-[lr-bs]:     https://github.com/liquid-rust/examples/blob/main/src/bsearch.rs
-[pr-bs]:     https://github.com/liquid-rust/examples/blob/main/prusti/bsearch/bsearch.rs
-[lr-dot]:    https://github.com/liquid-rust/examples/blob/main/src/dotprod.rs
-[lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/src/kmeans.rs
-[lr-fft]:    https://github.com/liquid-rust/examples/blob/main/src/fft.rs
-[lr-splx]:   https://github.com/liquid-rust/examples/blob/main/src/simplex.rs
-[pr-splx]:   https://github.com/liquid-rust/examples/blob/main/prusti/simplex/simplex.rs
-[pr-fil]: https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill/ex1_fill.rs
-[pr-min]: https://github.com/liquid-rust/examples/blob/main/prusti/ex2_min_index_loop/ex2_min_index_loop.rs
+[lr-bc]:     https://github.com/liquid-rust/examples/blob/main/lr/src/bcopy.rs
+[lr-bs]:     https://github.com/liquid-rust/examples/blob/main/lr/src/bsearch.rs
+[pr-bs]:     https://github.com/liquid-rust/examples/blob/main/prusti/bsearch.rs
+[lr-dot]:    https://github.com/liquid-rust/examples/blob/main/lr/src/dotprod.rs
+[pr-dot]:    https://github.com/liquid-rust/examples/blob/main/prusti/dotprod.rs
+[lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/lr/src/kmeans.rs
+[lr-fft]:    https://github.com/liquid-rust/examples/blob/main/lr/src/fft.rs
+[lr-splx]:   https://github.com/liquid-rust/examples/blob/main/lr/src/simplex.rs
+[pr-splx]:   https://github.com/liquid-rust/examples/blob/main/prusti/simplex.rs
+[pr-fil]: https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill.rs
+[pr-min]: https://github.com/liquid-rust/examples/blob/main/prusti/ex2_min_index_loop.rs
 [lr-min]: https://github.com/liquid-rust/liquid-rust/blob/atgeller/new_tests/liquid-rust-tests/tests/pos/ex2_min_index_loop.rs
-[pr-kmp]: https://github.com/liquid-rust/examples/blob/main/prusti/ex4_kmp/ex4_kmp.rs
+[pr-kmp]: https://github.com/liquid-rust/examples/blob/main/prusti/ex4_kmp.rs
 [lr-kmp]: https://github.com/liquid-rust/liquid-rust/blob/main/liquid-rust-tests/tests/pos/kmp.rs
-[pr-uf]:  https://github.com/liquid-rust/examples/blob/main/prusti/union_find/partition_vec.rs
+[pr-uf]:  https://github.com/liquid-rust/examples/blob/main/prusti/partition_vec.rs
 [src-uf]: https://github.com/DDOtten/partitions
 [src-kmp]: https://github.com/ucsd-progsys/liquidhaskell/blob/develop/tests/pos/kmpVec.hs
 [pr-hps]: https://github.com/viperproject/prusti-dev/blob/master/prusti-tests/tests/verify/pass/rosetta/Heapsort.rs
