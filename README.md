@@ -81,3 +81,25 @@ TODO: Filling in possibilities for now, will narrow down later
 | [as_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L623) | N/A | NO | Rust CStrings invariantly have len >= 1 (null terminator) |
 | [drop](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L778) | std/ffi/cstring | N/A | NO | See above |
 | [to_bytes](https://github.com/rust-lang/rust/blob/8f117a77d0880ed59afcc1a19c72ec5c1e44b97c/library/std/src/ffi/c_str.rs#L1347) | std/ffi/cstring | N/A | NO | See above, may be very similar to as_bytes |
+
+
+# Notes on Comparison with Prusti (WIP)
+## Hard to reason about nested data structures
+While it is possible to work around this issue, you are constrained in how you specify nested data structures.
+Example: `simplex.rs` -- need to make 2D matrix wrapper, whereas in liquid rust you don't need to make one
+
+There's also an ergonomics issue since the nested structure may not implement copy, so you have to pass around references.
+
+### Especially mutable nested data structures
+A big part of the issue is from https://github.com/viperproject/prusti-dev/issues/389, which seems to pop up in a lot of places when working with mutable nested data structures (e.g., in `kmeans.rs`).
+Additionally, there's the following error in Prusti currently: https://github.com/viperproject/prusti-dev/issues/903.
+
+With mutation, you want to use `==` to reason about the data in the outer structure.
+However, the default implementation of `==` for, e.g., vectors isn't pure so can't be used in the specification.
+Example: see `vec_test.rs`.
+
+
+## Loop invariants often necessary, sometimes redundant
+### Examples
+`ex2_min_index_loop.rs` -- need `body_invariant!(i < sz);` despite the loop condition being `i < sz`.
+`ex4_kmp.rs` -- need `body_invariant!(t.len() == pattern.len());` despite neither vector being mutable and their lengths not being changed
