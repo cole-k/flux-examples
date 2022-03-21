@@ -1,49 +1,20 @@
 extern crate prusti_contracts;
 use prusti_contracts::*;
-
-pub struct VecWrapperI32 {
-    v: Vec<i32>
-}
-
-/// Need this because Prusti doesn't seem to be able to handle polymorphic types
-impl VecWrapperI32 {
-    /// A ghost function for getting the length of the vector
-    #[trusted]
-    #[pure]
-    pub fn len(&self) -> usize {
-        self.v.len()
-    }
-
-    /// A ghost function for specifying values stored in the vector.
-    #[trusted]
-    #[pure]
-    #[requires(index < self.len())]
-    pub fn lookup(&self, index: usize) -> i32 {
-        self.v[index]
-    }
-}
+#[path = "lib/vecwrapper.rs"]
+pub mod vecwrapper;
+use vecwrapper::VecWrapper;
 
 // Note: reduce helper function inlined because support for closures not yet in Prusti
 #[requires(vec.len() > 0)]
 #[ensures(vec.len() == old(vec.len()))]
 #[ensures(result < vec.len())]
-// Removed as these are for full correctness, not just array bounds
-//#[ensures(forall(|i: usize| i < vec.len() ==> old(vec.lookup(i)) == vec.lookup(i)))]
-//#[ensures(forall(|i: usize|
-//    (i < vec.len() ==> (vec.lookup(result) <= vec.lookup(i)))))]
-fn min_index(vec:VecWrapperI32) -> usize {
+fn min_index(vec: VecWrapper<i32>) -> usize {
     let mut res = 0;
     let sz = vec.len();
     let mut i = 0;
 
     while i < sz {
-        body_invariant!(i < sz);
         body_invariant!(res < sz);
-
-        // Removed as these are for full correctness, not just array bounds
-        //body_invariant!(forall(|y: usize| y < vec.len() ==> old(vec.lookup(y)) == vec.lookup(y)));
-        //body_invariant!(forall(|x: usize|
-        //    (x < i ==> (vec.lookup(res) <= vec.lookup(x)))));
 
         res = if vec.lookup(i) < vec.lookup(res) {
             i

@@ -1,150 +1,15 @@
 extern crate prusti_contracts;
 use prusti_contracts::*;
 
-#[derive(PartialEq, Copy, Clone)]
-pub struct F32Wrapper {
-  f: f32,
-}
-
-impl F32Wrapper {
-  //pub const ZERO: F32Wrapper = F32Wrapper { f: 0.0 };
-
-  #[trusted]
-  pub fn new(val: f32) -> F32Wrapper {
-    return Self { f: val }
-  }
-
-  #[trusted]
-  pub fn float_of_int(val: usize) -> F32Wrapper {
-    return Self { f: val as f32 }
-  }
-
-  #[trusted]
-  pub fn zero() -> F32Wrapper {
-    return Self { f: 0.0 }
-  }
-
-  #[trusted]
-  pub fn one_half() -> F32Wrapper {
-    return Self { f: 0.5 }
-  }
-
-  #[trusted]
-  pub fn pi() -> F32Wrapper {
-    return Self { f: 3.14159265358979323846 }
-  }
-
-  #[trusted]
-  pub fn two_pi() -> F32Wrapper {
-    return Self { f: 2.0 * 3.14159265358979323846 }
-  }
-  
-  #[trusted]
-  pub fn add(&self, other: F32Wrapper) -> F32Wrapper {
-    F32Wrapper { f: self.f + other.f }
-  }
-
-  #[trusted]
-  pub fn sub(&self, other: F32Wrapper) -> F32Wrapper {
-    F32Wrapper { f: self.f - other.f }
-  }
-
-  #[trusted]
-  pub fn mul(&self, other: F32Wrapper) -> F32Wrapper {
-    F32Wrapper { f: self.f * other.f }
-  }
-
-  #[trusted]
-  pub fn div(&self, other: F32Wrapper) -> F32Wrapper {
-    F32Wrapper { f: self.f / other.f }
-  }
-
-  #[trusted]
-  pub fn lt(&self, other: F32Wrapper) -> bool {
-    self.f < other.f
-  }
-
-  #[trusted]
-  pub fn sin(&self) -> F32Wrapper {
-    F32Wrapper { f: f32::sin(self.f) }
-  }
-
-  #[trusted]
-  pub fn cos(&self) -> F32Wrapper {
-    F32Wrapper { f: f32::cos(self.f) }
-  }
-
-  #[trusted]
-  pub fn abs(&self) -> F32Wrapper {
-    F32Wrapper { f: f32::abs(self.f) }
-  }
-}
-/*
-#[extern_spec]
-impl PartialEq<F32Wrapper> {
-    #[pure]
-    #[trusted]
-    fn eq(&self, other: &F32Wrapper) -> bool;
-}*/
-
-pub struct VecWrapperF32 {
-  v: Vec<F32Wrapper>,
-}
-
-/// Need this because Prusti doesn't seem to be able to handle polymorphic types
-impl VecWrapperF32 {
-  #[trusted]
-  #[ensures(result.len() == 0)]
-  pub fn new() -> Self {
-      Self { v: Vec::new() }
-  }
-
-  #[trusted]
-  #[ensures(result.len() == n)]
-  pub fn from_elem_n(value: F32Wrapper, n: usize) -> Self {
-    let mut v = Vec::new();
-    for _ in 0..n {
-      v.push(value);
-    }
-
-    Self { v }
-  }
-
-  /// A ghost function for getting the length of the vector
-  #[trusted]
-  #[pure]
-  pub fn len(&self) -> usize {
-      self.v.len()
-  }
-
-  /// A ghost function for specifying values stored in the vector.
-  #[trusted]
-  #[pure]
-  #[requires(index < self.len())]
-  pub fn lookup(&self, index: usize) -> F32Wrapper {
-      self.v[index]
-  }
-
-  /// A ghost function for specifying values stored in the vector.
-  #[trusted]
-  #[requires(index < self.len())]
-  #[ensures(self.len() == old(self.len()))]
-  pub fn store(&mut self, index: usize, value: F32Wrapper) {
-      self.v[index] = value;
-  }
-
-  #[trusted]
-  #[ensures(self.len() == old(self.len()) + 1)]
-  pub fn push(&mut self, value: F32Wrapper) {
-      self.v.push(value);
-  }
-}
+#[path = "lib/vecwrapper.rs"]
+pub mod vecwrapper;
+use vecwrapper::VecWrapper;
 
 //#[lr::sig(fn(src: &n@RVec<f32>{0 <= n}) -> RVec<f32>[n])]
 /*#[ensures(result.len() == src.len())]
-pub fn clone(src: &VecWrapperF32) -> VecWrapperF32 {
+pub fn clone(src: &VecWrapper<f32>) -> VecWrapper<f32> {
   let n = src.len();
-  let mut dst: VecWrapperF32 = VecWrapperF32::new();
+  let mut dst: VecWrapper<f32> = VecWrapper<f32>::new();
   let mut i = 0;
   while i < n {
     body_invariant!(dst.len() == i);
@@ -156,12 +21,21 @@ pub fn clone(src: &VecWrapperF32) -> VecWrapperF32 {
   dst
 }*/
 
-//#[lr::sig(fn(px: &mut n@VecWrapperF32, py: &mut VecWrapperF32{v:v == n}) -> i32 where 2 <= n)]
+#[trusted]
+fn float_of_int(n:usize) -> f32 {
+  n as f32
+}
+
+fn pi() -> f32 {
+  3.14159265358979323846
+}
+
+//#[lr::sig(fn(px: &mut n@VecWrapper<f32>, py: &mut VecWrapper<f32>{v:v == n}) -> i32 where 2 <= n)]
 #[requires(px.len() >= 2)]
 #[requires(px.len() == py.len())]
 #[ensures(px.len() == old(px.len()))]
 #[ensures(py.len() == old(py.len()))]
-pub fn fft(px: &mut VecWrapperF32, py: &mut VecWrapperF32) {
+pub fn fft(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
   loop_a(px, py);
   loop_b(px, py);
   loop_c(px, py);
@@ -171,36 +45,33 @@ pub fn fft(px: &mut VecWrapperF32, py: &mut VecWrapperF32) {
 #[requires(px.len() == py.len())]
 #[ensures(px.len() == old(px.len()))]
 #[ensures(py.len() == old(py.len()))]
-fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
+fn loop_a(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) -> i32 {
   let n = px.len() - 1;
   let px_len = px.len();
   let py_len = py.len();
   let mut n2 = n;
   let mut n4: usize = n / 4;
-  // This is necessary to keep prusti happy
-  let three = F32Wrapper::float_of_int(3);
 
   while 2 < n2 {
     body_invariant!(n < px.len() && n < py.len());
     body_invariant!(px.len() == px_len);
     body_invariant!(py.len() == py_len);
-    let e = F32Wrapper::two_pi().div(F32Wrapper::float_of_int(n2));
-    let e3 = e.mul(three);
-    let mut a = F32Wrapper::zero();
-    let mut a3 = F32Wrapper::zero();
+    let e = 2.0 * pi() / float_of_int(n2);
+    let e3 = e * 3.0;
+    let mut a = 0.0;
+    let mut a3 = 0.0;
     let mut j = 1;
     while j <= n4 {
       body_invariant!(n < px.len() && n < py.len());
       body_invariant!(py.len() == py_len);
       body_invariant!(px.len() == px_len);
 
-      assert!(px.len() == px_len);
-      let cc1 = a.cos();
-      let ss1 = a.sin();
-      let cc3 = a3.cos();
-      let ss3 = a3.sin();
-      a = a.add(e);
-      a3 = a3.add(e3);
+      let cc1 = f32::cos(a);
+      let ss1 = f32::sin(a);
+      let cc3 = f32::cos(a3);
+      let ss3 = f32::sin(a3);
+      a = a + e;
+      a3 = a3 + e3;
 
       let mut is = j;
       let mut id = 2 * n2;
@@ -225,28 +96,28 @@ fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
           body_invariant!(i0 <= i1 && i1 <= i2 && i2 <= i3);
           body_invariant!(i3 < px.len());
 
-          let r1 = px.lookup(i0).sub(px.lookup(i2));
-          let tmp = px.lookup(i0).add(px.lookup(i2));
+          let r1 = px.lookup(i0) - px.lookup(i2);
+          let tmp = px.lookup(i0) - px.lookup(i2);
           px.store(i0, tmp);
 
-          let r2 = px.lookup(i1).sub(px.lookup(i3));
-          let tmp = px.lookup(i1).add(px.lookup(i3));
+          let r2 = px.lookup(i1) - px.lookup(i3);
+          let tmp = px.lookup(i1) - px.lookup(i3);
           px.store(i1, tmp);
-          let s1 = py.lookup(i0).sub(py.lookup(i2));
-          let tmp = px.lookup(i0).add(px.lookup(i2));
+          let s1 = py.lookup(i0) - py.lookup(i2);
+          let tmp = px.lookup(i0) - px.lookup(i2);
           py.store(i0, tmp);
-          let s2 = py.lookup(i1).sub(py.lookup(i3));
-          let tmp = px.lookup(i1).add(px.lookup(i3));
+          let s2 = py.lookup(i1) - py.lookup(i3);
+          let tmp = px.lookup(i1) + px.lookup(i3);
           py.store(i1, tmp);
 
-          let s3 = r1.sub(s2);
-          let r1 = r1.add(s2);
-          let s2 = r2.sub(s1);
-          let r2 = r2.add(s1);
-          px.store(i2, r1.mul(cc1).sub(s2.mul(ss1)));
-          py.store(i2, (F32Wrapper::zero().sub(s2)).mul(cc1).sub(r1.mul(ss1)));
-          px.store(i3, s3.mul(cc3).add(r2.mul(ss3)));
-          py.store(i3, r2.mul(cc3).sub(s3.mul(ss3)));
+          let s3 = r1 - s2;
+          let r1 = r1 + s2;
+          let s2 = r2 - s1;
+          let r2 = r2 + s1;
+          px.store(i2, r1 * cc1 - s2 * ss1);
+          py.store(i2, (0.0 - s2) * cc1 - r1 * ss1);
+          px.store(i3, s3 * cc3 + r2 *ss3);
+          py.store(i3, r2 * cc3 - s3 * ss3);
 
           i0 = i0 + id;
           i1 = i1 + id;
@@ -271,7 +142,7 @@ fn loop_a(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
 #[requires(px.len() == py.len())]
 #[ensures(px.len() == old(px.len()))]
 #[ensures(py.len() == old(py.len()))]
-fn loop_b(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
+fn loop_b(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) -> i32 {
   let n = px.len() - 1;
   let px_len = px.len();
   let py_len = py.len();
@@ -289,21 +160,21 @@ fn loop_b(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
     let mut i1 = is + 1;
     while i1 <= n {
       body_invariant!(n < px.len() && n < py.len());
-      body_invariant!(i0 <= i1);
+      body_invariant!(i0 <= i1 && i1 < px.len());
       body_invariant!(py.len() == py_len);
       body_invariant!(px.len() == px_len);
 
       // INV: 0 <= i0 <= i1, 0 <= id
       let r1 = px.lookup(i0);
-      let tmp = r1.add(px.lookup(i1));
+      let tmp = r1 + px.lookup(i1);
       px.store(i0, tmp);
-      let tmp = r1.sub(px.lookup(i1));
+      let tmp = r1 - px.lookup(i1);
       px.store(i1, tmp);
 
       let r1 = py.lookup(i0);
-      let tmp = r1.add(px.lookup(i1));
+      let tmp = r1 + px.lookup(i1);
       py.store(i0, tmp);
-      let tmp = r1.sub(px.lookup(i1));
+      let tmp = r1 - px.lookup(i1);
       py.store(i1, tmp);
 
       i0 = i0 + id;
@@ -321,7 +192,7 @@ fn loop_b(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
 #[requires(px.len() == py.len())]
 #[ensures(px.len() == old(px.len()))]
 #[ensures(py.len() == old(py.len()))]
-fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
+fn loop_c(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) -> i32 {
   let n = px.len() - 1;
   let mut i = 1;
   let mut j = 1;
@@ -332,13 +203,9 @@ fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
     body_invariant!(n < px.len() && n < py.len());
     body_invariant!(px.len() == px_len);
     body_invariant!(py.len() == py_len);
+    body_invariant!(j <= n);
     // INV: 0 <= i, 0 <= j <= n
     if i < j {
-      body_invariant!(j <= n);
-      body_invariant!(n < px.len() && n < py.len());
-      body_invariant!(px.len() == px_len);
-      body_invariant!(py.len() == py_len);
-
       let xt = px.lookup(j);
       let tmp = px.lookup(i);
       px.store(j, tmp);
@@ -350,7 +217,7 @@ fn loop_c(px: &mut VecWrapperF32, py: &mut VecWrapperF32) -> i32 {
       px.store(i, xt);
     }
     i += 1;
-    //j = loop_c1(j, n/2);
+    j = loop_c1(j, n/2);
     // let mut k = n / 2;
     // while k < j {
     //
@@ -383,37 +250,37 @@ pub fn loop_c1(j:usize, k: usize) -> usize {
 
 //#[lr::sig(fn (np:usize) -> f32 where 2 <= np)]
 #[requires(2 <= np)]
-pub fn fft_test(np:usize) -> F32Wrapper {
-  let enp = F32Wrapper::float_of_int(np);
+pub fn fft_test(np:usize) -> f32 {
+  let enp = float_of_int(np);
   let n2 = np / 2;
   let npm = n2 - 1;
-  let mut pxr = VecWrapperF32::from_elem_n(F32Wrapper::zero(), np+1);
-  let mut pxi = VecWrapperF32::from_elem_n(F32Wrapper::zero(), np+1);
-  assert!(pxi.len() >= npm + 2);
-  let t = F32Wrapper::pi().div(enp);
-  pxr.store(1, enp.sub(F32Wrapper::float_of_int(1)).mul(F32Wrapper::one_half()));
-  pxi.store(1, F32Wrapper::zero());
-  pxr.store(n2+1, F32Wrapper::zero().sub(F32Wrapper::one_half()));
-  pxi.store(n2+1, F32Wrapper::zero());
+  let mut pxr = VecWrapper::<f32>::from_elem_n(0.0, np+1);
+  let mut pxi = VecWrapper::<f32>::from_elem_n(0.0, np+1);
+  let t = pi() / enp;
+  pxr.store(1, enp - 1.0 * 0.5);
+  pxi.store(1, 0.0);
+  pxr.store(n2+1, 0.0 - 0.5);
+  pxi.store(n2+1, 0.0);
   let mut i = 1;
   while i <= npm {
     body_invariant!(pxr.len() == np + 1);
     body_invariant!(pxi.len() == np + 1);
     body_invariant!(i + 1 < np + 1);
+    body_invariant!(i > 0);
     let j = np - i;
-    pxr.store(i+1, F32Wrapper::zero().sub(F32Wrapper::one_half()));
-    pxr.store(j+1, F32Wrapper::zero().sub(F32Wrapper::one_half()));
-    let z = t.mul(F32Wrapper::float_of_int(i));
-    let y = F32Wrapper::one_half().mul(z.cos().div(z.sin()));
-    pxi.store(i+1, F32Wrapper::zero().sub(y));
+    pxr.store(i+1, 0.0 - 0.5);
+    pxr.store(j+1, 0.0 - 0.5);
+    let z = t * float_of_int(i);
+    let y = 0.5 * f32::cos(z) / f32::sin(z);
+    pxi.store(i+1, 0.0 - y);
     pxi.store(j+1, y);
     i += 1;
   }
 
   fft(&mut pxr, &mut pxi);
 
-  let mut zr = F32Wrapper::zero();
-  let mut zi = F32Wrapper::zero();
+  let mut zr = 0.0;
+  let mut zi = 0.0;
   let mut _kr = 0;
   let mut _ki = 0;
   let mut i = 0;
@@ -421,19 +288,19 @@ pub fn fft_test(np:usize) -> F32Wrapper {
     body_invariant!(pxr.len() == np + 1);
     body_invariant!(pxi.len() == np + 1);
     body_invariant!(i + 1 < np + 1);
-    let a = pxr.lookup(i+1).sub(F32Wrapper::float_of_int(i)).abs();
-    if zr.lt(a) {
+    let a = pxr.lookup(i+1) - f32::abs(float_of_int(i));
+    if zr < a {
       zr = a;
       _kr = i;
     }
-    let a = pxi.lookup(i+1).abs();
-    if zi.lt(a) {
+    let a = f32::abs(pxi.lookup(i+1));
+    if zi < a {
       zi = a;
       _ki = i;
     }
     i += 1;
   }
-  if zr.abs().lt(zi.abs()) { zi } else { zr }
+  if f32::abs(zr) < f32::abs(zi) { zi } else { zr }
 }
 
 //#[lr::sig(fn() -> i32)]
