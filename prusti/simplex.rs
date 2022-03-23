@@ -2,80 +2,9 @@
 extern crate prusti_contracts;
 use prusti_contracts::*;
 
-pub struct RMatI32 {
-  inner: Vec<Vec<i32>>,
-}
-
-impl RMatI32 {
-  #[trusted]
-  fn clone(n:usize, elem: i32) -> Vec<i32>
-  {
-      let mut res = Vec::new();
-      for _i in 0..n {
-          res.push(elem);
-      }
-      res
-  }
-
-  //#[lr::assume]
-  //#[lr::sig(fn(rows: usize, cols: usize, elem: T) -> RMatI32[rows, cols])]
-  #[trusted]
-  #[ensures(result.cols() == cols && result.rows() == rows)]
-  pub fn new(rows: usize, cols: usize, elem: i32) -> RMatI32
-  {
-      let mut inner = Vec::new();
-      for _i in 0..rows {
-          let r = Self::clone(cols, elem);
-          inner.push(r);
-      }
-      Self { inner }
-  }
-
-  #[trusted]
-  #[pure]
-  pub fn rows(&self) -> usize {
-    self.inner.len()
-  }
-
-  #[trusted]
-  #[pure]
-  pub fn cols(&self) -> usize {
-    if self.inner.len() > 0 {
-      self.inner[0].len()
-    } else {
-      0
-    }
-  }
-
-  //#[lr::assume]
-  //#[lr::ty(fn<m:int,n:int>(&RMat<T>@{m,n}, usize{v: 0 <= v && v < m}, usize{v:0 <= v && v < n}) -> &T)]
-  #[trusted]
-  #[pure]
-  #[requires(i < self.rows() && j < self.cols())]
-  pub fn get(&self, i: usize, j:usize) -> i32 {
-      self.inner[i][j]
-  }
-
-  //#[lr::assume]
-  //#[lr::ty(fn<m:int,n:int>(self: RMat<T>@{m,n}; ref<self>, usize{v: 0 <= v && v < m}, usize{v: 0 <= v && v < n}) -> &weak T; self: RMat<T>@{m,n})]
-  #[trusted]
-  #[requires(i < self.rows() && j < self.cols())]
-  #[ensures(*result == old(self.get(i,j)))]
-  #[after_expiry(
-      self.cols() == old(self.cols()) &&
-      self.rows() == old(self.rows()) /*&&
-      self.get(i,j) == before_expiry(*result) &&
-      forall(
-          |i: usize, j: usize| (i < self.rows() && j < self.cols()) ==>
-          self.get(i, j) == old(self.get(i, j))
-      )*/
-  )]
-  pub fn get_mut(&mut self, i: usize, j: usize) -> &mut i32 {
-      &mut self.inner[i][j]
-  }
-
-}
-
+#[path = "lib/matwrapper.rs"]
+pub mod matwrapper;
+use matwrapper::{MatWrapper, vecwrapper::VecWrapper};
 
 // #[lr::sig(fn(x:i32{0 <= x}) -> i32{v: 0 < v})]
 #[requires(0 <= x)]
@@ -88,7 +17,7 @@ pub fn incr(x:i32) -> i32 {
 /*
 pub fn test() -> i32 {
   let pi: f32 = 3.14;
-  let mut m  = RMatI32::new(5, 10, pi);
+  let mut m  = MatWrapper<i32>::new(5, 10, pi);
 
   let v1 = m.get(3, 7);
   *m.get_mut(4, 8) = v1 + v1;
@@ -104,7 +33,7 @@ pub fn test() -> i32 {
 //#[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{ 0 < n}) -> bool)]
 #[requires(0 < _m && 0 < n)]
 #[requires(_m == arr2.rows() && n == arr2.cols())]
-pub fn is_neg(arr2: &RMatI32, _m:usize, n: usize) -> bool {
+pub fn is_neg(arr2: &MatWrapper<i32>, _m:usize, n: usize) -> bool {
   let mut j = 1;
   while j < n - 1 {
     if arr2.get(0, j) < 0 {
@@ -120,7 +49,7 @@ pub fn is_neg(arr2: &RMatI32, _m:usize, n: usize) -> bool {
 //#[lr::sig(fn (m:usize{0 < m}, n:usize{0 < n}, arr2: &RMat<f32>[m, n]) -> bool)]
 #[requires(0 < m && 0 < n)]
 #[requires(m == arr2.rows() && n == arr2.cols())]
-pub fn unb1(m:usize, n:usize, arr2: &RMatI32) -> bool {
+pub fn unb1(m:usize, n:usize, arr2: &MatWrapper<i32>) -> bool {
   let mut i = 0;
   let mut j = 1;
 
@@ -155,11 +84,13 @@ pub fn unb1(m:usize, n:usize, arr2: &RMatI32) -> bool {
 //#[lr::sig(fn (m:usize{0<m}, n:usize{2<n}, arr2: &RMat<f32>[m,n]) -> usize{v: 0<v && v+1<n})]
 #[requires(0 < _m && 2 < n)]
 #[requires(_m == arr2.rows() && n == arr2.cols())]
-pub fn enter_var(_m:usize, n:usize, arr2: &RMatI32) -> usize {
+#[ensures(0 < result && result + 1 < n)]
+pub fn enter_var(_m:usize, n:usize, arr2: &MatWrapper<i32>) -> usize {
   let mut c  = arr2.get(0, 1);
   let mut j  = 1;
   let mut j_ = 2;
   while j_ < n - 1 {
+    body_invariant!(0 < j && j + 1 < n);
     // INV j+1 < n, j_ < n
     let c_ = arr2.get(0, j_);
 	  if c_ < c {
@@ -179,7 +110,7 @@ pub fn enter_var(_m:usize, n:usize, arr2: &RMatI32) -> usize {
   && 0 < j && j < n
   && 0 < i0 && i0 < m)]
 #[ensures(0 < result && result < m)]
-pub fn depart_var(m:usize, n:usize, arr2: &RMatI32, j:usize, i0:usize, r0:i32) -> usize {
+pub fn depart_var(m:usize, n:usize, arr2: &MatWrapper<i32>, j:usize, i0:usize, r0:i32) -> usize {
   let mut i  = i0;
   let mut r  = r0;
   let mut i_ = i + 1;
@@ -215,7 +146,7 @@ pub fn die() -> usize {
   && m == arr2.rows() && _n == arr2.cols()
   && 0 < j && j < _n)]
 #[ensures(0 < result && result < m)]
-pub fn init_ratio_i(m:usize, _n:usize, arr2: &RMatI32, j: usize) -> usize {
+pub fn init_ratio_i(m:usize, _n:usize, arr2: &MatWrapper<i32>, j: usize) -> usize {
   let mut i = 1;
   while i < m {
     //body_invariant!(m == arr2.rows() && _n == arr2.cols());
