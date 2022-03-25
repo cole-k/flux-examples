@@ -1,4 +1,5 @@
 extern crate prusti_contracts;
+use prusti_contracts::*;
 
 #[path = "lib/vecwrapper.rs"]
 pub mod vecwrapper;
@@ -34,13 +35,13 @@ pub fn binary_search(k: i32, items: &VecWrapper<i32>) -> usize {
   size
 }
 
-pub fn main() {
-  let mut vec = Vec::new();
-  vec.push(1);
-  vec.push(2);
-  vec.push(4);
-  vec.push(6);
-  vec.push(7);
-  let wrapper = VecWrapper { v: vec, };
-  binary_search(4, &wrapper);
-}
+pub fn main() {}
+  // let mut vec = Vec::new();
+  // vec.push(1);
+  // vec.push(2);
+  // vec.push(4);
+  // vec.push(6);
+  // vec.push(7);
+  // let wrapper = VecWrapper { v: vec, };
+  // binary_search(4, &wrapper);
+

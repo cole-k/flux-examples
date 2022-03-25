@@ -51,7 +51,6 @@ impl<T: PartialEq + Copy> MatWrapper<T> {
     }
 
     #[trusted]
-    #[trusted]
     #[pure]
     #[requires(i < self.rows() && j < self.cols())]
     pub fn get(&self, i: usize, j: usize) -> T {
@@ -60,26 +59,9 @@ impl<T: PartialEq + Copy> MatWrapper<T> {
 
     #[trusted]
     #[requires(i < self.rows() && j < self.cols())]
-    #[ensures(
-        self.cols() == old(self.cols()) &&
-        self.rows() == old(self.rows())
-    )]
+    #[ensures(self.cols() == old(self.cols()) && self.rows() == old(self.rows()))]
     pub fn set(&mut self, i: usize, j: usize, value: T) {
         self.inner[i][j] = value;
-    }
-
-    #[trusted]
-    #[requires(i < self.rows() && j < self.cols())]
-    #[ensures(
-        self.cols() == old(self.cols()) &&
-        self.rows() == old(self.rows())
-    )]
-    #[after_expiry(
-        self.cols() == old(self.cols()) &&
-        self.rows() == old(self.rows())
-    )]
-    pub fn get_mut(&mut self, i: usize, j: usize) -> &mut T {
-        &mut self.inner[i][j]
     }
 
     #[trusted]

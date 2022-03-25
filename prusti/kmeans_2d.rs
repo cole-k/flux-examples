@@ -7,34 +7,21 @@ use matwrapper::{MatWrapper, vecwrapper::VecWrapper};
 
 /////////////////////////////////////////////////////////////
 #[trusted]
-fn i32_max() -> i32 {
-    i32::MAX
+fn f32_max() -> f32 {
+    f32::MAX
 }
 
 #[trusted]
-fn i32_div(n:i32, d:usize) -> i32 {
-    n / (d as i32)
-}
-
-#[trusted]
-#[ensures(result.len() == n)]
-pub fn from_elem_n_usize(elem: usize, n: usize) -> VecWrapper<usize>
-{
-    let mut vec = Vec::new();
-    let mut i = 0;
-    while i < n {
-        vec.push(elem);
-        i += 1;
-    }
-    VecWrapper { v: vec }
+fn f32_div(n:f32, d:usize) -> f32 {
+    n / (d as f32)
 }
 
 /////////////////////////////////////////////////////////////
 
 /// distance between two points
 #[requires(x.len() == y.len())]
-fn dist(x:VecWrapper<i32>, y:&VecWrapper<i32>) -> i32 {
-    let mut res = 0;
+fn dist(x:VecWrapper<f32>, y:&VecWrapper<f32>) -> f32 {
+    let mut res = 0.0;
     let mut i = 0;
     while i < x.len() {
         //body_invariant!(i < x.len());
@@ -50,7 +37,7 @@ fn dist(x:VecWrapper<i32>, y:&VecWrapper<i32>) -> i32 {
 #[requires(row < x.rows())]
 #[ensures(x.rows() == old(x.rows()))]
 #[ensures(x.cols() == old(x.cols()))]
-fn add_to_row(x: &mut MatWrapper<i32>, row: usize, y:&VecWrapper<i32>) {
+fn add_to_row(x: &mut MatWrapper<f32>, row: usize, y:&VecWrapper<f32>) {
     let mut i = 0;
 
     while i < x.cols() {
@@ -69,7 +56,7 @@ fn add_to_row(x: &mut MatWrapper<i32>, row: usize, y:&VecWrapper<i32>) {
 #[requires(row < x.rows())]
 #[ensures(x.rows() == old(x.rows()))]
 #[ensures(x.cols() == old(x.cols()))]
-fn normalize_row(x: &mut MatWrapper<i32>, row: usize, n: usize) {
+fn normalize_row(x: &mut MatWrapper<f32>, row: usize, n: usize) {
     let mut i = 0;
 
     while i < x.cols() {
@@ -78,7 +65,7 @@ fn normalize_row(x: &mut MatWrapper<i32>, row: usize, n: usize) {
         body_invariant!(x.cols() == old(x.cols()));
 
         let xi = x.get(row, i);
-        x.set(row, i, i32_div(xi,n));
+        x.set(row, i, f32_div(xi,n));
         i += 1;
     }
 }
@@ -87,19 +74,19 @@ fn normalize_row(x: &mut MatWrapper<i32>, row: usize, n: usize) {
 #[requires(k > 0)]
 #[ensures(result.rows() == k)]
 #[ensures(result.cols() == n)]
-fn init_centers(n: usize, k: usize) -> MatWrapper<i32> {
-    MatWrapper::new(k, n, 0)
+fn init_centers(n: usize, k: usize) -> MatWrapper<f32> {
+    MatWrapper::new(k, n, 0.0)
 }
 
 /// finding the nearest center to a point
 #[requires(cs.rows() > 0)]
 #[requires(cs.cols() == p.len())]
 #[ensures(result < cs.rows())]
-fn nearest(p:&VecWrapper<i32>, cs: &MatWrapper<i32>) -> usize {
+fn nearest(p:&VecWrapper<f32>, cs: &MatWrapper<f32>) -> usize {
     // let n = p.len();
     let k = cs.rows();
     let mut res = 0;
-    let mut min = i32_max();
+    let mut min = f32_max();
     let mut i = 0;
     while i < k {
         body_invariant!(res < cs.rows());
@@ -118,7 +105,7 @@ fn nearest(p:&VecWrapper<i32>, cs: &MatWrapper<i32>) -> usize {
 #[requires(cs.rows() == weights.len())]
 #[ensures(cs.rows() == old(cs.rows()))]
 #[ensures(cs.cols() == old(cs.cols()))]
-fn normalize_centers(cs: &mut MatWrapper<i32>, weights: &VecWrapper<usize>) {
+fn normalize_centers(cs: &mut MatWrapper<f32>, weights: &VecWrapper<usize>) {
     let k = cs.rows();
     let mut i = 0;
     while i < k {
@@ -131,14 +118,14 @@ fn normalize_centers(cs: &mut MatWrapper<i32>, weights: &VecWrapper<usize>) {
 }
 
 /// updating the centers
-//#[lr::sig(fn(n:usize, cs: k@RVec<RVec<i32>[n]>{0 < k}, ps: &RVec<RVec<i32>[n]>) -> RVec<RVec<i32>[n]>[k])]
+//#[lr::sig(fn(n:usize, cs: k@RVec<RVec<f32>[n]>{0 < k}, ps: &RVec<RVec<f32>[n]>) -> RVec<RVec<f32>[n]>[k])]
 #[requires(cs.rows() == ps.rows())]
 #[requires(ps.cols() == n)]
 #[requires(cs.cols() == n)]
 #[requires(cs.rows() > 0)]
 #[ensures(result.rows() == old(cs.rows()))]
 #[ensures(result.cols() == n)]
-fn kmeans_step(n:usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>) -> MatWrapper<i32> {
+fn kmeans_step(n:usize, cs: MatWrapper<f32>, ps: &MatWrapper<f32>) -> MatWrapper<f32> {
     let k = cs.rows();
 
     let mut res_points = init_centers(n, k);
@@ -165,14 +152,14 @@ fn kmeans_step(n:usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>) -> MatWrapper
 }
 
 /// kmeans: iterating the center-update-steps
-//#[lr::sig(fn(n:usize, cs: k@RVec<RVec<i32>[n]>{0 < k}, ps: &RVec<RVec<i32>[n]>, iters: i32) -> RVec<RVec<i32>[n]>[k])]
+//#[lr::sig(fn(n:usize, cs: k@RVec<RVec<f32>[n]>{0 < k}, ps: &RVec<RVec<f32>[n]>, iters: i32) -> RVec<RVec<f32>[n]>[k])]
 #[requires(cs.rows() == ps.rows())]
 #[requires(ps.cols() == n)]
 #[requires(cs.cols() == n)]
 #[requires(cs.rows() > 0)]
 #[ensures(result.rows() == old(cs.rows()))]
 #[ensures(result.cols() == n)]
-pub fn kmeans(n:usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>, iters: i32) -> MatWrapper<i32> {
+pub fn kmeans(n:usize, cs: MatWrapper<f32>, ps: &MatWrapper<f32>, iters: i32) -> MatWrapper<f32> {
     kmeans_inner(0, n, cs, ps, iters)
 }
 
@@ -182,7 +169,7 @@ pub fn kmeans(n:usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>, iters: i32) ->
 #[requires(cs.rows() > 0)]
 #[ensures(result.rows() == old(cs.rows()))]
 #[ensures(result.cols() == n)]
-pub fn kmeans_inner(i: i32, n: usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>, iters: i32) -> MatWrapper<i32> {
+pub fn kmeans_inner(i: i32, n: usize, cs: MatWrapper<f32>, ps: &MatWrapper<f32>, iters: i32) -> MatWrapper<f32> {
     if i < iters {
         let res = kmeans_step(n, cs, ps);
         kmeans_inner(i+1, n, res, ps, iters)
@@ -191,5 +178,4 @@ pub fn kmeans_inner(i: i32, n: usize, cs: MatWrapper<i32>, ps: &MatWrapper<i32>,
     }
 }
 
-pub fn main() {
-}
+pub fn main() {}

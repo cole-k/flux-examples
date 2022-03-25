@@ -1,6 +1,17 @@
 import argparse
 import os
 
+def is_preamble(line):
+    if line[0:7] == "pub mod":
+        return True
+    if line[0:3] == "mod":
+        return True
+    elif line[0:3] == "use":
+        return True
+    elif line[0:6] == "extern":
+        return True
+    return False
+
 def is_prusti_annotation(annotation):
     if annotation[2:6] == "pure":
         return True
@@ -13,7 +24,7 @@ def is_prusti_annotation(annotation):
     return False
 
 def is_rustc_annotation(annotation):
-    if annotation[1:2] == "lr":
+    if annotation[2:4] == "lr":
         return True
     return False
 
@@ -36,12 +47,15 @@ if __name__ == "__main__":
     }
 
     line_number = 0
+    in_contract = False
+    in_invariant = False
+
     # Strips the newline character
     for line in lines:
         line_number += 1
         stripped = line.strip()
         if stripped:
-            if (stripped[0] != "/" or stripped[1] != "/") and stripped[:16] != "pub fn main() {}":
+            if (stripped[0] != "/" or stripped[1] != "/") and stripped[:16] != "pub fn main() {}" and not is_preamble(stripped):
                 if stripped[0] == "#":
                     if is_prusti_annotation(stripped):
                         print("Line {} is a prusti function contract".format(line_number))

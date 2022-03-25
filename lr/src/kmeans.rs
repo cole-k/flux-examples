@@ -95,20 +95,20 @@ fn nearest(p:&RVec<f32>, cs: &RVec<RVec<f32>>) -> usize {
 }
 
 
-#[lr::sig(fn () -> i32)]
-fn foo() -> i32 {
-    let mut x = 1;
-    let mut y = 1;
-    let mut vec = RVec::new();
-    vec.push(&mut x);
-    vec.push(&mut y);
-    0
-    // let mut i = 0;
-    // while i < vec.len() {
-    //     let ri = vec[i];
-    //     let rj = vec[i];
-    // }
-}
+// #[lr::sig(fn () -> i32)]
+// fn foo() -> i32 {
+//     let mut x = 1;
+//     let mut y = 1;
+//     let mut vec = RVec::new();
+//     vec.push(&mut x);
+//     vec.push(&mut y);
+//     0
+//     // let mut i = 0;
+//     // while i < vec.len() {
+//     //     let ri = vec[i];
+//     //     let rj = vec[i];
+//     // }
+// }
 
 
 // TODO: the `n` is not needed, except to prevent a silly parse error!

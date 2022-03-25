@@ -24,9 +24,9 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 | Copy          | [Pr][pr-bc]     | [LR][lr-bc]     | DML                  |
 | BinSearch     | [Pr][pr-bs]     | [LR][lr-bc]     | DML                  |
 | Dot-Product   | [Pr][pr-dot]    | [LR][lr-dot]    | DML                  |
-| FFT           | [TODO][pr-fft]  | [LR][lr-fft]    | DML                  |
+| FFT           | [Pr][pr-fft]    | [LR][lr-fft]    | DML                  |
 | Simplex       | [Pr][pr-splx]   | [LR][lr-splx]   | DML                  |
-| Kmeans        | [TODO][pr-kmns] | [LR][lr-kmeans] | self                 |
+| Kmeans        | [Pr*][pr-kmns]  | [LR][lr-kmeans] | self                 |
 
 [lr-bc]:     https://github.com/liquid-rust/examples/blob/main/lr/src/bcopy.rs
 [pr-bc]:     https://github.com/liquid-rust/examples/blob/main/prusti/bcopy.rs
@@ -35,9 +35,9 @@ $ liquid-rust --crate-type=rlib src/ex5_simple_rvec.rs
 [lr-dot]:    https://github.com/liquid-rust/examples/blob/main/lr/src/dotprod.rs
 [pr-dot]:    https://github.com/liquid-rust/examples/blob/main/prusti/dotprod.rs
 [lr-kmeans]: https://github.com/liquid-rust/examples/blob/main/lr/src/kmeans.rs
-[pr-kmns]: https://github.com/liquid-rust/examples/blob/wip/prusti/kmeans.rs
+[pr-kmns]:   https://github.com/liquid-rust/examples/blob/main/prusti/kmeans_2d.rs
 [lr-fft]:    https://github.com/liquid-rust/examples/blob/main/lr/src/fft.rs
-[pr-fft]: https://github.com/liquid-rust/examples/blob/wip/prusti/fft.rs
+[pr-fft]:    https://github.com/liquid-rust/examples/blob/main/prusti/fft.rs
 [lr-splx]:   https://github.com/liquid-rust/examples/blob/main/lr/src/simplex.rs
 [pr-splx]:   https://github.com/liquid-rust/examples/blob/main/prusti/simplex.rs
 [pr-fil]: https://github.com/liquid-rust/examples/blob/main/prusti/ex1_fill.rs

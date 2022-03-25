@@ -79,4 +79,12 @@ impl<T: Copy> VecWrapper<T> {
     pub fn pop(&mut self) -> T {
         self.v.pop().unwrap()
     }
+
+    #[trusted]
+    #[requires(index_a < self.len())]
+    #[requires(index_b < self.len())]
+    #[ensures(self.len() == old(self.len()))]
+    pub fn swap(&mut self, index_a: usize, index_b: usize) {
+        self.v.swap(index_a, index_b);
+    }
 }
