@@ -42,9 +42,3 @@ impl<T> RMat<T> {
     }
 
 }
-
-#[lr::assume]
-#[lr::sig(fn() -> usize{v:false})]
-pub fn die() -> usize {
-  panic!("die")
-}
