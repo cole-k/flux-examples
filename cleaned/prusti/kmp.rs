@@ -12,15 +12,15 @@ use vecwrapperfull::VecWrapperFull;
 // rust port of https://github.com/ucsd-progsys/liquidhaskell/blob/develop/tests/pos/kmpVec.hs
 #[requires(p.len() > 0)]
 #[ensures(result.len() == p.len())]
-#[ensures(forall(|x: usize| x < result.len() ==> (0 <= result.lookup(x) && result.lookup(x) < p.len())))]
+#[ensures(forall(|x: usize| x < result.len() ==> result.lookup(x) < p.len()))]
 fn kmp_table(p: &VecWrapper<char>) -> VecWrapperFull {
     let m = p.len();
     let mut t = VecWrapperFull::from_elem_n(0, m);
     let mut i = 1;
     let mut j = 0;
     while i < m {
-        body_invariant!(forall(|x: usize| x < t.len() ==> (0 <= t.lookup(x) &&t.lookup(x) < i)));
-        body_invariant!(0 <= j && j < i);
+        body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) < i));
+        body_invariant!(j < i);
         body_invariant!(t.len() == p.len());
 
         if p.lookup(i) == p.lookup(j) {

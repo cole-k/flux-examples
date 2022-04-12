@@ -4,7 +4,11 @@ use prusti_contracts::*;
 
 #[path = "lib/matwrapper.rs"]
 pub mod matwrapper;
-use matwrapper::{MatWrapper, vecwrapper::VecWrapper};
+use matwrapper::MatWrapper;
+
+#[path = "lib/vecwrapper.rs"]
+pub mod vecwrapper;
+use vecwrapper::VecWrapper;
 
 //#[lr::sig(fn (arr2: &RMat<f32>[m,n], m:usize{0 < m}, n: usize{ 0 < n}) -> bool)]
 #[requires(0 < _m && 0 < n)]
@@ -192,7 +196,6 @@ pub fn simplex(m:usize, n:usize, arr2:&mut MatWrapper<f32>) {
     body_invariant!(arr2.rows() == m && arr2.cols() == n);
     if unb1(m, n, arr2) {
       die();
-      return 0
     } else {
       let j = enter_var(m, n, arr2);
       let i = init_ratio_i(m, n, arr2, j);

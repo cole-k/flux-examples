@@ -1,4 +1,7 @@
 #![allow(dead_code)]
+#![allow(unused_attributes)]
+#![feature(register_tool)]
+#![register_tool(lr)]
 
 #[lr::opaque]
 #[lr::refined_by(len: int)]
@@ -39,14 +42,7 @@ impl<T> RVec<T> {
     }
 
     #[lr::assume]
-    #[lr::sig(fn(self:&mut n@RVec<T>, i:usize{0 <= i && i < n}, v: T) -> i32)]
-    pub fn set(&mut self, i: usize, v: T) -> i32 {
-        self.inner[i] = v;
-        0
-    }
-
-    #[lr::assume]
-    #[lr::ty(fn<len:int>(self: RVec<T>@len; ref<self>, usize{v: 0 <= v && v < len}) -> weak T; self: RVec<T>@len)]
+    #[lr::ty(fn<len:int>(&weak RVec<T>@len, usize{v: 0 <= v && v < len}) -> &weak T)]
     pub fn get_mut(&mut self, i: usize) -> &mut T {
         &mut self.inner[i]
     }
@@ -58,7 +54,12 @@ impl<T> RVec<T> {
     }
 
     #[lr::assume]
-    #[lr::ty(fn<len: int>(self: RVec<T>@len; ref<self>, usize{v : 0 <= v && v < len}, usize{v : 0 <= v && v < len}) -> i32@0; self: RVec<T>@len )]
+    #[lr::ty(
+        fn<len: int>
+        (self: RVec<T>@len; ref<self>, usize{v : 0 <= v && v < len}, usize{v : 0 <= v && v < len})
+        ->
+        i32@0; self: RVec<T>@len
+    )]
     pub fn swap(&mut self, a: usize, b: usize) -> i32 {
         self.inner.swap(a, b);
         0

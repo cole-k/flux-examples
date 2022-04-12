@@ -1,3 +1,7 @@
+#![allow(unused_attributes)]
+#![feature(register_tool)]
+#![register_tool(lr)]
+
 #[lr::opaque]
 #[lr::refined_by(rows: int, cols: int)]
 pub struct RMat<T> {

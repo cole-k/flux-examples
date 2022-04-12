@@ -1,3 +1,7 @@
+extern crate prusti_contracts;
+
+use prusti_contracts::*;
+
 pub struct VecWrapperFull {
     v: Vec<usize>,
 }
