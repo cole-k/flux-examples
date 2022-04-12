@@ -1,5 +1,6 @@
 import argparse
 import os
+import json
 
 def is_preamble(line):
     if line[0:7] == "pub mod":
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     lines = file.readlines()
 
     benchmark, _ = os.path.splitext(os.path.basename(args.file))
-    print(benchmark)
+    # print(benchmark)
 
     counts = {
         "lines": 0,
@@ -58,30 +59,32 @@ if __name__ == "__main__":
             if (stripped[0] != "/" or stripped[1] != "/") and stripped[:16] != "pub fn main() {}" and not is_preamble(stripped):
                 if stripped[0] == "#":
                     if is_prusti_annotation(stripped):
-                        print("Line {} is a prusti function contract".format(line_number))
+                        # print("Line {} is a prusti function contract".format(line_number))
                         counts['contract_lines'] = counts['contract_lines'] + 1
                         if not in_contract:
                             counts['function_contracts'] = counts['function_contracts'] + 1
                         in_contract = True
 
                     elif is_rustc_annotation(stripped):
-                        print("Line {} is a liquid-rust function contract".format(line_number))
+                        # print("Line {} is a liquid-rust function contract".format(line_number))
                         counts['contract_lines'] = counts['contract_lines'] + 1
                         if not in_contract:
                             counts['function_contracts'] = counts['function_contracts'] + 1
                         in_contract = True
 
                 elif stripped[:14] == "body_invariant":
-                    print("Line {} is a body_invariant".format(line_number))
+                    # print("Line {} is a body_invariant".format(line_number))
                     counts['invariant_lines'] = counts['invariant_lines'] + 1
                     if not in_invariant:
                         counts['loop_invariants'] = counts['loop_invariants'] + 1
                     in_invariant = True
 
                 else:
-                    print("Line {} is a line of code".format(line_number))
+                    # print("Line {} is a line of code".format(line_number))
                     in_contract = False
                     in_invariant = False
                     counts['lines'] = counts['lines'] + 1
 
-    print("{}, {}, {}, {}, {}, {}".format(benchmark, counts['lines'], counts['function_contracts'], counts['contract_lines'], counts['loop_invariants'], counts['invariant_lines']))
+    #print("{}, {}, {}, {}, {}, {}".format(benchmark, counts['lines'], counts['function_contracts'], counts['contract_lines'], counts['loop_invariants'], counts['invariant_lines']))
+
+    print(json.dumps(counts))
