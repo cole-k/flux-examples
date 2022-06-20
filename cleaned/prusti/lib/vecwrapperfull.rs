@@ -23,7 +23,7 @@ impl VecWrapperFull {
     #[trusted]
     #[requires(index < self.len())]
     #[ensures(self.len() == old(self.len()))]
-    #[ensures(forall(|i:usize| (i < self.len() && i != index) ==> self.lookup(i) < old(self.lookup(i))))]
+    #[ensures(forall(|i:usize| (i < self.len() && i != index) ==> self.lookup(i) == old(self.lookup(i))))]
     #[ensures(self.lookup(index) == value)]
     pub fn store(&mut self, index: usize, value: usize) {
         self.v[index] = value;
