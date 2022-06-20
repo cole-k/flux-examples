@@ -13,7 +13,7 @@ fn min_index(vec: VecWrapper<i32>) -> usize {
     let mut i = 0;
 
     while i < sz {
-        body_invariant!(res < sz);
+        body_invariant!(res < sz && i < sz);
 
         res = if vec.lookup(i) < vec.lookup(res) {
             i
@@ -25,5 +25,3 @@ fn min_index(vec: VecWrapper<i32>) -> usize {
     }
     res
 }
-
-pub fn main() {}

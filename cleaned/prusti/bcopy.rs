@@ -12,7 +12,7 @@ fn bcopy_aux(src: &VecWrapper<i32>, dst: &mut VecWrapper<i32>) {
     let mut i = 0;
     let n = src.len();
     while i < n {
-        body_invariant!(dst.len() == src.len());
+        body_invariant!(dst.len() == src.len() && i < src.len());
         dst.store(i, src.lookup(i));
         i += 1;
     }

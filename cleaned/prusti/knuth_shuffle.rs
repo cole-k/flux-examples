@@ -84,5 +84,3 @@ fn knuth_shuffle(v: &mut VecWrapper<i32>) {
 //     knuth_shuffle(&mut v);
 //     print_vector_after(&mut v);
 // }
-
-pub fn main() {}

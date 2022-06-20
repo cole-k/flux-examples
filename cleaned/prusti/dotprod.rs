@@ -12,6 +12,7 @@ pub fn dotprod(v1: &VecWrapper<i32>, v2:VecWrapper<i32>) -> i32 {
   let mut sum = 0;
   let mut i = 0;
   while i < n {
+    body_invariant!(i < v1.len());
     let x1 = v1.lookup(i);
     let x2 = v2.lookup(i);
     sum += x1 * x2;

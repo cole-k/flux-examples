@@ -15,6 +15,7 @@ pub fn binary_search(k: i32, items: &VecWrapper<i32>) -> usize {
   let mut high: usize = size - 1;
 
   while low <= high {
+      body_invariant!(low < size && high < size);
       // SAFE   let middle = (high + low) / 2;
       // let middle = high + ((high - low) / 2);
       let middle = low + ((high - low) / 2);

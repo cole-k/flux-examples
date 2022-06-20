@@ -20,7 +20,7 @@ fn kmp_table(p: &VecWrapper<char>) -> VecWrapperFull {
     let mut j = 0;
     while i < m {
         body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) < i));
-        body_invariant!(j < i);
+        body_invariant!(j < i && i < p.len());
         body_invariant!(t.len() == p.len());
 
         if p.lookup(i) == p.lookup(j) {
@@ -49,10 +49,10 @@ fn kmp_search(pattern: VecWrapper<char>, target: VecWrapper<char>) -> usize {
     let t = kmp_table(&pattern);
 
     while t_i < target_len && p_i < pattern_len {
-        body_invariant!(p_i < pattern.len());
+        body_invariant!(p_i < pattern.len() && t_i < target.len());
         body_invariant!(t.len() == pattern.len());
         body_invariant!(forall(|x: usize| x < t.len() ==> t.lookup(x) < pattern_len));
-        body_invariant!(result_idx <= t_i);
+        body_invariant!(result_idx < target.len());
 
         if target.lookup(t_i) == pattern.lookup(p_i) {
             if result_idx == 0 {

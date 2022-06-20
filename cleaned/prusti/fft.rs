@@ -50,24 +50,20 @@ pub fn fft(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
 #[ensures(py.len() == old(py.len()))]
 fn loop_a(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
   let n = px.len() - 1;
-  let px_len = px.len();
-  let py_len = py.len();
   let mut n2 = n;
-  let mut n4: usize = n / 4;
+  let mut n4 = n / 4;
 
   while 2 < n2 {
-    body_invariant!(n < px.len() && n < py.len());
-    body_invariant!(px.len() == px_len);
-    body_invariant!(py.len() == py_len);
+    body_invariant!(px.len() == n + 1);
+    body_invariant!(py.len() == n + 1);
     let e = two_pi() / float_of_int(n2);
     let e3 = 3.0 * e;
     let mut a: f32 =  0.0;
     let mut a3: f32 =  0.0;
     let mut j = 1;
     while j <= n4 {
-      body_invariant!(n < px.len() && n < py.len());
-      body_invariant!(py.len() == py_len);
-      body_invariant!(px.len() == px_len);
+      body_invariant!(py.len() == n + 1);
+      body_invariant!(px.len() == n + 1);
 
       let cc1 = cos(a);
       let ss1 = sin(a);
@@ -80,10 +76,8 @@ fn loop_a(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
       let mut id = 2 * n2;
 
       while is < n {
-        body_invariant!(n < px.len() && n < py.len());
-        body_invariant!(is < px.len());
-        body_invariant!(py.len() == py_len);
-        body_invariant!(px.len() == px_len);
+        body_invariant!(py.len() == n + 1);
+        body_invariant!(px.len() == n + 1);
 
         // INV 0 <= is, 0 <= n2 <= id
         let mut i0 = is;
@@ -93,11 +87,9 @@ fn loop_a(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
 
         while i3 <= n {
           // INV 0 <= i0 <= i1 <= i2 <= i3, 0 <= id
-          body_invariant!(n < px.len() && n < py.len());
-          body_invariant!(py.len() == py_len);
-          body_invariant!(px.len() == px_len);
-          body_invariant!(i0 <= i1 && i1 <= i2 && i2 <= i3);
-          body_invariant!(i3 < px.len());
+          body_invariant!(py.len() == n + 1);
+          body_invariant!(px.len() == n + 1);
+          body_invariant!(i0 < i1 && i1 < i2 && i2 < i3 && i3 <= n);
 
           let r1 = px.lookup(i0) - px.lookup(i2);
           let tmp = px.lookup(i0) - px.lookup(i2);
@@ -146,25 +138,20 @@ fn loop_a(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
 #[ensures(py.len() == old(py.len()))]
 fn loop_b(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
   let n = px.len() - 1;
-  let px_len = px.len();
-  let py_len = py.len();
 
   let mut is = 1;
   let mut id = 4;
 
   while is < n {
-    body_invariant!(n < px.len() && n < py.len());
-    body_invariant!(py.len() == py_len);
-    body_invariant!(px.len() == px_len);
+    body_invariant!(py.len() == n + 1);
+    body_invariant!(px.len() == n + 1);
 
     // INV: 0 <= is, 4 <= id
     let mut i0 = is;
     let mut i1 = is + 1;
     while i1 <= n {
-      body_invariant!(n < px.len() && n < py.len());
-      body_invariant!(i0 <= i1 && i1 < px.len());
-      body_invariant!(py.len() == py_len);
-      body_invariant!(px.len() == px_len);
+      body_invariant!(py.len() == n + 1);
+      body_invariant!(px.len() == n + 1);
 
       // INV: 0 <= i0 <= i1, 0 <= id
       let r1 = px.lookup(i0);
@@ -197,13 +184,10 @@ fn loop_c(px: &mut VecWrapper<f32>, py: &mut VecWrapper<f32>) {
   let n = px.len() - 1;
   let mut i = 1;
   let mut j = 1;
-  let px_len = px.len();
-  let py_len = py.len();
 
   while i < n {
-    body_invariant!(n < px.len() && n < py.len());
-    body_invariant!(px.len() == px_len);
-    body_invariant!(py.len() == py_len);
+    body_invariant!(px.len() == n + 1);
+    body_invariant!(py.len() == n + 1);
     body_invariant!(j <= n);
     // INV: 0 <= i, 0 <= j <= n
     if i < j {
@@ -315,4 +299,3 @@ pub fn doit() {
   }
 }
 
-pub fn main() {}
