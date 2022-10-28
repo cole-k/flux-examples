@@ -57,7 +57,7 @@ benchmark_list_flux = [
 #         print("Verifying " + current_benchmark + " failed...")
 #         print(stderr)
 
-def run_benchmark(benchmark, suite, prusti_server_address, flux_path):
+def run_benchmark(benchmark, suite, prusti_server_address, flux_path, prusti_rustc):
     proc = subprocess.run(
         "python count_lines.py " + benchmark,
         shell=True,
@@ -80,18 +80,18 @@ def run_benchmark(benchmark, suite, prusti_server_address, flux_path):
         
         benchmark_path = os.path.join(path, benchmark)
         verify = r"""
-proc = subprocess.run(r'cargo run -- --crate-type=lib {}', shell=True, capture_output=True)
+proc = subprocess.run(r'cargo run --release -- --crate-type=lib {}', shell=True, capture_output=True)
 if proc.returncode != 0:
     print("Verifying {} with FLUX failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))
 """.format(benchmark_path, benchmark)
     elif suite == Suites.PRUSTI:
         verify = r"""
-proc = subprocess.run(r'c:\Users\adam_\AppData\Roaming\Code\User\globalStorage\viper-admin.prusti-assistant\prustiTools\LatestRelease\prusti\prusti-rustc.exe -Pcheck_overflows=false -Coverflow-checks=off --crate-type=lib -Pserver_address={} {}, shell=True, capture_output=True)
+proc = subprocess.run(r'{} -Pcheck_overflows=false -Coverflow-checks=off --crate-type=lib -Pserver_address={} {}', shell=True, capture_output=True)
 if proc.returncode != 0:
     print("Verifying {} with Prusti failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))
-""".format(prusti_server_address, benchmark, benchmark)
+""".format(prusti_rustc, prusti_server_address, benchmark, benchmark)
 
     if suite == Suites.FLUX:
         os.chdir(flux_path)
@@ -106,7 +106,7 @@ if proc.returncode != 0:
 
     return counts
 
-def run_suite(suite, dir, prusti_server_address, flux_path):
+def run_suite(suite, dir, prusti_server_address, flux_path, prusti_rustc):
     stats = []
     if suite == Suites.FLUX:
         benchmark_list = benchmark_list_flux
@@ -116,7 +116,7 @@ def run_suite(suite, dir, prusti_server_address, flux_path):
         prefix = dir + "/prusti/"
 
     for benchmark in benchmark_list:
-        benchmark_stats = run_benchmark(prefix + benchmark, suite, prusti_server_address, flux_path)
+        benchmark_stats = run_benchmark(prefix + benchmark, suite, prusti_server_address, flux_path, prusti_rustc)
         stats.append((benchmark, benchmark_stats))
 
     return stats
@@ -145,13 +145,14 @@ if __name__ == "__main__":
     parser.add_argument("output", type=str)
     parser.add_argument("--prusti_server_address", type=str, default='"MOCK"')
     parser.add_argument("--flux_path", type=str, default='.')
+    parser.add_argument("--prusti_rustc", type=str, default='./prusti-rustc')
     args = parser.parse_args()
 
     if args.suites == Suites.BOTH or args.suites == Suites.FLUX:
-        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path)
+        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path, arts.prusti_rustc)
         dump_csv(flux_stats, Suites.FLUX, args.output)
 
     if args.suites == Suites.BOTH or args.suites == Suites.PRUSTI:
-        prusti_stats = run_suite(Suites.PRUSTI, args.directory, args.prusti_server_address, args.flux_path)
+        prusti_stats = run_suite(Suites.PRUSTI, args.directory, args.prusti_server_address, args.flux_path, args.prusti_rustc)
         dump_csv(prusti_stats, Suites.PRUSTI, args.output)
 
