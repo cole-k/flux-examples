@@ -8,7 +8,7 @@ import timeit
 from statistics import mean
 
 class Suites(Enum):
-    LR = "lr"
+    FLUX = "flux"
     PRUSTI = "prusti"
     BOTH = "both"
 
@@ -27,7 +27,7 @@ benchmark_list_prusti = [
     "kmeans.rs",
 ]
 
-benchmark_list_lr = [
+benchmark_list_flux = [
     "lib/rvec.rs",
     "bcopy.rs",
     "bsearch.rs",
@@ -57,7 +57,7 @@ benchmark_list_lr = [
 #         print("Verifying " + current_benchmark + " failed...")
 #         print(stderr)
 
-def run_benchmark(benchmark, suite, prusti_server_address, lr_path):
+def run_benchmark(benchmark, suite, prusti_server_address, flux_path):
     proc = subprocess.run(
         "python count_lines.py " + benchmark,
         shell=True,
@@ -76,13 +76,13 @@ def run_benchmark(benchmark, suite, prusti_server_address, lr_path):
 
     print(benchmark)
 
-    if suite == Suites.LR:
+    if suite == Suites.FLUX:
         
         benchmark_path = os.path.join(path, benchmark)
         verify = r"""
 proc = subprocess.run(r'cargo run -- --crate-type=lib {}', shell=True, capture_output=True)
 if proc.returncode != 0:
-    print("Verifying {} with LR failed...")
+    print("Verifying {} with FLUX failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))
 """.format(benchmark_path, benchmark)
     elif suite == Suites.PRUSTI:
@@ -93,38 +93,38 @@ if proc.returncode != 0:
     print(proc.stderr.decode("utf-8", "backslashreplace"))
 """.format(prusti_server_address, benchmark, benchmark)
 
-    if suite == Suites.LR:
-        os.chdir(lr_path)
+    if suite == Suites.FLUX:
+        os.chdir(flux_path)
 
     t = timeit.Timer(stmt = verify, setup = "import subprocess")
     times = t.repeat(repeat=5, number=1)
     print(times)
     counts['time'] = round(mean(times),2)
 
-    if suite == Suites.LR:
+    if suite == Suites.FLUX:
         os.chdir(path)
 
     return counts
 
-def run_suite(suite, dir, prusti_server_address, lr_path):
+def run_suite(suite, dir, prusti_server_address, flux_path):
     stats = []
-    if suite == Suites.LR:
-        benchmark_list = benchmark_list_lr
-        prefix = dir + "/lr/"
+    if suite == Suites.FLUX:
+        benchmark_list = benchmark_list_flux
+        prefix = dir + "/flux/"
     elif suite == Suites.PRUSTI:
         benchmark_list = benchmark_list_prusti
         prefix = dir + "/prusti/"
 
     for benchmark in benchmark_list:
-        benchmark_stats = run_benchmark(prefix + benchmark, suite, prusti_server_address, lr_path)
+        benchmark_stats = run_benchmark(prefix + benchmark, suite, prusti_server_address, flux_path)
         stats.append((benchmark, benchmark_stats))
 
     return stats
 
 def dump_csv(stats, suite, file):
     filename, ext = os.path.splitext(os.path.basename(file))
-    if suite == Suites.LR:
-        filename = filename + "_lr"
+    if suite == Suites.FLUX:
+        filename = filename + "_flux"
     elif suite == Suites.PRUSTI:
         filename = filename + "_prusti"
     
@@ -144,13 +144,14 @@ if __name__ == "__main__":
     parser.add_argument("suites", type=Suites, default=Suites.BOTH, choices=list(Suites))
     parser.add_argument("output", type=str)
     parser.add_argument("--prusti_server_address", type=str, default='"MOCK"')
-    parser.add_argument("--lr_path", type=str, default='.')
+    parser.add_argument("--flux_path", type=str, default='.')
     args = parser.parse_args()
 
-    if args.suites == Suites.BOTH or args.suites == Suites.LR:
-        lr_stats = run_suite(Suites.LR, args.directory, args.prusti_server_address, args.lr_path)
-        dump_csv(lr_stats, Suites.LR, args.output)
+    if args.suites == Suites.BOTH or args.suites == Suites.FLUX:
+        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path)
+        dump_csv(flux_stats, Suites.FLUX, args.output)
 
     if args.suites == Suites.BOTH or args.suites == Suites.PRUSTI:
-        prusti_stats = run_suite(Suites.PRUSTI, args.directory, args.prusti_server_address, args.lr_path)
+        prusti_stats = run_suite(Suites.PRUSTI, args.directory, args.prusti_server_address, args.flux_path)
         dump_csv(prusti_stats, Suites.PRUSTI, args.output)
+
