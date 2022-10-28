@@ -46,9 +46,7 @@ impl<T> RVec<T> {
     }
 
     #[flux::assume]
-    #[flux::sig(fn(self: &strg RVec<T>[@n]) -> T
-    		requires n > 0
-                ensures self: RVec<T>[n-1])]
+    #[flux::sig(fn(self: &strg {RVec<T>[@n] : n > 0}) -> T ensures self: RVec<T>[n-1])]
     pub fn pop(&mut self) -> T {
         self.inner.pop().unwrap()
     }
@@ -59,6 +57,7 @@ impl<T> RVec<T> {
         self.inner.swap(a, b);
     }
 
+    #[flux::assume]
     #[flux::sig(fn(T, n: usize) -> RVec<T>[n])]
     pub fn from_elem_n(elem: T, n: usize) -> Self
     where
