@@ -78,7 +78,7 @@ def run_benchmark(benchmark, suite, prusti_server_address, lr_path):
 
     if suite == Suites.LR:
         
-        benchmark_path = path + "\\" + benchmark
+        benchmark_path = os.path.join(path, benchmark)
         verify = r"""
 proc = subprocess.run(r'cargo run -- --crate-type=lib {}', shell=True, capture_output=True)
 if proc.returncode != 0:

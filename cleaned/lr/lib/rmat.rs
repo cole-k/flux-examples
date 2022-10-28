@@ -1,17 +1,18 @@
-#![allow(unused_attributes)]
 #![feature(register_tool)]
-#![register_tool(lr)]
+#![register_tool(flux)]
+#![allow(dead_code)]
 
-#[lr::opaque]
-#[lr::refined_by(rows: int, cols: int)]
+#[flux::opaque]
+#[flux::refined_by(rows: int, cols: int)]
 pub struct RMat<T> {
     inner: Vec<Vec<T>>,
 }
 
 impl<T> RMat<T> {
-
-    fn clone(n:usize, elem: T) -> Vec<T>
-    where T: Copy
+    #[flux::assume]
+    fn clone(n: usize, elem: T) -> Vec<T>
+    where
+        T: Copy,
     {
         let mut res = Vec::new();
         for _i in 0..n {
@@ -20,10 +21,11 @@ impl<T> RMat<T> {
         res
     }
 
-    #[lr::assume]
-    #[lr::sig(fn(rows: usize, cols: usize, elem: T) -> RMat<T>[rows, cols])]
+    #[flux::assume]
+    #[flux::sig(fn(rows: usize, cols: usize, T) -> RMat<T>[rows, cols])]
     pub fn new(rows: usize, cols: usize, elem: T) -> RMat<T>
-    where T: Copy
+    where
+        T: Copy,
     {
         let mut inner = Vec::new();
         for _i in 0..rows {
@@ -33,16 +35,15 @@ impl<T> RMat<T> {
         Self { inner }
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<m:int,n:int>(&RMat<T>@{m,n}, usize{v: 0 <= v && v < m}, usize{v:0 <= v && v < n}) -> &T)]
-    pub fn get(&self, i: usize, j:usize) -> &T {
+    #[flux::assume]
+    #[flux::sig(fn(&RMat<T>[@m, @n], usize{v: v < m}, usize{v: v < n}) -> &T)]
+    pub fn get(&self, i: usize, j: usize) -> &T {
         &self.inner[i][j]
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<m:int,n:int>(self: RMat<T>@{m,n}; ref<self>, usize{v: 0 <= v && v < m}, usize{v: 0 <= v && v < n}) -> &weak T; self: RMat<T>@{m,n})]
+    #[flux::assume]
+    #[flux::sig(fn(&mut RMat<T>[@m, @n], usize{v: v < m}, usize{v: v < n}) -> &mut T)]
     pub fn get_mut(&mut self, i: usize, j: usize) -> &mut T {
         &mut self.inner[i][j]
     }
-
 }

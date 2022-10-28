@@ -1,72 +1,65 @@
-#![allow(dead_code)]
-#![allow(unused_attributes)]
 #![feature(register_tool)]
-#![register_tool(lr)]
+#![register_tool(flux)]
+#![allow(dead_code)]
 
-#[lr::opaque]
-#[lr::refined_by(len: int)]
+#[flux::opaque]
+#[flux::refined_by(len: int)]
 pub struct RVec<T> {
     inner: Vec<T>,
 }
 
 impl<T> RVec<T> {
-    #[lr::assume]
-    #[lr::ty(fn() -> RVec<T> @ 0)]
+    #[flux::assume]
+    #[flux::sig(fn() -> RVec<T>[0])]
     pub fn new() -> Self {
         Self { inner: Vec::new() }
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<n: int>(self: RVec<T>@n; ref<self>, T) -> i32@0; self: RVec<T> @ {n + 1})]
-    pub fn push(&mut self, item: T) -> i32 {
+    #[flux::assume]
+    #[flux::sig(fn(self: &strg RVec<T>[@n], T) ensures self: RVec<T>[n+1])]
+    pub fn push(&mut self, item: T) {
         self.inner.push(item);
-        0
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len: int>(&RVec<T>@len) -> usize@len)]
+    #[flux::assume]
+    #[flux::sig(fn(&RVec<T>[@n]) -> usize[n])]
     pub fn len(&self) -> usize {
         self.inner.len()
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len: int>(&RVec<T>@len) -> bool@{len == 0})]
+    #[flux::assume]
+    #[flux::sig(fn(&RVec<T>[@n]) -> bool[n == 0])]
     pub fn is_empty(&self) -> bool {
         self.inner.is_empty()
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len:int>(&RVec<T>@len, usize{v: 0 <= v && v < len}) -> &T)]
+    #[flux::assume]
+    #[flux::sig(fn(&RVec<T>[@n], i: usize{i < n}) -> &T)]
     pub fn get(&self, i: usize) -> &T {
         &self.inner[i]
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len:int>(&weak RVec<T>@len, usize{v: 0 <= v && v < len}) -> &weak T)]
+    #[flux::assume]
+    #[flux::sig(fn(&mut RVec<T>[@n], i: usize{i < n}) -> &mut T)]
     pub fn get_mut(&mut self, i: usize) -> &mut T {
         &mut self.inner[i]
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len: int {len > 0}>(self: RVec<T>@len; ref<self>) -> T; self: RVec<T>@{len - 1})]
+    #[flux::assume]
+    #[flux::sig(fn(self: &strg RVec<T>[@n]) -> T
+    		requires n > 0
+                ensures self: RVec<T>[n-1])]
     pub fn pop(&mut self) -> T {
         self.inner.pop().unwrap()
     }
 
-    #[lr::assume]
-    #[lr::ty(
-        fn<len: int>
-        (self: RVec<T>@len; ref<self>, usize{v : 0 <= v && v < len}, usize{v : 0 <= v && v < len})
-        ->
-        i32@0; self: RVec<T>@len
-    )]
-    pub fn swap(&mut self, a: usize, b: usize) -> i32 {
+    #[flux::assume]
+    #[flux::sig(fn(&mut RVec<T>[@n], a: usize{a < n}, b: usize{b < n}))]
+    pub fn swap(&mut self, a: usize, b: usize) {
         self.inner.swap(a, b);
-        0
     }
 
-    #[lr::assume]
-    #[lr::ty(fn<len: int>(T, usize @ len) -> RVec<T>@len)]
+    #[flux::sig(fn(T, n: usize) -> RVec<T>[n])]
     pub fn from_elem_n(elem: T, n: usize) -> Self
     where
         T: Copy,

@@ -1,22 +1,18 @@
 #![feature(register_tool)]
-#![register_tool(lr)]
+#![register_tool(flux)]
 
 #[path = "lib/rvec.rs"]
 mod rvec;
 use rvec::RVec;
 
-#[lr::ty(fn<l: int{l > 0}>(RVec<i32>@l) -> usize{x: x < l})]
+#[flux::sig(fn({RVec<i32>[@l] : l > 0 }) -> usize{x: x < l})]
 pub fn min_index(vec: RVec<i32>) -> usize {
     let sz = vec.len();
     let mut res: usize = 0;
     let mut i: usize = 0;
 
     while i < sz {
-        res = if *vec.get(i) < *vec.get(res) {
-            i
-        } else {
-            res
-        };
+        res = if *vec.get(i) < *vec.get(res) { i } else { res };
 
         i = i + 1;
     }
