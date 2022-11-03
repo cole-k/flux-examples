@@ -149,7 +149,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.suites == Suites.BOTH or args.suites == Suites.FLUX:
-        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path, arts.prusti_rustc)
+        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path, args.prusti_rustc)
         dump_csv(flux_stats, Suites.FLUX, args.output)
 
     if args.suites == Suites.BOTH or args.suites == Suites.PRUSTI:
