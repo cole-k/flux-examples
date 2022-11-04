@@ -12,23 +12,13 @@ pub struct MatWrapper<T> {
 
 impl<T: PartialEq + Copy> MatWrapper<T> {
     #[trusted]
-    fn clone(n:usize, elem: T) -> Vec<T>
-    {
-        let mut res = Vec::new();
-        for _i in 0..n {
-            res.push(elem);
-        }
-        res
-    }
-
-    #[trusted]
     #[ensures(result.rows() == rows)]
     #[ensures(result.cols() == cols)]
     pub fn new(rows: usize, cols: usize, elem: T) -> MatWrapper<T>
     {
         let mut inner = Vec::new();
         for _i in 0..rows {
-            let r = Self::clone(cols, elem);
+            let r = vec![elem; cols];
             inner.push(r);
         }
         Self { inner }

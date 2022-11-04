@@ -80,7 +80,7 @@ def run_benchmark(benchmark, suite, prusti_server_address, flux_path, prusti_rus
         
         benchmark_path = os.path.join(path, benchmark)
         verify = r"""
-proc = subprocess.run(r'cargo run --release -- --crate-type=lib {}', shell=True, capture_output=True)
+proc = subprocess.run(r'cargo run -- --crate-type=lib {}', shell=True, capture_output=True)
 if proc.returncode != 0:
     print("Verifying {} with FLUX failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))

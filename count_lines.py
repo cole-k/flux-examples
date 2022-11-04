@@ -25,7 +25,7 @@ def is_prusti_annotation(annotation):
     return False
 
 def is_rustc_annotation(annotation):
-    if annotation[2:4] == "lr":
+    if annotation[2:6] == "flux":
         return True
     return False
 

@@ -2,7 +2,7 @@
 #![feature(register_tool)]
 #![register_tool(flux)]
 
-#[path = "lib/rmat.rs"]
+#[path = "lib/rmat-assumed.rs"]
 pub mod rmat;
 use rmat::RMat;
 
