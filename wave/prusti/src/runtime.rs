@@ -10,8 +10,7 @@ use prusti_contracts::*;
 use RuntimeError::*;
 
 impl VmCtx {
-    /// Check whether sandbox pointer is actually inside the sandbox
-    // TODO: can I eliminate this in favor os in_lin_mem_usize?
+    /// Check whether sandbox pointer is actually inside the sandbox    // TODO: can I eliminate this in favor os in_lin_mem_usize?
     #[pure]
     #[ensures((result == true) ==> (ptr as usize >= 0) && (ptr as usize) < self.memlen)]
     pub fn in_lin_mem(&self, ptr: SboxPtr) -> bool {
@@ -30,12 +29,11 @@ impl VmCtx {
     #[ensures(result == true ==>
         (buf >= 0) && (cnt >= 0) &&
         (buf as usize) + (cnt as usize) < self.memlen &&
-        (buf <= buf + cnt) //&&
-        // (cnt as usize) < self.memlen
+        (buf <= buf + cnt)
     )]
     pub fn fits_in_lin_mem(&self, buf: SboxPtr, cnt: u32) -> bool {
         let total_size = (buf as usize) + (cnt as usize);
-        if total_size >= self.memlen || total_size >= LINEAR_MEM_SIZE {
+        if total_size >= self.memlen {
             return false;
         }
         self.in_lin_mem(buf) && self.in_lin_mem(cnt) && buf <= buf + cnt
@@ -45,14 +43,11 @@ impl VmCtx {
     #[ensures(result == true ==>
         buf >= 0 && cnt >= 0 &&
         buf + cnt < self.memlen &&
-        (buf <= buf + cnt) //&&
-        // buf < self.memlen && cnt < self.memlen
-        //cnt < self.memlen
-        // buf + cnt < self.memlen
+        (buf <= buf + cnt)
     )]
     pub fn fits_in_lin_mem_usize(&self, buf: usize, cnt: usize) -> bool {
         let total_size = buf + cnt;
-        if total_size >= self.memlen || total_size >= LINEAR_MEM_SIZE {
+        if total_size >= self.memlen {
             return false;
         }
         self.in_lin_mem_usize(buf) && self.in_lin_mem_usize(cnt) && buf <= buf + cnt
@@ -90,14 +85,13 @@ impl VmCtx {
     }
 
     /// Copy arg buffer from from host to sandbox
-    #[requires(self.arg_buffer.len() == (n as usize) )]
+    #[requires(self.arg_buffer.len() == (n as usize))]
     #[requires(ctx_safe(self))]
     #[ensures(ctx_safe(self))]
     pub fn copy_arg_buffer_to_sandbox(&mut self, dst: SboxPtr, n: u32) -> RuntimeResult<()> {
         if !self.fits_in_lin_mem(dst, n) {
             return Err(Efault);
         }
-        // let arg_buffer = self.arg_buffer.clone();
         let arg_buffer = clone_vec_u8(&self.arg_buffer);
         self.memcpy_to_sandbox(dst, &arg_buffer, n);
         Ok(())
@@ -111,7 +105,6 @@ impl VmCtx {
         if !self.fits_in_lin_mem(dst, n) {
             return Err(Efault);
         }
-        // let env_buffer = self.env_buffer.clone();
         let env_buffer = clone_vec_u8(&self.env_buffer);
         self.memcpy_to_sandbox(dst, &env_buffer, n);
         Ok(())
@@ -139,21 +132,6 @@ impl VmCtx {
         resolve_path(host_buffer, should_follow, dirfd)
         // self.resolve_path(host_buffer)
     }
-
-    // FLUX pub fn get_homedir(&self) -> Vec<u8> {
-    // FLUX     string_to_vec_u8(&self.homedir)
-    // FLUX     // self.homedir.as_bytes().to_vec()
-    // FLUX }
-
-    // pub fn translate_homedir_fd() -> HostFd {
-    //     if v_fd != HOMEDIR_FD {
-    //         return Err(Enotcapable);
-    //     }
-    //     assert!(v_fd == HOMEDIR_FD);
-    //     let fd = ctx.homedir_host_fd;
-    // }
-
-    // TODO: replace read_x and write_x with faster raw ptr read/write
 
     #[requires(self.fits_in_lin_mem_usize(start, 2))]
     #[requires(ctx_safe(self))]
@@ -235,11 +213,11 @@ impl VmCtx {
             body_invariant!(native_iovs.len() == idx);
             body_invariant!(ctx_safe(self));
             body_invariant!(
-            forall(|idx: usize|  (idx >= 0 && idx < native_iovs.len()) ==> {
-            let wasm_iov = iovs.lookup(idx);
-            let iov = native_iovs.lookup(idx);
-            iov.iov_base == raw_ptr(self.mem.as_slice()) + (wasm_iov.iov_base as usize) &&
-            iov.iov_len == (wasm_iov.iov_len as usize)
+                forall(|idx: usize|  (idx >= 0 && idx < native_iovs.len()) ==> {
+                let wasm_iov = iovs.lookup(idx);
+                let iov = native_iovs.lookup(idx);
+                iov.iov_base == raw_ptr(self.mem.as_slice()) + (wasm_iov.iov_base as usize) &&
+                iov.iov_len == (wasm_iov.iov_len as usize)
             }));
 
             let iov = iovs.lookup(idx);

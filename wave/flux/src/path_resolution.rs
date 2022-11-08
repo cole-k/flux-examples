@@ -11,7 +11,6 @@ fn to_pathbuf(v: RVec<u8>) -> PathBuf {
     PathBuf::from(OsString::from_vec(v.to_vec()))
 }
 
-// FLUX-TODO: alias bug using RuntimeResult<FOwnedComponents> in output type
 #[flux::sig(fn (RVec<u8>, should_follow:bool, HostFd) -> Result<LastSymLink[should_follow], RuntimeError>)]
 fn expand_path(
     vec: RVec<u8>,

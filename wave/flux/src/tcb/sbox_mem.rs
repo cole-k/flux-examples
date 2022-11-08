@@ -2,7 +2,7 @@ use crate::rvec::RVec;
 use crate::types::{NativeIoVec, SboxPtr, VmCtx, WasmIoVec};
 
 impl VmCtx {
-    #[flux::sig(fn(&VmCtx[@base], WasmIoVec) -> NativeIoVecOk[base])]
+    #[flux::sig(fn(&VmCtx[@cx], WasmIoVec) -> NativeIoVecOk[cx.base])]
     pub fn translate_iov(&self, iov: WasmIoVec) -> NativeIoVec {
         let swizzled_base = self.raw + iov.iov_base as usize;
         NativeIoVec {

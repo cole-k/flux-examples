@@ -99,39 +99,11 @@ pub struct VmCtx {
     pub raw: usize, // TODO: valid_linmem (UIF)
     pub mem: Vec<u8>,
     pub memlen: usize,
-    // FLUX pub fdmap: FdMap,
-    // FLUX pub homedir: String,
-    // FLUX pub homedir_host_fd: HostFd,
-    // #[flux::field(RVec<u8>{v: v < TWO_POWER_20 })] TODO: flux issue #156
     pub arg_buffer: Vec<u8>,
-    // #[flux::field(RVec<u8>{v: v < TWO_POWER_20 })] TODO: flux issue #156
     pub env_buffer: Vec<u8>,
     pub envc: usize,
     pub argc: usize,
-    // FLUX pub netlist: Netlist,           TODO: UIF
 }
-/* src/tcb/verifier/spec.rs
-pub fn ctx_safe(ctx: &VmCtx) -> bool {
-    ctx.memlen == LINEAR_MEM_SIZE &&
-    ctx.argc < 1024 &&
-    ctx.envc < 1024 &&
-    ctx.arg_buffer.len() < 1024 * 1024 &&
-    ctx.env_buffer.len() < 1024 * 1024 &&
-    netlist_unmodified(&ctx.netlist) &&
-    valid_linmem(raw_ptr(ctx.mem.as_slice()))
-}
-*/
-
-// impl VmCtx {
-//     #[flux::sig(fn(&VmCtx[@base], &WasmIoVec) -> NativeIoVecOk[base])]
-//     pub fn translate_iov(&self, iov: &WasmIoVec) -> NativeIoVec {
-//         let swizzled_base = self.raw + as_usize(iov.iov_base);
-//         NativeIoVec {
-//             iov_base: swizzled_base,
-//             iov_len: as_usize(iov.iov_len),
-//         }
-//     }
-// }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct HostFd(usize);
