@@ -34,7 +34,6 @@ pub fn parse_iovs(ctx: &VmCtx, iovs: u32, iovcnt: u32) -> RuntimeResult<WasmIoVe
                 (buf as usize) + (cnt as usize) < LINEAR_MEM_SIZE &&
                 (buf <= buf + cnt)
             })
-
         );
 
         let start = (iovs + i * 8) as usize;

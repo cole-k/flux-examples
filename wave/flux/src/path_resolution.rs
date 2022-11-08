@@ -23,11 +23,11 @@ fn expand_path(
     let mut out_path = fresh_components();
     let mut num_symlinks = 0;
 
-    let n = components.len();
     let mut idx = 0;
-    for c in components {
+    while idx < components.len() {
+        let c = components[idx].clone();
         // if this is the last element, and we are NO_FOLLOW, then don't expand
-        if !should_follow && idx + 1 == n {
+        if !should_follow && idx + 1 == components.len() {
             out_path.push(c);
             break;
         }

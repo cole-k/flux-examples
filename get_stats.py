@@ -13,33 +13,37 @@ class Suites(Enum):
     BOTH = "both"
 
 benchmark_list_prusti = [
+    # Libraries
     "lib/vecwrapper.rs",
-    "bcopy.rs",
+    "lib/matwrapper.rs",
+    # Benchmarks
     "bsearch.rs",
     "dotprod.rs",
     "fft.rs",
     "heapsort.rs",
-    "kmp.rs",
-    "knuth_shuffle.rs",
-    "min_index.rs",
-    "lib/matwrapper.rs",
     "simplex.rs",
     "kmeans.rs",
+    "kmp.rs",
+    # "bcopy.rs",
+    # "knuth_shuffle.rs",
+    # "min_index.rs",
 ]
 
 benchmark_list_flux = [
+    # Libraries
     "lib/rvec.rs",
-    "bcopy.rs",
+    "lib/rmat.rs",
+    # Benchmarks
     "bsearch.rs",
     "dotprod.rs",
     "fft.rs",
     "heapsort.rs",
-    "kmp.rs",
-    "knuth_shuffle.rs",
-    "min_index.rs",
-    "lib/rmat.rs",
     "simplex.rs",
     "kmeans.rs",
+    "kmp.rs",
+    # "bcopy.rs",
+    # "knuth_shuffle.rs",
+    # "min_index.rs",
 ]
 
 # def prusti_run():
@@ -57,7 +61,7 @@ benchmark_list_flux = [
 #         print("Verifying " + current_benchmark + " failed...")
 #         print(stderr)
 
-def run_benchmark(benchmark, suite, prusti_server_address, flux_path, prusti_rustc):
+def run_benchmark(benchmark, suite, args):
     proc = subprocess.run(
         "python count_lines.py " + benchmark,
         shell=True,
@@ -73,6 +77,10 @@ def run_benchmark(benchmark, suite, prusti_server_address, flux_path, prusti_rus
     #print(stdout)
     counts = json.loads(stdout)
     path = os.getcwd()
+
+    if args.no_run:
+        counts['time'] = '-'
+        return counts
 
     print(benchmark)
 
@@ -91,10 +99,10 @@ proc = subprocess.run(r'{} -Pcheck_overflows=false -Coverflow-checks=off --crate
 if proc.returncode != 0:
     print("Verifying {} with Prusti failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))
-""".format(prusti_rustc, prusti_server_address, benchmark, benchmark)
+""".format(args.prusti_rustc, args.prusti_server_address, benchmark, benchmark)
 
     if suite == Suites.FLUX:
-        os.chdir(flux_path)
+        os.chdir(args.flux_path)
 
     t = timeit.Timer(stmt = verify, setup = "import subprocess")
     times = t.repeat(repeat=5, number=1)
@@ -106,17 +114,17 @@ if proc.returncode != 0:
 
     return counts
 
-def run_suite(suite, dir, prusti_server_address, flux_path, prusti_rustc):
+def run_suite(suite, args):
     stats = []
     if suite == Suites.FLUX:
         benchmark_list = benchmark_list_flux
-        prefix = dir + "/flux/"
+        prefix = args.directory + "/flux/"
     elif suite == Suites.PRUSTI:
         benchmark_list = benchmark_list_prusti
-        prefix = dir + "/prusti/"
+        prefix = args.directory + "/prusti/"
 
     for benchmark in benchmark_list:
-        benchmark_stats = run_benchmark(prefix + benchmark, suite, prusti_server_address, flux_path, prusti_rustc)
+        benchmark_stats = run_benchmark(prefix + benchmark, suite, args)
         stats.append((benchmark, benchmark_stats))
 
     return stats
@@ -124,9 +132,9 @@ def run_suite(suite, dir, prusti_server_address, flux_path, prusti_rustc):
 def dump_csv(stats, suite, file):
     filename, ext = os.path.splitext(os.path.basename(file))
     if suite == Suites.FLUX:
-        filename = filename + "_flux"
+        filename = filename + "_flux.csv"
     elif suite == Suites.PRUSTI:
-        filename = filename + "_prusti"
+        filename = filename + "_prusti.csv"
     
     output = os.path.dirname(file) + filename + ext
 
@@ -146,13 +154,14 @@ if __name__ == "__main__":
     parser.add_argument("--prusti_server_address", type=str, default='"MOCK"')
     parser.add_argument("--flux_path", type=str, default='.')
     parser.add_argument("--prusti_rustc", type=str, default='./prusti-rustc')
+    parser.add_argument("--no_run", default=False, action='store_true')
     args = parser.parse_args()
 
     if args.suites == Suites.BOTH or args.suites == Suites.FLUX:
-        flux_stats = run_suite(Suites.FLUX, args.directory, args.prusti_server_address, args.flux_path, args.prusti_rustc)
+        flux_stats = run_suite(Suites.FLUX, args)
         dump_csv(flux_stats, Suites.FLUX, args.output)
 
     if args.suites == Suites.BOTH or args.suites == Suites.PRUSTI:
-        prusti_stats = run_suite(Suites.PRUSTI, args.directory, args.prusti_server_address, args.flux_path, args.prusti_rustc)
+        prusti_stats = run_suite(Suites.PRUSTI, args)
         dump_csv(prusti_stats, Suites.PRUSTI, args.output)
 

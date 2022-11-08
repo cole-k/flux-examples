@@ -114,7 +114,7 @@ impl VmCtx {
     #[ensures(ctx_safe(self))]
     #[ensures(
         match &result {
-            Ok(v) => path_safe(&v, should_follow),/*vec_is_relative(&v) && (vec_depth(&v) >= 0) && (should_follow ==> !vec_is_symlink(&v))*/
+            Ok(v) => path_safe(&v, should_follow),
             _ => true,
         }
     )]
@@ -191,8 +191,7 @@ impl VmCtx {
     #[requires(ctx_safe(self))]
     #[requires(iovs.len() >= 0)]
     #[ensures(ctx_safe(self))]
-    #[ensures(
-        {
+    #[ensures({
         let mem_ptr = raw_ptr(self.mem.as_slice());
         let mem_len = self.memlen;
         iovs.len() == result.len() &&
@@ -202,8 +201,7 @@ impl VmCtx {
             iov.iov_base == raw_ptr(self.mem.as_slice()) + (wasm_iov.iov_base as usize) &&
             iov.iov_len == (wasm_iov.iov_len as usize)
         })
-    }
-    )]
+    })]
     pub fn translate_iovs(&self, iovs: &WasmIoVecs) -> NativeIoVecs {
         let mut idx = 0;
         let mut native_iovs = NativeIoVecs::new();
@@ -214,11 +212,12 @@ impl VmCtx {
             body_invariant!(ctx_safe(self));
             body_invariant!(
                 forall(|idx: usize|  (idx >= 0 && idx < native_iovs.len()) ==> {
-                let wasm_iov = iovs.lookup(idx);
-                let iov = native_iovs.lookup(idx);
-                iov.iov_base == raw_ptr(self.mem.as_slice()) + (wasm_iov.iov_base as usize) &&
-                iov.iov_len == (wasm_iov.iov_len as usize)
-            }));
+                    let wasm_iov = iovs.lookup(idx);
+                    let iov = native_iovs.lookup(idx);
+                    iov.iov_base == raw_ptr(self.mem.as_slice()) + (wasm_iov.iov_base as usize) &&
+                    iov.iov_len == (wasm_iov.iov_len as usize)
+                })
+            );
 
             let iov = iovs.lookup(idx);
             let native_iov = self.translate_iov(iov);
