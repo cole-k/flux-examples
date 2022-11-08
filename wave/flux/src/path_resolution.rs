@@ -22,14 +22,12 @@ fn expand_path(
 
     let mut out_path = fresh_components();
     let mut num_symlinks = 0;
-    let mut idx = 0;
 
-    while idx < components.len() {
-        // out_path should never contain symlinks
-        // FLUX-TODO: unsupported generic in Component : let comp = components[idx]; let c = OwnedComponent::from_borrowed(&comp);
-        let c = components[idx].clone();
+    let n = components.len();
+    let mut idx = 0;
+    for c in components {
         // if this is the last element, and we are NO_FOLLOW, then don't expand
-        if !should_follow && idx + 1 == components.len() {
+        if !should_follow && idx + 1 == n {
             out_path.push(c);
             break;
         }
@@ -49,7 +47,7 @@ fn expand_path(
     Ok(out_path)
 }
 
-#[flux::sig(fn (RVec<u8>, should_follow:bool, HostFd) -> Result<HostPathSafe[should_follow], RuntimeError>)]
+#[flux::sig(fn(RVec<u8>, should_follow:bool, HostFd) -> Result<HostPathSafe[should_follow], RuntimeError>)]
 pub fn resolve_path(
     path: RVec<u8>,
     should_follow: bool,
@@ -70,14 +68,14 @@ pub fn resolve_path(
     }
 
     match FOwnedComponents::unparse(c) {
-        Some(result_arr) => return Ok(result_arr),
-        _ => return Err(RuntimeError::Enametoolong),
+        Some(result_arr) => Ok(result_arr),
+        _ => Err(RuntimeError::Enametoolong),
     }
 }
 
 // Recursively expands a symlink (without explicit recursion)
 // maintains a queue of path components to process
-#[flux::sig(fn (out_path: &mut NoSymLinks, linkpath: FOwnedComponents, num_symlinks: &mut isize, HostFd))]
+#[flux::sig(fn(out_path: &mut NoSymLinks, linkpath: FOwnedComponents, num_symlinks: &mut isize, HostFd))]
 fn expand_symlink(
     out_path: &mut FOwnedComponents,
     linkpath_components: FOwnedComponents,

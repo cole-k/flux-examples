@@ -12,7 +12,6 @@ use RuntimeError::*;
             let iov = wasm_iovs.lookup(idx);
             let buf = iov.iov_base;
             let cnt = iov.iov_len;
-            // ctx.fits_in_lin_mem(buf, cnt, trace)
             (buf >= 0) && (cnt >= 0) &&
             (buf as usize) + (cnt as usize) < LINEAR_MEM_SIZE &&
             (buf <= buf + cnt)
@@ -20,7 +19,6 @@ use RuntimeError::*;
         _ => true,
     }
 )]
-// #[external_methods(push)]
 pub fn parse_iovs(ctx: &VmCtx, iovs: u32, iovcnt: u32) -> RuntimeResult<WasmIoVecs> {
     let mut i = 0;
     let mut wasm_iovs = WasmIoVecs::new();
@@ -32,7 +30,6 @@ pub fn parse_iovs(ctx: &VmCtx, iovs: u32, iovcnt: u32) -> RuntimeResult<WasmIoVe
                 let iov = wasm_iovs.lookup(idx);
                 let buf = iov.iov_base;
                 let cnt = iov.iov_len;
-                // ctx.fits_in_lin_mem(buf, cnt, trace)
                 (buf >= 0) && (cnt >= 0) &&
                 (buf as usize) + (cnt as usize) < LINEAR_MEM_SIZE &&
                 (buf <= buf + cnt)
@@ -41,8 +38,6 @@ pub fn parse_iovs(ctx: &VmCtx, iovs: u32, iovcnt: u32) -> RuntimeResult<WasmIoVe
         );
 
         let start = (iovs + i * 8) as usize;
-        //TODO: Once we fix ? operatior - fix this
-        //let (ptr, len) = ctx.read_u32_pair(start)?;
         let v = ctx.read_u32_pair(start);
         unwrap_result!(v);
         let (ptr, len) = v;
@@ -58,5 +53,6 @@ pub fn parse_iovs(ctx: &VmCtx, iovs: u32, iovcnt: u32) -> RuntimeResult<WasmIoVe
         i += 1;
     }
     assert!(wasm_iovs.len() >= 0);
+
     Ok(wasm_iovs)
 }

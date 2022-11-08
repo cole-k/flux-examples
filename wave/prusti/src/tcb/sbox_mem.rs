@@ -28,16 +28,7 @@ impl VmCtx {
     #[trusted]
     #[allow(unused_variables)]
     pub fn memcpy_from_sandbox(&self, dst: &mut Vec<u8>, src: SboxPtr, n: u32) {
-        // unsafe {
-        //     copy_nonoverlapping(
-        //         // TODO-FLUX: convert RVec to raw poi
-        //         self.mem.as_ptr().offset(src as isize),
-        //         dst.as_mut_ptr(),
-        //         n as usize,
-        //     );
-        //     dst.set_len(n as usize); // TODO: wrong, need to make sure copy_nonoverlapping actually copied it
-        // };
-        // do_effect!(effect!(ReadMem, src, n));
+        todo!()
     }
 
     #[requires(self.fits_in_lin_mem(dst, n))]
@@ -46,14 +37,7 @@ impl VmCtx {
     #[trusted]
     #[allow(unused_variables)]
     pub fn memcpy_to_sandbox(&mut self, dst: SboxPtr, src: &Vec<u8>, n: u32) {
-        // TODO
-        // unsafe {
-        //     copy_nonoverlapping(
-        //         src.as_ptr(),
-        //         self.mem.as_mut_ptr().offset(dst as isize),
-        //         n as usize,
-        //     )
-        // };
+        todo!()
     }
 }
 

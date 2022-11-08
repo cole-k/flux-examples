@@ -60,9 +60,6 @@ impl OwnedComponents {
             old(min_depth(&self)) == arr_depth(&v) &&
             old(is_symlink(&self)) == arr_is_symlink(&v) &&
             old(has_no_symlink_prefixes(&self))  == arr_has_no_symlink_prefixes(&v),
-            // forall(|i: usize|
-            //     (i < self.len()) ==>
-            //         (old(is_symlink(self.prefix(i))) == arr_is_symlink(v.prefix(i)) ))
             _ => true,
         }
     )]
