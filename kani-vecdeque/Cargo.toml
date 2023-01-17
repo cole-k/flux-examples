@@ -1,0 +1,10 @@
+
+[package]
+name = "vecdeque"
+version = "0.1.0"
+edition = "2021"
+description = "Flux port of https://github.com/model-checking/kani/blob/main/tests/cargo-kani/vecdeque-cve/"
+
+[lib]
+path = "src/lib.rs"
+crate_type = ["dylib", "rlib"]
