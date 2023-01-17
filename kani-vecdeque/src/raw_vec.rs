@@ -343,6 +343,8 @@ impl<T, A: Allocator> RawVec<T, A> {
     ///
     /// Aborts on OOM.
     #[cfg(not(no_global_oom_handling))]
+    #[flux::trusted]
+    #[flux::sig(fn (self: &strg RawVec<T, A>, len: usize, additional: usize) ensures self: RawVec<T, A>[len + additional])]
     pub fn reserve_exact(&mut self, len: usize, additional: usize) {
         handle_reserve(self.try_reserve_exact(len, additional));
     }
