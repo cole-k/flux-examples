@@ -529,7 +529,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
             self.buffer_write(tail, value);
         }
     }
-    */
+
     /// Appends an element to the back of the deque.
     ///
     /// # Examples
@@ -550,10 +550,10 @@ impl<T, A: Allocator> VecDeque<T, A> {
         }
 
         let head = self.head; // FLUX-TODO-PANIC: mysterious error: "type cannot be split"
-        self.head = self.wrap_add(self.head, 1);
+        self.head = self.wrap_add(head, 1);
         unsafe { self.buffer_write(head, value) }
     }
-
+    */
     // Double the buffer size. This method is inline(never), so we expect it to only
     // be called in cold paths.
     // This may panic or abort
