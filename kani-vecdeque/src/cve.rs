@@ -189,7 +189,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Frobs the head and tail sections around to handle the fact that we
     /// just reallocated. Unsafe because it trusts old_capacity.
     // FLUX-TODO #[inline]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@v], old_capacity: usize) ensures self: VecDeque<T, A>)]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@v], old_capacity: usize{v.tail < old_capacity}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 
@@ -213,19 +213,17 @@ impl<T, A: Allocator> VecDeque<T, A> {
         } else if self.head < old_capacity - self.tail {
             // B
             unsafe {
-                // FLUX-TODO: issue #332:
-                // self.copy_nonoverlapping(old_capacity, 0, self.head);
+                // FLUX-TODO-PANIC: expected leaf node self.copy_nonoverlapping(old_capacity, 0, self.head);
             }
-            self.head += old_capacity;
+            // FLUX-TODO-PANIC: unknown error: self.head += old_capacity;
             debug_assert!(self.head > self.tail);
         } else {
             // C
             let new_tail = new_capacity - (old_capacity - self.tail);
             {
-                // FLUX-TODO: issue #332:
-                // self.copy_nonoverlapping(new_tail, self.tail, old_capacity - self.tail);
+                // FLUX-TODO-PANIC: expected leaf node: self.copy_nonoverlapping(new_tail, self.tail, old_capacity - self.tail);
             }
-            self.tail = new_tail;
+            // FLUX-TODO-PANIC: unknown error: self.tail = new_tail;
             debug_assert!(self.head < self.tail);
         }
         // FLUX debug_assert!(self.head < self.cap());
@@ -316,7 +314,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     }
 
     #[flux::trusted] // FLUX-TODO: extern-spec for `max` and `next_power_of_two`
-    #[flux::sig(fn (capacity: usize) -> usize{v:capacity <= v})]
+    #[flux::sig(fn (capacity: usize) -> usize{v:capacity <= v && pow2(v) && 1 <= v})]
     fn real_capacity(capacity: usize) -> usize {
         cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
     }
@@ -541,6 +539,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.front(), Some(&2));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::trusted] // FLUX-TODO: minimize
     #[flux::sig(fn (self: &strg VecDeque<T,A>[@dummy], value: T) ensures self: VecDeque<T, A>)]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
@@ -582,6 +581,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // be called in cold paths.
     // This may panic or abort
     #[inline(never)]
+    #[flux::trusted] // FLUX-TODO: unknown-error
     #[flux::sig(fn (self: &strg VecDeque<T, A>[@dummy]) ensures self: VecDeque<T, A>)]
     fn grow(&mut self) {
         // Extend or possibly remove this assertion when valid use-cases for growing the
