@@ -544,7 +544,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
         }
 
         let head = self.head;
-        self.head = self.wrap_add(head, 1); // FLUX-TODO-PANIC: mysterious error:
+        self.head = self.wrap_add(self.head, 1);
         unsafe { self.buffer_write(head, value) }
     }
 
