@@ -141,7 +141,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
-    #[flux::trusted]
+    #[flux::trusted] // ptr
     #[flux::sig(fn (self: &VecDeque<T,A>[@me], dst: usize{dst + len <= me.cap}, src: usize{src + len <= me.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         debug_assert!(
@@ -604,12 +604,12 @@ fn is_power_of_two(n: usize) -> bool {
 #[flux::sig(fn(bool[true]))]
 fn assert(_: bool) {}
 
-#[flux::trusted] // FLUX-TODO: extern-spec for `max` and `next_power_of_two`
+#[flux::trusted] // extern-spec for `max` and `next_power_of_two`
 #[flux::sig(fn (capacity: usize) -> usize{v:capacity <= v && pow2(v) && 1 <= v})]
 fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
-#[flux::trusted] // FLUX-TODO: closure
+#[flux::trusted] // closure
 #[flux::sig(fn (old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
