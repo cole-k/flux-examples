@@ -19,6 +19,7 @@ use std::alloc::{Allocator, Global};
 pub use std::collections::vec_deque::*;
 use std::{cmp, mem, ptr};
 
+#[flux::constant]
 const INITIAL_CAPACITY: usize = 7; // 2^3 - 1
 const MINIMUM_CAPACITY: usize = 1; // 2 - 1
 
@@ -76,7 +77,6 @@ pub struct VecDeque<
     buf: RawVec<T, A>,
 }
 
-/* FLUX-TODO
 //#[stable(feature = "rust1", since = "1.0.0")]
 impl<T> Default for VecDeque<T> {
     /// Creates an empty deque.
@@ -85,7 +85,6 @@ impl<T> Default for VecDeque<T> {
         VecDeque::new()
     }
 }
-*/
 
 impl<T, A: Allocator> VecDeque<T, A> {
     /// Marginally more convenient
@@ -144,7 +143,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     #[inline]
     #[flux::trusted]
     #[flux::sig(fn (self: &VecDeque<T,A>[@me], dst: usize{dst + len <= me.cap}, src: usize{src + len <= me.cap}, len: usize))]
-    fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
+    unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         debug_assert!(
             dst + len <= self.cap(),
             "cno dst={} src={} len={} cap={}",
@@ -218,23 +217,21 @@ impl<T, A: Allocator> VecDeque<T, A> {
 }
 
 impl<T> VecDeque<T> {
-    /* FLUX-TODO
-       /// Creates an empty deque.
-       ///
-       /// # Examples
-       ///
-       /// ```
-       /// use std::collections::VecDeque;
-       ///
-       /// let deque: VecDeque<u32> = VecDeque::new();
-       /// ```
-       #[inline]
-       //#[stable(feature = "rust1", since = "1.0.0")]
-       #[must_use]
-       pub fn new() -> VecDeque<T> {
-           VecDeque::new_in(Global)
-       }
-    */
+    /// Creates an empty deque.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::collections::VecDeque;
+    ///
+    /// let deque: VecDeque<u32> = VecDeque::new();
+    /// ```
+    #[inline]
+    //#[stable(feature = "rust1", since = "1.0.0")]
+    #[must_use]
+    pub fn new() -> VecDeque<T> {
+        VecDeque::new_in(Global)
+    }
     /// Creates an empty deque with space for at least `capacity` elements.
     ///
     /// # Examples
@@ -254,7 +251,6 @@ impl<T> VecDeque<T> {
 }
 
 impl<T, A: Allocator> VecDeque<T, A> {
-    /* FLUX-TODO
     /// Creates an empty deque.
     ///
     /// # Examples
@@ -269,7 +265,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     fn new_in(alloc: A) -> VecDeque<T, A> {
         VecDeque::with_capacity_in(INITIAL_CAPACITY, alloc)
     }
-    */
 
     /// Creates an empty deque with space for at least `capacity` elements.
     ///
@@ -295,7 +290,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
         }
     }
 
-    /* FLUX-TODO
     /// Provides a reference to the element at the given index.
     ///
     /// Element at index 0 is the front of the queue.
@@ -312,6 +306,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf.get(1), Some(&4));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::trusted] // ptr
     pub fn get(&self, index: usize) -> Option<&T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
@@ -341,6 +336,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf[1], 7);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::trusted] // ptr
     pub fn get_mut(&mut self, index: usize) -> Option<&mut T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
@@ -349,7 +345,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
             None
         }
     }
-    */
 
     /// Returns the number of elements the deque can hold without
     /// reallocating.
@@ -393,7 +388,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
         // *** This is the issue! new_cap is related to underlying buffer, capacity() is not.
         if new_cap > old_cap
-        /* self.capacity() */
+        /* BUG self.capacity() */
         {
             self.buf.reserve_exact(used_cap, new_cap - used_cap);
             // new_cap <= self.cap, old_cap < new_cap => 2 * old_cap <= new_cap
@@ -438,7 +433,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
         self.tail == self.head
     }
 
-    /* FLUX-TODO
     /// Provides a reference to the front element, or `None` if the deque is
     /// empty.
     ///
@@ -516,14 +510,14 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.front(), Some(&2));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::trusted] // FLUX-TODO
     #[flux::sig(fn (self: &strg VecDeque<T,A>[@dummy], value: T) ensures self: VecDeque<T, A>)]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
             self.grow();
         }
 
-        self.tail = self.wrap_sub(self.tail, 1);
+        let tail = self.tail;
+        self.tail = self.wrap_sub(tail, 1);
         let tail = self.tail;
         unsafe {
             self.buffer_write(tail, value);
@@ -549,11 +543,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
             self.grow();
         }
 
-        let head = self.head; // FLUX-TODO-PANIC: mysterious error: "type cannot be split"
-        self.head = self.wrap_add(head, 1);
+        let head = self.head;
+        self.head = self.wrap_add(head, 1); // FLUX-TODO-PANIC: mysterious error:
         unsafe { self.buffer_write(head, value) }
     }
-    */
+
     // Double the buffer size. This method is inline(never), so we expect it to only
     // be called in cold paths.
     // This may panic or abort
