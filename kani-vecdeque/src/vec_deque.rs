@@ -89,7 +89,6 @@ impl<T> Default for VecDeque<T> {
 impl<T, A: Allocator> VecDeque<T, A> {
     /// Marginally more convenient
     #[inline]
-    #[flux::trusted] // pointers
     fn ptr(&self) -> *mut T {
         self.buf.ptr()
     }
@@ -109,7 +108,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Writes an element into the buffer, moving it.
     #[inline]
-    #[flux::trusted] // pointer
     #[flux::sig(fn (self: &mut VecDeque<T,A>[@me], off: usize{ off < me.cap }, value: T) )]
     unsafe fn buffer_write(&mut self, off: usize, value: T) {
         unsafe {
@@ -141,25 +139,26 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
-    #[flux::trusted] // ptr
     #[flux::sig(fn (self: &VecDeque<T,A>[@me], dst: usize{dst + len <= me.cap}, src: usize{src + len <= me.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
-        debug_assert!(
-            dst + len <= self.cap(),
-            "cno dst={} src={} len={} cap={}",
-            dst,
-            src,
-            len,
-            self.cap()
-        );
-        debug_assert!(
-            src + len <= self.cap(),
-            "cno dst={} src={} len={} cap={}",
-            dst,
-            src,
-            len,
-            self.cap()
-        );
+        assert(dst + len <= self.cap());
+        assert(src + len <= self.cap());
+        // debug_assert!(
+        //     dst + len <= self.cap(),
+        //     "cno dst={} src={} len={} cap={}",
+        //     dst,
+        //     src,
+        //     len,
+        //     self.cap()
+        // );
+        // debug_assert!(
+        //     src + len <= self.cap(),
+        //     "cno dst={} src={} len={} cap={}",
+        //     dst,
+        //     src,
+        //     len,
+        //     self.cap()
+        // );
         unsafe {
             ptr::copy_nonoverlapping(self.ptr().add(src), self.ptr().add(dst), len);
         }
@@ -306,7 +305,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf.get(1), Some(&4));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::trusted] // ptr
     pub fn get(&self, index: usize) -> Option<&T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
@@ -336,7 +334,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf[1], 7);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::trusted] // ptr
     pub fn get_mut(&mut self, index: usize) -> Option<&mut T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
