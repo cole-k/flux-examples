@@ -305,6 +305,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf.get(1), Some(&4));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::trusted] // ptr
     pub fn get(&self, index: usize) -> Option<&T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
@@ -334,6 +335,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf[1], 7);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::trusted]
     pub fn get_mut(&mut self, index: usize) -> Option<&mut T> {
         if index < self.len() {
             let idx = self.wrap_add(self.tail, index);
