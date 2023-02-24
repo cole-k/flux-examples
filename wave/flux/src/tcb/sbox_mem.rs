@@ -12,7 +12,7 @@ impl VmCtx {
     }
 
     // FLUX-TODO: capacity
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn(&VmCtx, &mut RVec<u8>[n], src: SboxPtr{src + n < LINEAR_MEM_SIZE}, n:u32{0 <= n}))]
     #[allow(unused_variables)]
     pub fn memcpy_from_sandbox(&self, dst: &mut RVec<u8>, src: SboxPtr, n: u32) {
@@ -20,7 +20,7 @@ impl VmCtx {
     }
 
     #[allow(unused_variables)]
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn(&mut VmCtx[@cx], dst: SboxPtr{dst + n < LINEAR_MEM_SIZE}, &RVec<u8>{sz:n <= sz}, n:u32))]
     pub fn memcpy_to_sandbox(&mut self, dst: SboxPtr, src: &RVec<u8>, n: u32) {
         todo!()

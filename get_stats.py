@@ -88,11 +88,11 @@ def run_benchmark(benchmark, suite, args):
         
         benchmark_path = os.path.join(path, benchmark)
         verify = r"""
-proc = subprocess.run(r'cargo run -- --crate-type=lib {}', shell=True, capture_output=True)
+proc = subprocess.run(r'{} --crate-type=lib {}', shell=True, capture_output=True)
 if proc.returncode != 0:
     print("Verifying {} with FLUX failed...")
     print(proc.stderr.decode("utf-8", "backslashreplace"))
-""".format(benchmark_path, benchmark)
+""".format(args.rustc_flux_path, benchmark_path, benchmark)
     elif suite == Suites.PRUSTI:
         verify = r"""
 proc = subprocess.run(r'{} -Pcheck_overflows=false -Coverflow-checks=off --crate-type=lib -Pserver_address={} {}', shell=True, capture_output=True)
@@ -101,16 +101,10 @@ if proc.returncode != 0:
     print(proc.stderr.decode("utf-8", "backslashreplace"))
 """.format(args.prusti_rustc, args.prusti_server_address, benchmark, benchmark)
 
-    if suite == Suites.FLUX:
-        os.chdir(args.flux_path)
-
     t = timeit.Timer(stmt = verify, setup = "import subprocess")
     times = t.repeat(repeat=5, number=1)
     print(times)
     counts['time'] = round(mean(times),2)
-
-    if suite == Suites.FLUX:
-        os.chdir(path)
 
     return counts
 
@@ -151,10 +145,10 @@ if __name__ == "__main__":
     parser.add_argument("directory", type=str, default=".")
     parser.add_argument("suites", type=Suites, default=Suites.BOTH, choices=list(Suites))
     parser.add_argument("output", type=str)
-    parser.add_argument("--prusti_server_address", type=str, default='"MOCK"')
-    parser.add_argument("--flux_path", type=str, default='.')
-    parser.add_argument("--prusti_rustc", type=str, default='./prusti-rustc')
-    parser.add_argument("--no_run", default=False, action='store_true')
+    parser.add_argument("--prusti-server-address", type=str, default='"MOCK"')
+    parser.add_argument("--rustc-flux-path", type=str, default='.')
+    parser.add_argument("--prusti-rustc", type=str, default='./prusti-rustc')
+    parser.add_argument("--no-run", default=False, action='store_true')
     args = parser.parse_args()
 
     if args.suites == Suites.BOTH or args.suites == Suites.FLUX:

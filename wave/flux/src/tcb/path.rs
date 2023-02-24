@@ -32,19 +32,19 @@ pub type NoSymLinks_ = FOwnedComponents;
 pub type LastSymLink_ = FOwnedComponents;
 
 impl FOwnedComponents {
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn (&FOwnedComponents[@self]) -> usize[self.size])]
     pub fn len(&self) -> usize {
         self.inner.len()
     }
 
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn (&FOwnedComponents[@self], idx:usize{0 <= idx && idx < self.size}) -> OwnedComponent)]
     pub fn lookup(&self, idx: usize) -> OwnedComponent {
         self.inner.lookup(idx)
     }
 
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn() -> FOwnedComponents[0, 0, 0, false])]
     pub fn new() -> FOwnedComponents {
         FOwnedComponents {
@@ -52,14 +52,14 @@ impl FOwnedComponents {
         }
     }
 
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn (self: &strg FOwnedComponents[@oc], OwnedComponent) -> ()
                 ensures self: FOwnedComponents{v: v.size == oc.size + 1 && v.ns_prefix == oc.ns_prefix} )]
     pub fn push(&mut self, value: OwnedComponent) {
         self.inner.push(value);
     }
 
-    #[flux::assume]
+    #[flux::trusted]
     #[flux::sig(fn (oc:FOwnedComponents) -> Option<HostPathOc[oc]>)]
     pub fn unparse(self) -> Option<HostPath> {
         let inner = self.inner.unparse()?;
@@ -68,7 +68,7 @@ impl FOwnedComponents {
 }
 
 // FLUX-TODO: unsupported projection
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn(&PathBuf) -> RVec<OwnedComponent>)]
 pub fn get_components(path: &PathBuf) -> RVec<OwnedComponent> {
     let mut components = RVec::new();
@@ -94,7 +94,7 @@ pub enum WasiProto {
 }
 
 // If the first component is not the rootdir or a prefix (like Windows C://) its relative
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn(&{FOwnedComponents[@oc] : oc.size > 0}) -> bool[oc.is_relative])]
 pub fn is_relative(c: &FOwnedComponents) -> bool {
     let start = c.inner.lookup(0);
@@ -104,7 +104,7 @@ pub fn is_relative(c: &FOwnedComponents) -> bool {
 // use really big negative number instead of option because the verifier does not like returning options from pure code
 // apparently I can make it pure or I can make it untrusted but I cannot do both
 
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn (&FOwnedComponents[@oc]) -> isize[oc.depth])]
 pub fn min_depth(components: &FOwnedComponents) -> isize {
     let mut curr_depth = 0;
@@ -132,7 +132,7 @@ pub fn min_depth(components: &FOwnedComponents) -> isize {
     curr_depth
 }
 
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn (HostFd, &FOwnedComponents[@oc]) -> Option<{FOwnedComponents: oc.ns_prefix == oc.size}>)]
 fn read_linkat_h(dirfd: HostFd, out_path: &FOwnedComponents) -> Option<FOwnedComponents> {
     let inner = readlinkat(dirfd.to_raw(), &out_path.inner.as_pathbuf())
@@ -144,7 +144,7 @@ fn read_linkat_h(dirfd: HostFd, out_path: &FOwnedComponents) -> Option<FOwnedCom
 // Looks at a single component of a path:
 // if it is a symlink, return the linkpath.
 // else, we just append the value to out_path
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn (HostFd, &mut NoSymLinks, OwnedComponent, &mut isize) -> Option<FOwnedComponents>)]
 pub fn maybe_expand_component(
     dirfd: HostFd,
@@ -161,7 +161,7 @@ pub fn maybe_expand_component(
     return None;
 }
 
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn () -> FOwnedComponents[0, 0, 0, false])]
 pub fn fresh_components() -> FOwnedComponents {
     FOwnedComponents {

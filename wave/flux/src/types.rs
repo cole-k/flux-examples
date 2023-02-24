@@ -98,7 +98,7 @@ impl HostFd {
 // Various rust features that are not supported by flux
 //////////////////////////////////////////////////////////////////////////////
 
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn (&RVec<T>) -> usize{v:0<=v})]
 pub fn raw_ptr<T>(_v: &RVec<T>) -> usize {
     unimplemented!()

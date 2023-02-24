@@ -94,7 +94,7 @@ pub fn depart_var(m: usize, n: usize, arr2: &RMat<f32>, j: usize, i0: usize, r0:
     i
 }
 
-#[flux::assume]
+#[flux::trusted]
 #[flux::sig(fn () -> usize{x: false})]
 pub fn die() -> usize {
     unimplemented!();
