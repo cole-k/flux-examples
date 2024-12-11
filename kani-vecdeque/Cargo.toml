@@ -8,3 +8,9 @@ description = "Flux port of https://github.com/model-checking/kani/blob/main/tes
 [lib]
 path = "src/lib.rs"
 crate_type = ["dylib", "rlib"]
+
+[dependencies]
+flux-rs = { git  = "https://github.com/flux-rs/flux.git" }
+
+[package.metadata.flux]
+enabled = true

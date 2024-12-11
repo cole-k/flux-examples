@@ -7,12 +7,10 @@
 #![feature(core_intrinsics)]
 #![feature(ptr_internals)]
 #![feature(rustc_allow_const_fn_unstable)]
-#![feature(register_tool)]
-#![register_tool(flux)]
 #![allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
 #![allow(unused_comparisons)]
-#![feature(custom_inner_attributes)]
-#![flux::defs {
+use flux_rs::*;
+#[flux::defs {
     fn pow2(x:int) -> bool;
     fn size(n:int) -> bool { pow2(n) && 1 <= n }
   }]
