@@ -1,5 +1,6 @@
 //! Modified version of std RawVec
 // #![flux::ignore]
+use flux_rs::*;
 
 use core::alloc::LayoutError;
 use core::cmp;
@@ -50,7 +51,7 @@ enum AllocInit {
 #[allow(missing_debug_implementations)]
 pub(crate) struct RawVec<T, A: Allocator = Global> {
     ptr: Unique<T>,
-    #[flux::field(usize[@cap])]
+    #[flux::field(usize[cap])]
     cap: usize,
     alloc: A,
 }
