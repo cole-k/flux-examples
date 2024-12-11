@@ -11,6 +11,7 @@
 //! container. It also has *O*(1) indexing like a vector. The contained elements
 //! are not required to be copyable, and the queue will be sendable if the
 //! contained type is sendable.
+use flux_rs::*;
 
 #[allow(unsafe_op_in_unsafe_fn)]
 // use core::slice;
@@ -19,11 +20,11 @@ use std::alloc::{Allocator, Global};
 pub use std::collections::vec_deque::*;
 use std::{cmp, mem, ptr};
 
-#[flux::constant]
+// #[flux::constant]
 const INITIAL_CAPACITY: usize = 7; // 2^3 - 1
 const MINIMUM_CAPACITY: usize = 1; // 2 - 1
 
-#[flux::constant]
+// #[flux::constant]
 const MAXIMUM_ZST_CAPACITY: usize = 1 << (usize::BITS - 1); // Largest possible power of two
 
 #[flux::alias(type Size() = usize{v: pow2(v) && 1<=v })]
@@ -69,11 +70,11 @@ pub struct VecDeque<
     // to where data should be written.
     // If tail == head the buffer is empty. The length of the ringbuffer
     // is defined as the distance between the two.
-    #[flux::field({ usize[@tail] : tail < cap })]
+    #[flux::field({ usize[tail] | tail < cap })]
     tail: usize,
-    #[flux::field({ usize[@head] : head < cap })]
+    #[flux::field({ usize[head] | head < cap })]
     head: usize,
-    #[flux::field({ RawVec<T,A>[@cap] : pow2(cap) && 1 <= cap } )]
+    #[flux::field({ RawVec<T, A>[cap] | pow2(cap) && 1 <= cap } )]
     buf: RawVec<T, A>,
 }
 
@@ -95,8 +96,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Marginally more convenient
     #[inline]
-    #[flux::trusted] // ZST funkiness
-    #[flux::sig(fn (self: &VecDeque<T,A>[@me]) -> usize{v : v == me.cap && size(v) })]
     fn cap(&self) -> usize {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
@@ -108,7 +107,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Writes an element into the buffer, moving it.
     #[inline]
-    #[flux::sig(fn (self: &mut VecDeque<T,A>[@me], off: usize{ off < me.cap }, value: T) )]
     unsafe fn buffer_write(&mut self, off: usize, value: T) {
         unsafe {
             ptr::write(self.ptr().add(off), value);
@@ -124,7 +122,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Returns the index in the underlying buffer for a given logical element
     /// index + addend.
     #[inline]
-    #[flux::sig(fn (self: &VecDeque<T,A>[@me], idx: usize, addend: usize) -> usize{v : v < me.cap})]
     fn wrap_add(&self, idx: usize, addend: usize) -> usize {
         wrap_index(idx.wrapping_add(addend), self.cap())
     }
@@ -132,14 +129,12 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Returns the index in the underlying buffer for a given logical element
     /// index - subtrahend.
     #[inline]
-    #[flux::sig(fn (self: &VecDeque<T,A>[@me], idx: usize, subtrahend: usize) -> usize{v : v < me.cap})]
     fn wrap_sub(&self, idx: usize, subtrahend: usize) -> usize {
         wrap_index(idx.wrapping_sub(subtrahend), self.cap())
     }
 
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
-    #[flux::sig(fn (self: &VecDeque<T,A>[@me], dst: usize{dst + len <= me.cap}, src: usize{src + len <= me.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         assert(dst + len <= self.cap());
         assert(src + len <= self.cap());
@@ -167,7 +162,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Frobs the head and tail sections around to handle the fact that we
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@v], old_capacity: usize{v.tail < old_capacity && 2 * old_capacity <= v.cap}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 
@@ -243,7 +237,6 @@ impl<T> VecDeque<T> {
     #[inline]
     //#[stable(feature = "rust1", since = "1.0.0")]
     #[must_use]
-    #[flux::sig(fn(capacity: usize{capacity < MAXIMUM_ZST_CAPACITY}) -> VecDeque<T>)]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
     }
@@ -275,7 +268,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// let deque: VecDeque<u32> = VecDeque::with_capacity(10);
     /// ```
     //#[unstable(feature = "allocator_api", issue = "32838")]
-    #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capacity <= v.cap})]
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
         assert(capacity < MAXIMUM_ZST_CAPACITY);
@@ -379,7 +371,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert!(buf.capacity() >= 11);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (self: &strg VecDeque<T, A>[@me], additional: usize) ensures self: VecDeque<T,A>)]
     pub fn reserve(&mut self, additional: usize) {
         let old_cap = self.cap();
         let used_cap = self.len() + 1;
@@ -410,7 +401,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(deque.len(), 1);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
     pub fn len(&self) -> usize {
         count(self.tail, self.head, self.cap())
     }
@@ -509,7 +499,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.front(), Some(&2));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@dummy], value: T) ensures self: VecDeque<T, A>)]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -536,7 +525,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(3, *buf.back().unwrap());
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@me], value: T) ensures self: VecDeque<T,A>)]
     pub fn push_back(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -551,7 +539,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // be called in cold paths.
     // This may panic or abort
     #[inline(never)]
-    #[flux::sig(fn (self: &strg VecDeque<T, A>[@dummy]) ensures self: VecDeque<T, A>)]
     fn grow(&mut self) {
         // Extend or possibly remove this assertion when valid use-cases for growing the
         // buffer without it being full emerge
@@ -570,8 +557,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
 /// Returns the index in the underlying buffer for a given logical element index.
 #[inline]
-#[flux::trusted] // bitvectors
-#[flux::sig(fn (index: usize, size:Size) -> usize{v: v < size})]
 fn wrap_index(index: usize, size: _Size) -> usize {
     // size is always a power of 2
     assert(is_power_of_two(size));
@@ -580,21 +565,16 @@ fn wrap_index(index: usize, size: _Size) -> usize {
 
 /// Calculate the number of elements left to be read in the buffer
 #[inline]
-#[flux::sig(fn (tail: usize, head: usize, size: Size) -> usize{v: v < size})]
 fn count(tail: usize, head: usize, size: usize) -> usize {
     // size is always a power of 2
     // (head.wrapping_sub(tail)) & (size - 1)
     wrap_index(head.wrapping_sub(tail), size)
 }
 
-#[flux::trusted] // exponents
-#[flux::sig(fn (n:usize{pow2(n)}) -> bool{v: pow2(2*n)})]
 fn lem_power_two(_: usize) -> bool {
     true
 }
 
-#[flux::trusted] // exponents
-#[flux::sig(fn (n:usize) -> bool[pow2(n)])]
 fn is_power_of_two(n: usize) -> bool {
     // n.count_ones() == 1
     n.is_power_of_two()
@@ -603,13 +583,10 @@ fn is_power_of_two(n: usize) -> bool {
 #[flux::sig(fn(bool[true]))]
 fn assert(_: bool) {}
 
-#[flux::trusted] // extern-spec for `max` and `next_power_of_two`
-#[flux::sig(fn (capacity: usize) -> usize{v:capacity <= v && pow2(v) && 1 <= v})]
 fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
-#[flux::trusted] // closure
-#[flux::sig(fn (old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
+
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
         .checked_add(additional)
