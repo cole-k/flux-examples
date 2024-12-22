@@ -272,6 +272,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// let deque: VecDeque<u32> = VecDeque::with_capacity(10);
     /// ```
     //#[unstable(feature = "allocator_api", issue = "32838")]
+    #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capacity <= v.cap})]
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
         // TODO: Uncomment
