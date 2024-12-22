@@ -432,6 +432,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     // The constraints on this method are much the same as those on
     // `grow_amortized`, but this method is usually instantiated less often so
     // it's less critical.
+    #[flux::trusted]
     fn grow_exact(&mut self, len: usize, additional: usize) -> Result<(), TryReserveError> {
         if mem::size_of::<T>() == 0 {
             // Since we return a capacity of `usize::MAX` when the type size is
