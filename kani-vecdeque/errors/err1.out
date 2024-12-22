@@ -1,0 +1,299 @@
+warning: `crate_type` is deprecated in favor of `crate-type` and will not work in the 2024 edition
+(in the `vecdeque` library target)
+    Checking vecdeque v0.1.0 (/Users/cole/git/flux-examples/kani-vecdeque)
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:571:13
+    |
+571 |     index & (size - 1)
+    |             ^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:120:9
+    |
+120 |         self.cap() - self.len() == 1
+    |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:188:31
+    |
+188 |         } else if self.head < old_capacity - self.tail {
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:198:43
+    |
+198 |             let new_tail = new_capacity - (old_capacity - self.tail);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:198:28
+    |
+198 |             let new_tail = new_capacity - (old_capacity - self.tail);
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:201:58
+    |
+201 |                 self.copy_nonoverlapping(new_tail, tail, old_capacity - tail); // FLUX-PANIC: self.tail -> tail
+    |                                                          ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:203:13
+    |
+203 |             self.tail = new_tail;
+    |             ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:194:13
+    |
+194 |             self.head += old_capacity;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:245:9
+    |
+245 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:37
+    |
+275 |     #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capaci...
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:245:9
+    |
+245 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:72
+    |
+275 |     #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capaci...
+    |                                                                        ^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:288:5
+    |
+288 |     }
+    |     ^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:148
+    |
+275 | ... 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capacity <= v.cap})]
+    |                                                                      ^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:360:9
+    |
+360 |         self.cap() - 1
+    |         ^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:389:46
+    |
+389 |             self.buf.reserve_exact(used_cap, new_cap - used_cap);
+    |                                              ^^^^^^^^^^^^^^^^^^
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:389:13
+    |
+389 |             self.buf.reserve_exact(used_cap, new_cap - used_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:392:17
+    |
+392 |                 self.handle_capacity_increase(old_cap);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:514:9
+    |
+514 |         self.tail = self.wrap_sub(tail, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:517:13
+    |
+517 |             self.buffer_write(tail, value);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:540:9
+    |
+540 |         self.head = self.wrap_add(self.head, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:541:18
+    |
+541 |         unsafe { self.buffer_write(head, value) }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:553:9
+    |
+553 |         self.buf.reserve_exact(old_cap, old_cap);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:559:13
+    |
+559 |             self.handle_capacity_increase(old_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error: could not compile `vecdeque` (lib) due to 21 previous errors
+[1]  + 38234 exit 101   RUSTFLAGS="-Awarnings" cargo flux
+^C
+ ~/git/flux-examples/kani-vecdeque  RUSTFLAGS="-Awarnings" cargo flux | pbcopy                                                                INT ✘  15:42:31
+warning: `crate_type` is deprecated in favor of `crate-type` and will not work in the 2024 edition
+(in the `vecdeque` library target)
+    Checking vecdeque v0.1.0 (/Users/cole/git/flux-examples/kani-vecdeque)
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:571:13
+    |
+571 |     index & (size - 1)
+    |             ^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:120:9
+    |
+120 |         self.cap() - self.len() == 1
+    |         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:188:31
+    |
+188 |         } else if self.head < old_capacity - self.tail {
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:198:43
+    |
+198 |             let new_tail = new_capacity - (old_capacity - self.tail);
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:198:28
+    |
+198 |             let new_tail = new_capacity - (old_capacity - self.tail);
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:201:58
+    |
+201 |                 self.copy_nonoverlapping(new_tail, tail, old_capacity - tail); // FLUX-PANIC: self.tail -> tail
+    |                                                          ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:203:13
+    |
+203 |             self.tail = new_tail;
+    |             ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:194:13
+    |
+194 |             self.head += old_capacity;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:245:9
+    |
+245 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:37
+    |
+275 |     #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capaci...
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:245:9
+    |
+245 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:72
+    |
+275 |     #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capaci...
+    |                                                                        ^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:288:5
+    |
+288 |     }
+    |     ^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:275:148
+    |
+275 | ... 1}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capacity <= v.cap})]
+    |                                                                      ^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:360:9
+    |
+360 |         self.cap() - 1
+    |         ^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:389:46
+    |
+389 |             self.buf.reserve_exact(used_cap, new_cap - used_cap);
+    |                                              ^^^^^^^^^^^^^^^^^^
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:389:13
+    |
+389 |             self.buf.reserve_exact(used_cap, new_cap - used_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:392:17
+    |
+392 |                 self.handle_capacity_increase(old_cap);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:514:9
+    |
+514 |         self.tail = self.wrap_sub(tail, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:517:13
+    |
+517 |             self.buffer_write(tail, value);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:540:9
+    |
+540 |         self.head = self.wrap_add(self.head, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:541:18
+    |
+541 |         unsafe { self.buffer_write(head, value) }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:553:9
+    |
+553 |         self.buf.reserve_exact(old_cap, old_cap);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:559:13
+    |
+559 |             self.handle_capacity_increase(old_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error: could not compile `vecdeque` (lib) due to 21 previous errors

@@ -591,6 +591,8 @@ fn is_power_of_two(n: usize) -> bool {
 #[flux::sig(fn(bool[true]))]
 fn assert(_: bool) {}
 
+#[flux::trusted]
+#[flux::sig(fn(capacity: usize) -> usize{v: v >= 1 && pow2(v)})]
 fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
