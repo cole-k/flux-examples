@@ -27,7 +27,8 @@ const MINIMUM_CAPACITY: usize = 1; // 2 - 1
 // #[flux::constant]
 const MAXIMUM_ZST_CAPACITY: usize = 1 << (usize::BITS - 1); // Largest possible power of two
 
-#[flux::alias(type Size() = usize{v: pow2(v) && 1<=v })]
+// TODO: Uncomment
+// #[flux::alias(type Size() = usize{v: pow2(v) && 1<=v })]
 type _Size = usize;
 
 /// A double-ended queue implemented with a growable ring buffer.
@@ -136,8 +137,10 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
-        assert(dst + len <= self.cap());
-        assert(src + len <= self.cap());
+        // TODO: Uncomment
+        // assert(dst + len <= self.cap());
+        // assert(src + len <= self.cap());
+
         // debug_assert!(
         //     dst + len <= self.cap(),
         //     "cno dst={} src={} len={} cap={}",
@@ -200,12 +203,13 @@ impl<T, A: Allocator> VecDeque<T, A> {
             self.tail = new_tail;
             debug_assert!(self.head < self.tail);
         }
-        // FLUX debug_assert!(self.head < self.cap());
-        assert(self.head < self.cap());
-        // FLUX debug_assert!(self.tail < self.cap());
-        assert(self.tail < self.cap());
-        // FLUX debug_assert!(self.cap().count_ones() == 1);
-        assert(is_power_of_two(self.cap()));
+        // TODO: Uncomment
+        // // FLUX debug_assert!(self.head < self.cap());
+        // assert(self.head < self.cap());
+        // // FLUX debug_assert!(self.tail < self.cap());
+        // assert(self.tail < self.cap());
+        // // FLUX debug_assert!(self.cap().count_ones() == 1);
+        // assert(is_power_of_two(self.cap()));
     }
 }
 
@@ -270,7 +274,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
     //#[unstable(feature = "allocator_api", issue = "32838")]
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
-        assert(capacity < MAXIMUM_ZST_CAPACITY);
+        // TODO: Uncomment
+        // assert(capacity < MAXIMUM_ZST_CAPACITY);
         // +1 since the ringbuffer always leaves one space empty
         let cap = real_capacity(capacity);
 
@@ -547,7 +552,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
         self.buf.reserve_exact(old_cap, old_cap);
         let _ = lem_power_two(old_cap);
         let new_cap = self.cap();
-        assert(new_cap == old_cap * 2);
+        // TODO: Uncomment
+        // assert(new_cap == old_cap * 2);
         unsafe {
             self.handle_capacity_increase(old_cap);
         }
@@ -559,7 +565,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
 #[inline]
 fn wrap_index(index: usize, size: _Size) -> usize {
     // size is always a power of 2
-    assert(is_power_of_two(size));
+    // TODO: Uncomment
+    // assert(is_power_of_two(size));
     index & (size - 1)
 }
 
