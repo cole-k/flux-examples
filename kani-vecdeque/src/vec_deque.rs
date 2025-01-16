@@ -27,9 +27,8 @@ const MINIMUM_CAPACITY: usize = 1; // 2 - 1
 // #[flux::constant]
 const MAXIMUM_ZST_CAPACITY: usize = 1 << (usize::BITS - 1); // Largest possible power of two
 
-// TODO: Uncomment
-// #[flux::alias(type Size() = usize{v: pow2(v) && 1<=v })]
-type _Size = usize;
+#[flux::alias(type Size = usize{v: pow2(v) && 1<=v })]
+type Size = usize;
 
 /// A double-ended queue implemented with a growable ring buffer.
 ///
@@ -564,7 +563,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
 /// Returns the index in the underlying buffer for a given logical element index.
 #[inline]
-fn wrap_index(index: usize, size: _Size) -> usize {
+#[flux::sig(fn(index: usize, size: Size) -> usize)]
+fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
     // TODO: Uncomment
     // assert(is_power_of_two(size));
@@ -573,7 +573,7 @@ fn wrap_index(index: usize, size: _Size) -> usize {
 
 /// Calculate the number of elements left to be read in the buffer
 #[inline]
-fn count(tail: usize, head: usize, size: usize) -> usize {
+fn count(tail: usize, head: usize, size: Size) -> usize {
     // size is always a power of 2
     // (head.wrapping_sub(tail)) & (size - 1)
     wrap_index(head.wrapping_sub(tail), size)
