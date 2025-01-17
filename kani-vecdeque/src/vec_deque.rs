@@ -96,7 +96,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Marginally more convenient
     #[inline]
-    fn cap(&self) -> usize {
+    // TODO: remove trusted. Right now this signature is not strictly
+    // accurate due to ZST nonsense, although it would be without it.
+    #[flux::trusted]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: v == self.cap})]
+    fn cap(&self) -> Size {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
             MAXIMUM_ZST_CAPACITY
@@ -406,6 +410,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(deque.len(), 1);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
     pub fn len(&self) -> usize {
         count(self.tail, self.head, self.cap())
     }
