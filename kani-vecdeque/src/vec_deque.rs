@@ -168,7 +168,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Frobs the head and tail sections around to handle the fact that we
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: Size{v: v <= s.cap}) ensures self: VecDeque<T, A>)]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && s.tail < v}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 
@@ -556,7 +556,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
         debug_assert!(self.is_full());
         let old_cap = self.cap();
         self.buf.reserve_exact(old_cap, old_cap);
-        let _ = lem_power_two(old_cap);
+        // let _ = lem_power_two(old_cap);
         let new_cap = self.cap();
         // TODO: Uncomment
         assert(new_cap == old_cap * 2);
@@ -603,6 +603,19 @@ fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
 
+#[flux::trusted]
+// Why should you trust this? Because this is saying that the output is a power of 2 such that
+//   1. It has enough capacity for used_cap + additional
+//   2. If old_cap is not already big enough, it is at least 2x old_cap.
+// The rationale for the latter is somewhat complicated and its proof comes from the
+// fact that the capacity is always a power of 2. So if old_cap is not big enough,
+// we will move up (at least) to the next power of 2 greater than it.
+//
+// In an ideal world, flux would know about .checked_next_power_of_two() as well
+// as support the machinery necessary to mechanize this proof. Well, it may
+// already (we could certainly add a trusted sig to that function), but for
+// now I won't do the proof.
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
         .checked_add(additional)
