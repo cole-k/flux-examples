@@ -381,6 +381,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert!(buf.capacity() >= 11);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::sig(fn (self: &strg VecDeque<T, A>[@s], additional: usize) ensures self: VecDeque<T,A>)]
     pub fn reserve(&mut self, additional: usize) {
         let old_cap = self.cap();
         let used_cap = self.len() + 1;
