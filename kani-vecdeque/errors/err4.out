@@ -1,0 +1,121 @@
+warning: `crate_type` is deprecated in favor of `crate-type` and will not work in the 2024 edition
+(in the `vecdeque` library target)
+    Checking vecdeque v0.1.0 (/Users/cole/git/flux-examples/kani-vecdeque)
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:249:9
+    |
+249 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:279:37
+    |
+279 |     #[flux::sig(fn (capacity: usize{capacity < MAXIMUM_ZST_CAPACITY && capacity ...    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:249:9
+    |
+249 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:279:72
+    |
+279 | ...acity < MAXIMUM_ZST_CAPACITY && capacity > 1}, alloc: A) -> VecDeque<T, A>{v:...    |                                    ^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:292:5
+    |
+292 |     }
+    |     ^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:279:148
+    |
+279 | ...v.head == 0 && v.tail == 0 && capacity <= v.cap})]
+    |                                  ^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:417:9
+    |
+417 |         count(self.tail, self.head, self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:415:56
+    |
+415 |     #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
+    |                                                        ^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:520:9
+    |
+520 |         self.tail = self.wrap_sub(tail, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:523:13
+    |
+523 |             self.buffer_write(tail, value);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assignment might be unsafe
+   --> src/vec_deque.rs:546:9
+    |
+546 |         self.head = self.wrap_add(self.head, 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:547:18
+    |
+547 |         unsafe { self.buffer_write(head, value) }
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:559:9
+    |
+559 |         self.buf.reserve_exact(old_cap, old_cap);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:563:9
+    |
+563 |         assert(new_cap == old_cap * 2);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:598:21
+    |
+598 | #[flux::sig(fn(bool[true]))]
+    |                     ^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:565:13
+    |
+565 |             self.handle_capacity_increase(old_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:171:75
+    |
+171 | ...A>[@s], old_capacity: usize{v: v * 2 <= s.cap && s.tail < v}) ensures self: V...    |                                   ^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:565:13
+    |
+565 |             self.handle_capacity_increase(old_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:171:93
+    |
+171 | ...city: usize{v: v * 2 <= s.cap && s.tail < v}) ensures self: VecDeque<T, A>)]
+    |                                     ^^^^^^^^^^
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:565:13
+    |
+565 |             self.handle_capacity_increase(old_cap);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `vecdeque` (lib) due to 13 previous errors
