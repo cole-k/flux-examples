@@ -99,7 +99,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // TODO: remove trusted. Right now this signature is not strictly
     // accurate due to ZST nonsense, although it would be without it.
     #[flux::trusted]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: v == self.cap})]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: v == self.cap && size(v)})]
     fn cap(&self) -> Size {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
@@ -111,6 +111,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Writes an element into the buffer, moving it.
     #[inline]
+    #[flux::sig(fn (self: &mut VecDeque<T,A>[@s], off: usize{ off < s.cap }, value: T))]
     unsafe fn buffer_write(&mut self, off: usize, value: T) {
         unsafe {
             ptr::write(self.ptr().add(off), value);
@@ -126,6 +127,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Returns the index in the underlying buffer for a given logical element
     /// index + addend.
     #[inline]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
     fn wrap_add(&self, idx: usize, addend: usize) -> usize {
         wrap_index(idx.wrapping_add(addend), self.cap())
     }
@@ -133,6 +135,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Returns the index in the underlying buffer for a given logical element
     /// index - subtrahend.
     #[inline]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, subtrahend: usize) -> usize{v: v < s.cap})]
     fn wrap_sub(&self, idx: usize, subtrahend: usize) -> usize {
         wrap_index(idx.wrapping_sub(subtrahend), self.cap())
     }
@@ -512,6 +515,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.front(), Some(&2));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T) ensures self: VecDeque<T, A>)]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -538,6 +542,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(3, *buf.back().unwrap());
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T) ensures self: VecDeque<T, A>)]
     pub fn push_back(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -552,15 +557,15 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // be called in cold paths.
     // This may panic or abort
     #[inline(never)]
+    #[flux::sig(fn (self: &strg VecDeque<T, A>[@s]) ensures self: VecDeque<T, A>)]
     fn grow(&mut self) {
         // Extend or possibly remove this assertion when valid use-cases for growing the
         // buffer without it being full emerge
         debug_assert!(self.is_full());
         let old_cap = self.cap();
         self.buf.reserve_exact(old_cap, old_cap);
-        // let _ = lem_power_two(old_cap);
+        let _ = lem_power_two(old_cap);
         let new_cap = self.cap();
-        // TODO: Uncomment
         assert(new_cap == old_cap * 2);
         unsafe {
             self.handle_capacity_increase(old_cap);
@@ -589,6 +594,8 @@ fn count(tail: usize, head: usize, size: Size) -> usize {
     wrap_index(head.wrapping_sub(tail), size)
 }
 
+#[flux::trusted] // exponents
+#[flux::sig(fn (n:usize{pow2(n)}) -> bool{v: pow2(2*n)})]
 fn lem_power_two(_: usize) -> bool {
     true
 }
