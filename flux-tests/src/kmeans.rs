@@ -111,7 +111,10 @@ fn kmeans_step(n: usize, cs: RVec<RVec<f32>>, ps: &RVec<RVec<f32>>) -> RVec<RVec
 }
 
 /// kmeans: iterating the center-update-steps
-#[flux::sig(fn(n: usize, cs: RVec<RVec<f32>[n]>[@k], &RVec<RVec<f32>[n]>, i32) -> RVec<RVec<f32>[n]>[k])]
+#[flux::sig(
+  fn(n: usize, cs: RVec<RVec<f32>[n]>[@k], &RVec<RVec<f32>[n]>, i32) -> RVec<RVec<f32>[n]>[k]
+  requires k > 0
+)]
 pub fn kmeans(n: usize, cs: RVec<RVec<f32>>, ps: &RVec<RVec<f32>>, iters: i32) -> RVec<RVec<f32>> {
     let mut i = 0;
     let mut res = cs;
