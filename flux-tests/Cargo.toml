@@ -1,0 +1,16 @@
+
+[package]
+name = "fluxtests"
+version = "0.1.0"
+edition = "2021"
+description = "Some tests from https://github.com/flux-rs/flux"
+
+[lib]
+path = "src/lib.rs"
+crate_type = ["dylib", "rlib"]
+
+[dependencies]
+flux-rs = { git  = "https://github.com/flux-rs/flux.git" }
+
+[package.metadata.flux]
+enabled = true
