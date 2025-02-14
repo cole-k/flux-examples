@@ -5,7 +5,7 @@ use crate::rvec::RVec;
 /////////////////////////////////////////////////////////////
 
 /// distance between two points
-// #[flux::sig(fn(&RVec<f32>[@n], &RVec<f32>[n]) -> f32)]
+#[flux::sig(fn(&RVec<f32>[@n], &RVec<f32>[n]) -> f32)]
 fn dist(x: &RVec<f32>, y: &RVec<f32>) -> f32 {
     let mut res = 0.0;
     let mut i = 0;
@@ -18,8 +18,8 @@ fn dist(x: &RVec<f32>, y: &RVec<f32>) -> f32 {
 }
 
 /// adding two points (updates the first)
-// #[flux::sig(fn(&mut RVec<f32>[@n], &RVec<f32>[n]) -> i32)]
-fn add(x: &mut RVec<f32>, y: &RVec<f32>) -> i32 {
+#[flux::sig(fn(&mut RVec<f32>[@n], &RVec<f32>[n]) -> ())]
+fn add(x: &mut RVec<f32>, y: &RVec<f32>) {
     let mut i = 0;
     let n = x.len();
     while i < n {
@@ -28,23 +28,21 @@ fn add(x: &mut RVec<f32>, y: &RVec<f32>) -> i32 {
         x[i] = xi + yi;
         i += 1;
     }
-    0
 }
 
 /// normalizing a point (cluster) by size
-// #[flux::sig(fn(&mut RVec<f32>[@n], usize) -> i32)]
-fn normal(x: &mut RVec<f32>, w: usize) -> i32 {
+#[flux::sig(fn(&mut RVec<f32>[@n], usize) -> ())]
+fn normal(x: &mut RVec<f32>, w: usize) {
     let mut i = 0;
     while i < x.len() {
         let xi = x[i];
         x[i] = xi / (w as f32);
         i += 1;
     }
-    0
 }
 
 /// creating (empty) 0-center for each cluster
-// #[flux::sig(fn(n: usize, k: usize{k > 0}) -> RVec<RVec<f32>[n]>[k])]
+#[flux::sig(fn(n: usize, k: usize) -> RVec<RVec<f32>[n]>[k])]
 fn init_centers(n: usize, k: usize) -> RVec<RVec<f32>> {
     let mut res = RVec::new();
     let mut i = 0;
