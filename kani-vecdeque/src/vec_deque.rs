@@ -141,8 +141,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
     #[inline]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         // TODO: Uncomment
-        // assert(dst + len <= self.cap());
-        // assert(src + len <= self.cap());
+        assert(dst + len <= self.cap());
+        assert(src + len <= self.cap());
 
         // debug_assert!(
         //     dst + len <= self.cap(),
@@ -209,11 +209,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
         }
         // TODO: Uncomment
         // // FLUX debug_assert!(self.head < self.cap());
-        // assert(self.head < self.cap());
+        assert(self.head < self.cap());
         // // FLUX debug_assert!(self.tail < self.cap());
-        // assert(self.tail < self.cap());
+        assert(self.tail < self.cap());
         // // FLUX debug_assert!(self.cap().count_ones() == 1);
-        // assert(is_power_of_two(self.cap()));
+        assert(is_power_of_two(self.cap()));
     }
 }
 
@@ -280,7 +280,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
         // TODO: Uncomment
-        // assert(capacity < MAXIMUM_ZST_CAPACITY);
+        assert(capacity < MAXIMUM_ZST_CAPACITY);
         // +1 since the ringbuffer always leaves one space empty
         let cap = real_capacity(capacity);
 
@@ -578,7 +578,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
     // TODO: Uncomment
-    // assert(is_power_of_two(size));
+    assert(is_power_of_two(size));
     index & (size - 1)
 }
 
@@ -597,6 +597,8 @@ fn lem_power_two(_: usize) -> bool {
     true
 }
 
+#[flux::trusted]
+#[flux::sig(fn (n:usize) -> bool[pow2(n)])]
 fn is_power_of_two(n: usize) -> bool {
     // n.count_ones() == 1
     n.is_power_of_two()
