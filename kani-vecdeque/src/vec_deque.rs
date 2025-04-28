@@ -139,6 +139,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         // TODO: Uncomment
         assert(dst + len <= self.cap());
@@ -276,7 +277,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// let deque: VecDeque<u32> = VecDeque::with_capacity(10);
     /// ```
     //#[unstable(feature = "allocator_api", issue = "32838")]
-    #[flux::sig(fn (capacity: usize, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && capacity <= v.cap})]
+    #[flux::sig(fn (capacity: {usize[@cap] | cap < MAXIMUM_ZST_CAPACITY}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && cap <= v.cap})]
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
         // TODO: Uncomment
