@@ -97,8 +97,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Marginally more convenient
     #[inline]
     #[flux::trusted]
-    // #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: v == self.cap && size(v)})]
-    #[flux::sig(fn (self: &VecDeque<T, A>) -> Size)]
+    #[flux::sig(fn (self: &VecDeque<T, A>[@s]) -> usize{v: v == s.cap && size(v)})]
     fn cap(&self) -> usize {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
@@ -248,7 +247,7 @@ impl<T> VecDeque<T> {
     #[inline]
     //#[stable(feature = "rust1", since = "1.0.0")]
     #[must_use]
-    #[flux::sig(fn (capacity: usize{v : v < MAXIMUM_ZST_CAPACITY} -> VecDeque<T, A>))]
+    #[flux::sig(fn (capacity: usize{v : v < MAXIMUM_ZST_CAPACITY}) -> VecDeque<T>)]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
     }
