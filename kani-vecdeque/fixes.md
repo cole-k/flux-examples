@@ -256,3 +256,88 @@ note: `self.wrap_sub(tail, 1)` defined here
     |                     ^^^^^^^^^^^^^^^^^^^^^^
 ```
 * Output should be `<= self.cap`
+
+## `bec485f`
+
+### `wrap_index`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:130:9
+    |
+130 |         wrap_index(idx.wrapping_add(addend), self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:128:86
+    |
+128 |     #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
+    |                                                                                      ^^^^^^^^^
+    = note: constraint that could not be proven: `wrap_index(idx.wrapping_add(addend), self.cap()) < s.cap`
+note: try adding a refinement to the function `vec_deque::wrap_index`
+   --> src/vec_deque.rs:582:4
+    |
+582 | fn wrap_index(index: usize, size: Size) -> usize {
+    |    ^^^^^^^^^^
+note: `wrap_index(idx.wrapping_add(addend), self.cap())` defined here
+   --> src/vec_deque.rs:130:9
+    |
+130 |         wrap_index(idx.wrapping_add(addend), self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+* Needs to have an output < `s.cap`, `wrap_index` only sees `self.cap()`,
+  so we will revisit this when we set `self.cap()`'s output to be `self.cap`.
+
+### `with_capacity`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:252:9
+    |
+252 |         Self::with_capacity_in(capacity, Global)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:283:46
+    |
+283 |     #[flux::sig(fn (capacity: {usize[@cap] | cap < MAXIMUM_ZST_CAPACITY}, alloc: A) -> VecDeque<T, A>)]
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: constraint that could not be proven: `capacity < vec_deque::MAXIMUM_ZST_CAPACITY`
+note: try adding a refinement to `capacity`, defined here
+   --> src/vec_deque.rs:251:26
+    |
+251 |     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
+    |                          ^^^^^^^^
+```
+
+* `capacity < MAXIMUM_ZST_CAPACITY`
+
+### `cap`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:401:17
+    |
+401 |                 self.handle_capacity_increase(old_cap);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:174:75
+    |
+174 |     #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v}) ensures self: VecDeque<T, A>)]
+    |                                                                           ^^^^^^^^^^^
+    = note: constraint that could not be proven: `s.tail ≤ old_cap`
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::cap`
+   --> src/vec_deque.rs:102:8
+    |
+102 |     fn cap(&self) -> usize {
+    |        ^^^
+note: `old_cap` defined here
+   --> src/vec_deque.rs:390:23
+    |
+390 |         let old_cap = self.cap();
+    |                       ^^^^^^^^^^
+```
+
+* `cap`'s output needs to be `> self.tail`.

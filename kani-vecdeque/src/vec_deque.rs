@@ -248,6 +248,7 @@ impl<T> VecDeque<T> {
     #[inline]
     //#[stable(feature = "rust1", since = "1.0.0")]
     #[must_use]
+    #[flux::sig(fn (capacity: usize{v : v < MAXIMUM_ZST_CAPACITY} -> VecDeque<T, A>))]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
     }
