@@ -595,14 +595,14 @@ fn count(tail: usize, head: usize, size: Size) -> usize {
     wrap_index(head.wrapping_sub(tail), size)
 }
 
-// #[flux::trusted]
-// #[flux::sig(fn (n:usize{pow2(n)}) -> bool{v: pow2(2*n)})]
+#[flux::trusted]
+#[flux::sig(fn (n:usize{pow2(n)}) -> bool{v: pow2(2*n)})]
 fn lem_power_two(_: usize) -> bool {
     true
 }
 
-// #[flux::trusted]
-// #[flux::sig(fn (n:usize) -> bool[pow2(n)])]
+#[flux::trusted]
+#[flux::sig(fn (n:usize) -> bool[pow2(n)])]
 fn is_power_of_two(n: usize) -> bool {
     // n.count_ones() == 1
     n.is_power_of_two()
