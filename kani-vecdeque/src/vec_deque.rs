@@ -562,7 +562,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
 /// Returns the index in the underlying buffer for a given logical element index.
 #[inline]
-#[flux::sig(fn(index: usize, size: Size) -> usize)]
 fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
     // TODO: Uncomment
