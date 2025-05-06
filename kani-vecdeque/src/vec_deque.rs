@@ -170,7 +170,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
     // #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && 1 <= v && s.tail < v}) ensures self: VecDeque<T, A>)]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v}) ensures self: VecDeque<T, A>)]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v && v <= s.cap - s.head}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 
@@ -578,9 +578,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
 /// Returns the index in the underlying buffer for a given logical element index.
 #[inline]
-// #[flux::trusted]
-// #[flux::sig(fn(index: usize, size: Size) -> usize{v: v < size})]
-#[flux::sig(fn(index: usize, size: usize) -> usize{v: v < size})]
+#[flux::trusted]
+#[flux::sig(fn(index: usize, size: Size) -> usize{v: v < size})]
 fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
     // TODO: Uncomment
@@ -591,6 +590,7 @@ fn wrap_index(index: usize, size: Size) -> usize {
 /// Calculate the number of elements left to be read in the buffer
 #[inline]
 // #[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: v < size })]
+#[flux::sig(fn(tail: usize, head: usize, size: usize) -> usize{v: v <= size })]
 fn count(tail: usize, head: usize, size: Size) -> usize {
     // size is always a power of 2
     // (head.wrapping_sub(tail)) & (size - 1)
@@ -622,6 +622,7 @@ fn real_capacity(capacity: usize) -> usize {
 
 // #[flux::trusted]
 // #[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: pow2(v)})]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
         .checked_add(additional)

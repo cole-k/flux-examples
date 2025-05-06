@@ -445,3 +445,136 @@ note: try adding a refinement to `dst`, defined here
 
 * `dst + len <= self.cap`
 * (analagous fix for `src`)
+
+## `8ed06de`
+
+### `wrap_index`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:587:5
+    |
+587 |     assert(is_power_of_two(size));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:613:21
+    |
+613 | #[flux::sig(fn(bool[true]))]
+    |                     ^^^^
+    = note: constraint that could not be proven: `pow2(size) = true`
+
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:588:13
+    |
+588 |     index & (size - 1)
+    |             ^^^^^^^^^^
+    |
+    = note: constraint that could not be proven: `size - 1 ≥ 0`
+
+```
+* Both errors combine to be `size: Size`
+* I'm also adding the `#[flux::trusted]` to the function because we can't prove the postcondition without it.
+
+### `new_capacity`
+
+```
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:401:17
+    |
+401 |                 self.handle_capacity_increase(old_cap);
+    |                 ^^^^
+    |
+    = note: constraint that could not be proven: `pow2(self.len() + 1 + new_cap - self.len() + 1)`
+note: try adding a refinement to the function `vec_deque::new_capacity`
+   --> src/vec_deque.rs:625:4
+    |
+625 | fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
+    |    ^^^^^^^^^^^^
+note: `new_cap` defined here
+   --> src/vec_deque.rs:392:23
+    |
+392 |         let new_cap = new_capacity(old_cap, used_cap, additional);
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::len`
+   --> src/vec_deque.rs:421:12
+    |
+421 |     pub fn len(&self) -> usize {
+    |            ^^^
+note: `self.len()` defined here
+   --> src/vec_deque.rs:391:24
+    |
+391 |         let used_cap = self.len() + 1;
+    |                        ^^^^^^^^^^
+```
+
+* output must be a power of 2
+
+### `count`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:422:9
+    |
+422 |         count(self.tail, self.head, self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:420:56
+    |
+420 |     #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v <= self.cap})]
+    |                                                        ^^^^^^^^^^^^^
+    = note: constraint that could not be proven: `count(self.tail, self.head, self.cap()) ≤ self.cap`
+note: try adding a refinement to the function `vec_deque::count`
+   --> src/vec_deque.rs:594:4
+    |
+594 | fn count(tail: usize, head: usize, size: Size) -> usize {
+    |    ^^^^^
+note: `count(self.tail, self.head, self.cap())` defined here
+   --> src/vec_deque.rs:422:9
+    |
+422 |         count(self.tail, self.head, self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+* Output must be <= the third argument (`size`)
+
+### `handle_capacity_increase`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:198:17
+    |
+198 |                 self.copy_nonoverlapping(old_capacity, 0, head); // FLUX-PANIC: self.head -> head
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:142:61
+    |
+142 |     #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
+    |                                                             ^^^^^^^^^^^^^^^^
+    = note: constraint that could not be proven: `old_capacity + s.head ≤ s.cap`
+note: try adding a refinement to `old_capacity`, defined here
+   --> src/vec_deque.rs:174:51
+    |
+174 |     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
+    |                                                   ^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:207:17
+    |
+207 |                 self.copy_nonoverlapping(new_tail, tail, old_capacity - tail); // FLUX-PANIC: self.tail -> tail
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:142:94
+    |
+142 |     #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
+    |                                                                                              ^^^^^^^^^^^^^^^^
+    = note: constraint that could not be proven: `s.tail + old_capacity - s.tail ≤ s.cap`
+note: try adding a refinement to `old_capacity`, defined here
+   --> src/vec_deque.rs:174:51
+    |
+174 |     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
+    |                                                   ^^^^^^^^^^^^
+```
+* `old_capacity` must be `<= s.cap - s.head` (the second constraint is striclty weaker)
