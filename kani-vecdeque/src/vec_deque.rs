@@ -139,7 +139,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
-    // #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         // TODO: Uncomment
         assert(dst + len <= self.cap());
@@ -417,6 +417,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
     // #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v <= self.cap})]
     pub fn len(&self) -> usize {
         count(self.tail, self.head, self.cap())
     }
@@ -579,6 +580,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 #[inline]
 // #[flux::trusted]
 // #[flux::sig(fn(index: usize, size: Size) -> usize{v: v < size})]
+#[flux::sig(fn(index: usize, size: usize) -> usize{v: v < size})]
 fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
     // TODO: Uncomment

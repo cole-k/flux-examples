@@ -341,3 +341,107 @@ note: `old_cap` defined here
 ```
 
 * `cap`'s output needs to be `> self.tail`.
+
+## `4a65ff9`
+
+### `len`
+
+```
+error[E0999]: arithmetic operation may overflow
+   --> src/vec_deque.rs:121:9
+    |
+121 |         self.cap() - self.len() == 1
+    |         ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: constraint that could not be proven: `self.cap() - self.len() ≥ 0`
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::len`
+   --> src/vec_deque.rs:420:12
+    |
+420 |     pub fn len(&self) -> usize {
+    |            ^^^
+note: `self.len()` defined here
+   --> src/vec_deque.rs:121:22
+    |
+121 |         self.cap() - self.len() == 1
+    |                      ^^^^^^^^^^
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::cap`
+   --> src/vec_deque.rs:101:8
+    |
+101 |     fn cap(&self) -> usize {
+    |        ^^^
+note: `self.cap()` defined here
+   --> src/vec_deque.rs:121:9
+    |
+121 |         self.cap() - self.len() == 1
+    |         ^^^^^^^^^^
+```
+
+* `self.len() <= self.cap()` (actual refinement should be `<`)
+
+### `wrap_index`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:129:9
+    |
+129 |         wrap_index(idx.wrapping_add(addend), self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a postcondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:127:86
+    |
+127 |     #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
+    |                                                                                      ^^^^^^^^^
+    = note: constraint that could not be proven: `wrap_index(idx.wrapping_add(addend), self.cap()) < s.cap`
+note: try adding a refinement to the function `vec_deque::wrap_index`
+   --> src/vec_deque.rs:582:4
+    |
+582 | fn wrap_index(index: usize, size: Size) -> usize {
+    |    ^^^^^^^^^^
+note: `wrap_index(idx.wrapping_add(addend), self.cap())` defined here
+   --> src/vec_deque.rs:129:9
+    |
+129 |         wrap_index(idx.wrapping_add(addend), self.cap())
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+* wrap_index output needs to be less than its input `size`
+
+### `copy_nonoverlapping`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:145:9
+    |
+145 |         assert(dst + len <= self.cap());
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:611:21
+    |
+611 | #[flux::sig(fn(bool[true]))]
+    |                     ^^^^
+    = note: constraint that could not be proven: `(dst + len ≤ self.cap()) = true`
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::cap`
+   --> src/vec_deque.rs:101:8
+    |
+101 |     fn cap(&self) -> usize {
+    |        ^^^
+note: `self.cap()` defined here
+   --> src/vec_deque.rs:145:29
+    |
+145 |         assert(dst + len <= self.cap());
+    |                             ^^^^^^^^^^
+note: try adding a refinement to `len`, defined here
+   --> src/vec_deque.rs:143:66
+    |
+143 |     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
+    |                                                                  ^^^
+note: try adding a refinement to `dst`, defined here
+   --> src/vec_deque.rs:143:42
+    |
+143 |     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
+    |                                          ^^^
+```
+
+* `dst + len <= self.cap`
+* (analagous fix for `src`)
