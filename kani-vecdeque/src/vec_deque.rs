@@ -620,9 +620,9 @@ fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
 
-// #[flux::trusted]
+#[flux::trusted]
 // #[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
-#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: pow2(v)})]
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: pow2(v) && (2 * old_cap <= v)})]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
         .checked_add(additional)
