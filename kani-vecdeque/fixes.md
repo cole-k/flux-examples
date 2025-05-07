@@ -578,3 +578,88 @@ note: try adding a refinement to `old_capacity`, defined here
     |                                                   ^^^^^^^^^^^^
 ```
 * `old_capacity` must be `<= s.cap - s.head` (the second constraint is striclty weaker)
+
+## `7d66cee`
+
+### `count`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:597:5
+    |
+597 |     wrap_index(head.wrapping_sub(tail), size)
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:30:36
+    |
+30  | #[flux::alias(type Size = usize{v: pow2(v) && 1<=v })]
+    |                                    ^^^^^^^
+    = note: constraint that could not be proven: `pow2(size)`
+
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:597:5
+    |
+597 |     wrap_index(head.wrapping_sub(tail), size)
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:30:47
+    |
+30  | #[flux::alias(type Size = usize{v: pow2(v) && 1<=v })]
+    |                                               ^^^^
+    = note: constraint that could not be proven: `1 ≤ size`
+```
+* `size` argument must be a `Size`.
+
+### `new_capacity`
+
+```
+error[E0999]: refinement type error
+   --> src/vec_deque.rs:401:17
+    |
+401 |                 self.handle_capacity_increase(old_cap);
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    |
+note: this is the condition that cannot be proved
+   --> src/vec_deque.rs:173:90
+    |
+173 |     #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v && v <= s.cap - s.head}) ensures self: VecDeque<T, A>)]
+    |                                                                                          ^^^^^^^^^^^^^^^^^^^
+    = note: constraint that could not be proven: `old_cap ≤ self.len() + 1 + new_cap - self.len() + 1 - s.head`
+note: try adding a refinement to the function `vec_deque::new_capacity`
+   --> src/vec_deque.rs:626:4
+    |
+626 | fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
+    |    ^^^^^^^^^^^^
+note: `new_cap` defined here
+   --> src/vec_deque.rs:392:23
+    |
+392 |         let new_cap = new_capacity(old_cap, used_cap, additional);
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::len`
+   --> src/vec_deque.rs:421:12
+    |
+421 |     pub fn len(&self) -> usize {
+    |            ^^^
+note: `self.len()` defined here
+   --> src/vec_deque.rs:391:24
+    |
+391 |         let used_cap = self.len() + 1;
+    |                        ^^^^^^^^^^
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::cap`
+   --> src/vec_deque.rs:101:8
+    |
+101 |     fn cap(&self) -> usize {
+    |        ^^^
+note: `old_cap` defined here
+   --> src/vec_deque.rs:390:23
+    |
+390 |         let old_cap = self.cap();
+    |                       ^^^^^^^^^^
+```
+* In essence this needs the output of `new_capacity` to be `>= old_cap + s.head`,
+  but we don't have access to `s.head`. We know that `old_cap >= s.head`, so 
+  a reasonable thing to od would be to use it instead.
+  
+  This gives us the human annotation `new_capacity >= 2 * old_cap`.
