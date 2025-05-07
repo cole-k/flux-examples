@@ -663,3 +663,31 @@ note: `old_cap` defined here
   a reasonable thing to od would be to use it instead.
   
   This gives us the human annotation `new_capacity >= 2 * old_cap`.
+  
+## `2b8d86b`
+
+### `handle_capacity_increase`
+
+```
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:214:28
+    |
+214 |         assert(self.head < self.cap());
+    |                            ^^^^
+    |
+    = note: constraint that could not be proven: `a1 < s.cap`
+
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:214:28
+    |
+214 |         assert(self.head < self.cap());
+    |                            ^^^^
+    |
+    = note: constraint that could not be proven: `a2 < s.cap`
+```
+* I think what is happening here is that in the two branches where there isn't
+  a noop, we can't prove that `self.head < self.cap` (although it should be
+  `self.tail < self.cap` for one of the cases). It seems like we don't
+  automatically find the definition of `a1` or `a2`. I suspect that what we
+  need to do is figure out if this is a mechanization issue or an actually
+  hard problem.
