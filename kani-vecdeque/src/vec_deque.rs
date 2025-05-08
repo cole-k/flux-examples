@@ -198,7 +198,6 @@ impl<T, A: Allocator> VecDeque<T, A> {
                 self.copy_nonoverlapping(old_capacity, 0, head); // FLUX-PANIC: self.head -> head
             }
             self.head += old_capacity;
-            assert(self.head < self.cap());
             debug_assert!(self.head > self.tail);
         } else {
             // C
@@ -208,11 +207,12 @@ impl<T, A: Allocator> VecDeque<T, A> {
                 self.copy_nonoverlapping(new_tail, tail, old_capacity - tail); // FLUX-PANIC: self.tail -> tail
             }
             self.tail = new_tail;
+            assert(self.tail < self.cap());
             debug_assert!(self.head < self.tail);
         }
         // TODO: Uncomment
         // // FLUX debug_assert!(self.head < self.cap());
-        // assert(self.head < self.cap());
+        assert(self.head < self.cap());
         // // FLUX debug_assert!(self.tail < self.cap());
         assert(self.tail < self.cap());
         // // FLUX debug_assert!(self.cap().count_ones() == 1);
