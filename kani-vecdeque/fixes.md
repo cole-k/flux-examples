@@ -718,3 +718,39 @@ note: try adding a refinement to `old_capacity`, defined here
   require a stricter inequality for the general safety property to hold).
   Fix this naively by replacing `v <= s.cap - s.head` with `v < s.cap - s.head`.
   
+
+## `2b7102e `
+
+### `handle_capacity_increase`
+
+```
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:210:32
+    |
+210 |             assert(self.tail < self.cap());
+    |                                ^^^^
+    |
+    = note: constraint that could not be proven: `new_capacity - old_capacity - s.tail < s.cap`
+note: try adding a refinement to the function `vec_deque::VecDeque::<T, A>::cap`
+   --> src/vec_deque.rs:101:8
+    |
+101 |     fn cap(&self) -> usize {
+    |        ^^^
+note: `new_capacity` defined here
+   --> src/vec_deque.rs:175:28
+    |
+175 |         let new_capacity = self.cap();
+    |                            ^^^^^^^^^^
+note: try adding a refinement to `old_capacity`, defined here
+   --> src/vec_deque.rs:174:51
+    |
+174 |     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
+    |                                                   ^^^^^^^^^^^^
+
+```
+
+* Don't forget: `new_capacity` is equal to the output of `self.cap()`, which is
+  just `s.cap`.  This in mind, the constraint simplifies to `s.tail <
+  old_capacity`, which is trivial to put on `old_capacity` (right now it
+  requires `s.tail <= old_capacity` for similar reasons to the above
+  `handle_capacity_increase` error).
