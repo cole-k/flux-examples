@@ -170,7 +170,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
     // #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && 1 <= v && s.tail < v}) ensures self: VecDeque<T, A>)]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v && v <= s.cap - s.head}) ensures self: VecDeque<T, A>)]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v && v < s.cap - s.head}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 

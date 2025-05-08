@@ -691,3 +691,30 @@ error[E0999]: type invariant may not hold (when place is folded)
   automatically find the definition of `a1` or `a2`. I suspect that what we
   need to do is figure out if this is a mechanization issue or an actually
   hard problem.
+  
+## `0f54d57`
+
+### `handle_capacity_increase`
+
+```
+error[E0999]: type invariant may not hold (when place is folded)
+   --> src/vec_deque.rs:201:32
+    |
+201 |             assert(self.head < self.cap());
+    |                                ^^^^
+    |
+    = note: constraint that could not be proven: `s.head + old_capacity < s.cap`
+note: try adding a refinement to `old_capacity`, defined here
+   --> src/vec_deque.rs:174:51
+    |
+174 |     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
+    |                                                   ^^^^^^^^^^^^
+
+```
+
+* I moved the assertion so that the error message from above is clearer.
+  Right now `old_capacity` is annotated such that `old_capacity <= s.cap - s.head`
+  (remember: the naive fix we got from before was to prevent an overflow; but we
+  require a stricter inequality for the general safety property to hold).
+  Fix this naively by replacing `v <= s.cap - s.head` with `v < s.cap - s.head`.
+  
