@@ -846,3 +846,9 @@ Total human annotations: 2
 
 * `cap` was manually annotated (would differ otherwise).
 * `new_capacity` was manually annotated but didn't need all of the annotations (hence its difference).
+
+Missed refinements:
+* `buffer_write` (its underlying API wasn't refined; we should get it if it were)
+* `with_capacity_in`'s output VecDeque has capacity `>= capacity`. Nothing about the
+  code requires this. It is a reasonable thing for a user to annotate, in which case
+  we would infer the original requirement for `real_capacity`.
