@@ -754,3 +754,95 @@ note: try adding a refinement to `old_capacity`, defined here
   old_capacity`, which is trivial to put on `old_capacity` (right now it
   requires `s.tail <= old_capacity` for similar reasons to the above
   `handle_capacity_increase` error).
+
+
+## Final analysis
+
+### `cap`
+
+Exact same (human annotated). Without annotations, it would only be `usize{v: v > s.head && v > s.tail && size(v)}`.
+
+### `wrap_add` and `wrap_sub`
+
+Exact same.
+
+### `copy_nonoverlapping`
+
+Exact same.
+
+### `handle_capacity_increase`
+
+Original
+```
+#[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && 1 <= v && s.tail < v}) ensures self: VecDeque<T, A>)]
+```
+Inferred
+```
+#[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail < v && v < s.cap - s.head}) ensures self: VecDeque<T, A>)]
+```
+
+### `with_capacity`
+
+Exact same.
+
+### `with_capacity_in`
+
+Exact same.
+
+### `len`
+
+Original
+```
+#[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
+```
+Inferred
+```
+#[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v <= self.cap})]
+```
+
+### `wrap_index`
+
+Exact same.
+
+### `count`
+
+Original
+```
+#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: v < size })]
+```
+Inferred
+```
+#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: v <= size })]
+```
+
+### `real_capacity`
+
+Original
+```
+#[flux::sig(fn(capacity: usize) -> usize{v: capacity <= v && size(v)})]
+```
+Inferred
+```
+#[flux::sig(fn(capacity: usize) -> usize{v: size(v)})]
+```
+
+### `new_capacity`
+
+Original
+```
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
+```
+Inferred
+```
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: pow2(v) && (2 * old_cap <= v)})]
+```
+
+### Summary
+
+Total functions: 10
+Total unchanged: 6*
+Total differing: 4*
+Total human annotations: 2
+
+* `cap` was manually annotated (would differ otherwise).
+* `new_capacity` was manually annotated but didn't need all of the annotations (hence its difference).
