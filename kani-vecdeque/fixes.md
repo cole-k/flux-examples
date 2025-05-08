@@ -760,15 +760,28 @@ note: try adding a refinement to `old_capacity`, defined here
 
 ### `cap`
 
-Exact same (human annotated). Without annotations, it would only be `usize{v: v > s.head && v > s.tail && size(v)}`.
+Exact same (human annotated).
+```
+#[flux::sig(fn (self: &VecDeque<T, A>[@s]) -> usize{v: v == s.cap && size(v)})]
+```
+Without human annotations (not good enough)
+```
+#[flux::sig(fn (self: &VecDeque<T, A>[@s]) -> usize{v: v > s.head && v > s.tail && size(v)})]
+```
 
 ### `wrap_add` and `wrap_sub`
 
 Exact same.
+```
+#[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
+```
 
 ### `copy_nonoverlapping`
 
 Exact same.
+```
+#[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
+```
 
 ### `handle_capacity_increase`
 
@@ -784,10 +797,22 @@ Inferred
 ### `with_capacity`
 
 Exact same.
+```
+#[flux::sig(fn (capacity: usize{v : v < MAXIMUM_ZST_CAPACITY}) -> VecDeque<T>)]
+```
+
+N.B. The original could also have the same spec as `with_capacity_in`.
 
 ### `with_capacity_in`
 
-Exact same.
+Original
+```
+#[flux::sig(fn (capacity: {usize[@cap] | cap < MAXIMUM_ZST_CAPACITY}, alloc: A) -> VecDeque<T, A>{v: v.head == 0 && v.tail == 0 && cap <= v.cap})]
+```
+Annotated
+```
+#[flux::sig(fn (capacity: {usize[@cap] | cap < MAXIMUM_ZST_CAPACITY}, alloc: A) -> VecDeque<T, A>)]
+```
 
 ### `len`
 
@@ -803,6 +828,9 @@ Inferred
 ### `wrap_index`
 
 Exact same.
+```
+#[flux::sig(fn(index: usize, size: Size) -> usize{v: v < size})]
+```
 
 ### `count`
 
@@ -840,12 +868,14 @@ Inferred
 ### Summary
 
 Total functions: 10
-Total unchanged: 6*
-Total differing: 4*
+Total unchanged: 5*
+Total differing: 5*
 Total human annotations: 2
 
 * `cap` was manually annotated (would differ otherwise).
 * `new_capacity` was manually annotated but didn't need all of the annotations (hence its difference).
+* Most of the differences are "extra" in the sense that there aren't any uses of the library
+  requiring them.
 
 Missed refinements:
 * `buffer_write` (its underlying API wasn't refined; we should get it if it were)
