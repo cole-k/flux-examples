@@ -664,6 +664,14 @@ note: `old_cap` defined here
   
   This gives us the human annotation `new_capacity >= 2 * old_cap`.
   
+  ```
+  k_new_capacity+(new_capacity, old_capacity) /\ s.head < old_cap => new_capacity >= old_cap + s.head
+  ```
+  
+  ```
+  exists head. !(new_capacity >= old_cap + head) /\ head < old_cap
+  ```
+  
 ## `2b8d86b`
 
 ### `handle_capacity_increase`
