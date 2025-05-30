@@ -84,3 +84,13 @@ it is in `lem_power_two()`.
 - ⨯ `lem_power_two(v)` output s.t. `v + v >= 1`
 
 Technically true, but subsumed by previous refinements.
+
+# `d3f08d7`
+
+## ✓ `with_capacity(cap)` s.t. `cap < MAXIMUM_ZST_CAPACITY`
+
+Accepted.
+
+## ✓ `self.cap() >= self.tail`
+
+Technically correct.
