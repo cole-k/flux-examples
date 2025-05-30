@@ -118,3 +118,14 @@ Accepted.
 ## ✓ `copy_nonoverlapping(&self, dst: usize, src: usize, len: usize)` s.t. `src + len <= self.cap`
 
 Accepted.
+
+# `c6279f2 `
+
+## ✓ `handle_capacity_increase(&self, old_capacity: usize)` s.t. `old_capacity <= self.cap`
+
+Accepted.
+
+## ✓ `handle_capacity_increase(&self, old_capacity: usize)` s.t. `old_capacity + self.head <= self.cap`
+
+Accepted; overrides the previous.
+
