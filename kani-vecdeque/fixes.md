@@ -94,3 +94,9 @@ Accepted.
 ## ✓ `self.cap() >= self.tail`
 
 Technically correct.
+
+# `146294f `
+
+## Manual fix: refine `cap` so that the output is the actual capacity
+
+I don't think we can discover this easily, especially since it has to be trusted.
