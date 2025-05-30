@@ -138,3 +138,7 @@ Prev: exprs had metadata that caused hashes to be different.
 ## ✓ `count(tail, head, cap)` s.t. output `< cap`
 
 Accepted.
+
+# `1ed14db `
+
+## ✓ `wrap_index(index, size)` s.t. output `< size`
