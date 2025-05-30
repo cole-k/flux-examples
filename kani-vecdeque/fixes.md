@@ -100,3 +100,21 @@ Technically correct.
 ## Manual fix: refine `cap` so that the output is the actual capacity
 
 I don't think we can discover this easily, especially since it has to be trusted.
+
+# `0f55b07`
+
+## Fix the manual fix: `cap` returns the index
+
+Oops.
+
+## ✓ `self.len() <= self.cap()`
+
+Accepted: the actual is technically `<` and not `<=`.
+
+## ✓ `copy_nonoverlapping(&self, dst: usize, src: usize, len: usize)` s.t. `dst + len <= self.cap`
+
+Accepted.
+
+## ✓ `copy_nonoverlapping(&self, dst: usize, src: usize, len: usize)` s.t. `src + len <= self.cap`
+
+Accepted.

@@ -140,6 +140,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Copies a contiguous block of memory len long from src to dst
     #[inline]
     // #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize{v: v + len <= s.cap}, src: usize{v: v + len <= s.cap}, len: usize))]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         // TODO: Uncomment
         assert(dst + len <= self.cap());
@@ -416,7 +417,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(deque.len(), 1);
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    // #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: v < self.cap})]
     pub fn len(&self) -> usize {
         count(self.tail, self.head, self.cap())
     }
