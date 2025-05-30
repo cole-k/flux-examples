@@ -589,7 +589,7 @@ fn wrap_index(index: usize, size: Size) -> usize {
 
 /// Calculate the number of elements left to be read in the buffer
 #[inline]
-// #[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: v < size })]
+#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: v < size })]
 fn count(tail: usize, head: usize, size: Size) -> usize {
     // size is always a power of 2
     // (head.wrapping_sub(tail)) & (size - 1)

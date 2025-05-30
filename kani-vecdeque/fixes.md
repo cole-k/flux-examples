@@ -129,3 +129,12 @@ Accepted.
 
 Accepted; overrides the previous.
 
+# NOTE: update to flux to fix expr hashing
+
+Prev: exprs had metadata that caused hashes to be different.
+
+# `bcb9847 `
+
+## ✓ `count(tail, head, cap)` s.t. output `< cap`
+
+Accepted.
