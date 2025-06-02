@@ -142,3 +142,20 @@ Accepted.
 # `1ed14db `
 
 ## ✓ `wrap_index(index, size)` s.t. output `< size`
+
+# NOTE: update to flux to eta-expand products so we suggest the following fixes
+
+# `0d5133b`
+
+## ✓ `self.cap() > self.head`
+
+This is a bit confusing because it's true but also should be evident from the
+invariant on `VecDeque`.
+
+## ✓ `self.wrap_sub(idx: usize, addend: usize) < self.cap`
+
+Added.
+
+## ✓ `self.wrap_add(idx: usize, addend: usize) < self.cap`
+
+Added.

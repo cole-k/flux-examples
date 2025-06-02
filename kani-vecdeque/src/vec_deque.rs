@@ -97,7 +97,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Marginally more convenient
     #[inline]
     #[flux::trusted]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> {Size[self.cap] | size(self.cap)})]
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> {Size[self.cap] | self.head < self.cap})]
     fn cap(&self) -> usize {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
@@ -125,6 +125,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// index + addend.
     #[inline]
     // #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: v < s.cap})]
     fn wrap_add(&self, idx: usize, addend: usize) -> usize {
         wrap_index(idx.wrapping_add(addend), self.cap())
     }
@@ -133,6 +134,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// index - subtrahend.
     #[inline]
     // #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, subtrahend: usize) -> usize{v: v < s.cap})]
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, subtrahend: usize) -> usize{v: v < s.cap})]
     fn wrap_sub(&self, idx: usize, subtrahend: usize) -> usize {
         wrap_index(idx.wrapping_sub(subtrahend), self.cap())
     }
