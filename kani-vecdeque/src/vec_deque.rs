@@ -172,8 +172,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// Frobs the head and tail sections around to handle the fact that we
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
-    // #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && 1 <= v && s.tail < v}) ensures self: VecDeque<T, A>)]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: s.tail <= v && v + s.head <= s.cap}) ensures self: VecDeque<T, A>)]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize{v: v * 2 <= s.cap && 1 <= v && s.tail < v}) ensures self: VecDeque<T, A>)]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
 
@@ -623,7 +622,7 @@ fn real_capacity(capacity: usize) -> usize {
 
 #[flux::trusted]
 // #[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap + additional <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
-#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap <= v && pow2(v) })]
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: used_cap <= v && pow2(v) && (old_cap < v => 2 * old_cap <= v) })]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
         .checked_add(additional)

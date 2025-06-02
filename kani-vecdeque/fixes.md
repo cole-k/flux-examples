@@ -159,3 +159,18 @@ Added.
 ## ✓ `self.wrap_add(idx: usize, addend: usize) < self.cap`
 
 Added.
+
+# `9a3fb2f `
+
+## Manual fix: Refine `new_capacity` with `(old_cap < v => 2 * old_cap <= v)`
+
+The suggestion is to refine it such that `v >= old_cap + old_head`, but
+`new_capacity` can't see `old_head`. One solution might be to get an SMT
+solver to to abduce the stronger condition of `v >= 2*old_cap`.
+
+## Manual fix: Use the human-provided annotation for `handle_capacity increase`
+
+It might be worth examining this to see whether there's more information we can
+get out of the failures. I suspect that something in our analysis is insufficient
+and I suspect it's likely that it's just an engineering problem to get it to
+work.
