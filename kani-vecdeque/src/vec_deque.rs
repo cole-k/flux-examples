@@ -96,7 +96,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
     /// Marginally more convenient
     #[inline]
-    // #[flux::trusted]
+    #[flux::trusted]
     #[flux::vars(
         $wk0(self) = [];
         $wk1(v, self) = [v == self.cap, size(v)];
@@ -278,6 +278,13 @@ impl<T> VecDeque<T> {
     #[inline]
     //#[stable(feature = "rust1", since = "1.0.0")]
     #[must_use]
+    #[flux::vars(
+        $wk0(capacity) = [capacity < MAXIMUM_ZST_CAPACITY];
+        $wk1(v, capacity) = [v.head == 0 && v.tail == 0 && capacity <= v.cap];
+    )]
+    #[flux::sig(fn (capacity: usize) -> VecDeque<T, Global>{v: $wk1(v, capacity)}
+                requires $wk0(capacity)
+    )]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
     }
@@ -618,7 +625,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
 
 /// Returns the index in the underlying buffer for a given logical element index.
 #[inline]
-// #[flux::trusted]
+#[flux::trusted]
 #[flux::vars(
     $wk0(index, size) = [];
     $wk1(v, index, size) = [v < size];
@@ -648,7 +655,7 @@ fn count(tail: usize, head: usize, size: Size) -> usize {
     wrap_index(head.wrapping_sub(tail), size)
 }
 
-// #[flux::trusted]
+#[flux::trusted]
 #[flux::vars(
     $wk0(n) = [pow2(n)];
     $wk1(v, n) = [pow2(2*n)];
@@ -660,7 +667,7 @@ fn lem_power_two(_: usize) -> bool {
     true
 }
 
-// #[flux::trusted]
+#[flux::trusted]
 #[flux::vars(
     $wk0(n) = [];
     $wk1(v, n) = [pow2(n)];
@@ -676,7 +683,7 @@ fn is_power_of_two(n: usize) -> bool {
 #[flux::sig(fn(bool[true]))]
 fn assert(_: bool) {}
 
-// #[flux::trusted]
+#[flux::trusted]
 #[flux::vars(
     $wk0(capacity) = [];
     $wk1(v, capacity) = [capacity <= v, size(v)];
@@ -688,7 +695,7 @@ fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
 }
 
-// #[flux::trusted]
+#[flux::trusted]
 #[flux::vars(
     $wk0(old_cap, used_cap, additional) = [];
     $wk1(v, old_cap, used_cap, additional) = [used_cap + additional <= v, pow2(v), old_cap < v => 2 * old_cap <= v];
