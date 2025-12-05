@@ -195,7 +195,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// just reallocated. Unsafe because it trusts old_capacity.
     #[inline]
     #[flux::vars(
-        $wk0(s, old_capacity) = [old_capacity * 2 <= s.cap && 1 <= old_capacity && s.tail < old_capacity];
+        $wk0(s, old_capacity) = [old_capacity * 2 <= s.cap, 1 <= old_capacity, s.tail < old_capacity];
         $wk1(v, s, old_capacity) = [];
     )]
     #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize)
