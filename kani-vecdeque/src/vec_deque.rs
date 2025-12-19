@@ -618,6 +618,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // be called in cold paths.
     // This may panic or abort
     #[inline(never)]
+    // TODO: there's a bug with grow
     #[flux::vars(
         $wk0(s) = [true];
         $wk1(v, s) = [true];
