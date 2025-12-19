@@ -101,7 +101,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
         $wk0(self) = [true];
         $wk1(v, self) = [v == self.cap, size(v)];
     )]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: $wk1(v)[self]}
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: $wk1(v)[self]}
                 requires $wk0()[self]
     )]
     // #[flux::sig(fn(&VecDeque<T, A>[@self]) -> Size[self.cap])]
@@ -629,7 +629,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     $wk0(index, size) = [true];
     $wk1(v, index, size) = [v < size];
 )]
-#[flux::sig(fn(index: usize, size: Size) -> usize{v: $wk1(v)[index, size]}
+#[flux::sig(fn(index: usize, size: usize) -> usize{v: $wk1(v)[index, size]}
             requires $wk0()[index, size]
 )]
 fn wrap_index(index: usize, size: Size) -> usize {
@@ -645,7 +645,7 @@ fn wrap_index(index: usize, size: Size) -> usize {
     $wk0(tail, head, size) = [true];
     $wk1(v, tail, head, size) = [v < size];
 )]
-#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: $wk1(v)[tail, head, size]}
+#[flux::sig(fn(tail: usize, head: usize, size: usize) -> usize{v: $wk1(v)[tail, head, size]}
             requires $wk0()[tail, head, size]
 )]
 fn count(tail: usize, head: usize, size: Size) -> usize {
