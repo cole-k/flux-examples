@@ -98,12 +98,13 @@ impl<T, A: Allocator> VecDeque<T, A> {
     #[inline]
     #[flux::trusted]
     #[flux::vars(
-        $wk0(self) = [];
+        $wk0(self) = [true];
         $wk1(v, self) = [v == self.cap, size(v)];
     )]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: $wk1(v, self)}
-                requires $wk0(self)
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> Size{v: $wk1(v)[self]}
+                requires $wk0()[self]
     )]
+    // #[flux::sig(fn(&VecDeque<T, A>[@self]) -> Size[self.cap])]
     fn cap(&self) -> usize {
         if mem::size_of::<T>() == 0 {
             // For zero sized types, we are always at maximum capacity
@@ -131,11 +132,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// index + addend.
     #[inline]
     #[flux::vars(
-        $wk0(s, idx, addend) = [];
+        $wk0(s, idx, addend) = [true];
         $wk1(v, s, idx, addend) = [v < s.cap];
     )]
-    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: $wk1(v, s, idx, addend)}
-                requires $wk0(s, idx, addend)
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, addend: usize) -> usize{v: $wk1(v)[s, idx, addend]}
+                requires $wk0()[s, idx, addend]
     )]
     fn wrap_add(&self, idx: usize, addend: usize) -> usize {
         wrap_index(idx.wrapping_add(addend), self.cap())
@@ -145,11 +146,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// index - subtrahend.
     #[inline]
     #[flux::vars(
-        $wk0(s, idx, subtrahend) = [];
+        $wk0(s, idx, subtrahend) = [true];
         $wk1(v, s, idx, subtrahend) = [v < s.cap];
     )]
-    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, subtrahend: usize) -> usize{v: $wk1(v, s, idx, subtrahend)}
-                requires $wk0(s, idx, subtrahend)
+    #[flux::sig(fn (self: &VecDeque<T,A>[@s], idx: usize, subtrahend: usize) -> usize{v: $wk1(v)[s, idx, subtrahend]}
+                requires $wk0()[s, idx, subtrahend]
     )]
     fn wrap_sub(&self, idx: usize, subtrahend: usize) -> usize {
         wrap_index(idx.wrapping_sub(subtrahend), self.cap())
@@ -159,11 +160,9 @@ impl<T, A: Allocator> VecDeque<T, A> {
     #[inline]
     #[flux::vars(
         $wk0(s, dst, src, len) = [dst + len <= s.cap, src + len <= s.cap];
-        $wk1(s, dst, src, len) = [];
     )]
     #[flux::sig(fn (self: &VecDeque<T,A>[@s], dst: usize, src: usize, len: usize)
-                requires $wk0(s, dst, src, len)
-                ensures  $wk1(s, dst, src, len)
+                requires $wk0()[s, dst, src, len]
     )]
     unsafe fn copy_nonoverlapping(&self, dst: usize, src: usize, len: usize) {
         // TODO: Uncomment
@@ -196,11 +195,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
     #[inline]
     #[flux::vars(
         $wk0(s, old_capacity) = [old_capacity * 2 <= s.cap, 1 <= old_capacity, s.tail < old_capacity];
-        $wk1(v, s, old_capacity) = [];
+        $wk1(v, s, old_capacity) = [true];
     )]
     #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], old_capacity: usize)
-                requires $wk0(s, old_capacity)
-                ensures self: {VecDeque<T, A>[#v] | $wk1(v, self, old_capacity)}
+                requires $wk0()[s, old_capacity]
+                ensures self: {VecDeque<T, A>[#v] | $wk1(v)[self, old_capacity]}
     )]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.cap();
@@ -282,8 +281,8 @@ impl<T> VecDeque<T> {
         $wk0(capacity) = [capacity < MAXIMUM_ZST_CAPACITY];
         $wk1(v, capacity) = [v.head == 0 && v.tail == 0 && capacity <= v.cap];
     )]
-    #[flux::sig(fn (capacity: usize) -> VecDeque<T, Global>{v: $wk1(v, capacity)}
-                requires $wk0(capacity)
+    #[flux::sig(fn (capacity: usize) -> VecDeque<T, Global>{v: $wk1(v)[capacity]}
+                requires $wk0()[capacity]
     )]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
@@ -320,8 +319,8 @@ impl<T, A: Allocator> VecDeque<T, A> {
         $wk0(capacity) = [capacity < MAXIMUM_ZST_CAPACITY];
         $wk1(v, capacity) = [v.head == 0 && v.tail == 0 && capacity <= v.cap];
     )]
-    #[flux::sig(fn (capacity: usize, alloc: A) -> VecDeque<T, A>{v: $wk1(v, capacity)}
-                requires $wk0(capacity)
+    #[flux::sig(fn (capacity: usize, alloc: A) -> VecDeque<T, A>{v: $wk1(v)[capacity]}
+                requires $wk0()[capacity]
     )]
     fn with_capacity_in(capacity: usize, alloc: A) -> VecDeque<T, A> {
         // FLUX-TODO: same as MAXIMUM_ZST_CAPACITY?: assert!(capacity < 1_usize << usize::BITS - 1, "capacity overflow");
@@ -459,11 +458,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
     #[flux::vars(
-        $wk0(self) = [];
+        $wk0(self) = [true];
         $wk1(v, self) = [v < self.cap];
     )]
-    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: $wk1(v, self)}
-                requires $wk0(self)
+    #[flux::sig(fn (&VecDeque<T,A>[@self]) -> usize{v: $wk1(v)[self]}
+                requires $wk0()[self]
     )]
     pub fn len(&self) -> usize {
         count(self.tail, self.head, self.cap())
@@ -627,11 +626,11 @@ impl<T, A: Allocator> VecDeque<T, A> {
 #[inline]
 #[flux::trusted]
 #[flux::vars(
-    $wk0(index, size) = [];
+    $wk0(index, size) = [true];
     $wk1(v, index, size) = [v < size];
 )]
-#[flux::sig(fn(index: usize, size: Size) -> usize{v: $wk1(v, index, size)}
-            requires $wk0(index, size)
+#[flux::sig(fn(index: usize, size: Size) -> usize{v: $wk1(v)[index, size]}
+            requires $wk0()[index, size]
 )]
 fn wrap_index(index: usize, size: Size) -> usize {
     // size is always a power of 2
@@ -643,11 +642,11 @@ fn wrap_index(index: usize, size: Size) -> usize {
 /// Calculate the number of elements left to be read in the buffer
 #[inline]
 #[flux::vars(
-    $wk0(tail, head, size) = [];
+    $wk0(tail, head, size) = [true];
     $wk1(v, tail, head, size) = [v < size];
 )]
-#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: $wk1(v, tail, head, size)}
-            requires $wk0(tail, head, size)
+#[flux::sig(fn(tail: usize, head: usize, size: Size) -> usize{v: $wk1(v)[tail, head, size]}
+            requires $wk0()[tail, head, size]
 )]
 fn count(tail: usize, head: usize, size: Size) -> usize {
     // size is always a power of 2
@@ -660,8 +659,8 @@ fn count(tail: usize, head: usize, size: Size) -> usize {
     $wk0(n) = [pow2(n)];
     $wk1(v, n) = [pow2(2*n)];
 )]
-#[flux::sig(fn (n:usize) -> bool{v: $wk1(v, n)}
-    requires $wk0(n)
+#[flux::sig(fn (n:usize) -> bool{v: $wk1(v)[n]}
+    requires $wk0()[n]
 )]
 fn lem_power_two(_: usize) -> bool {
     true
@@ -669,11 +668,11 @@ fn lem_power_two(_: usize) -> bool {
 
 #[flux::trusted]
 #[flux::vars(
-    $wk0(n) = [];
+    $wk0(n) = [true];
     $wk1(v, n) = [pow2(n)];
 )]
-#[flux::sig(fn (n:usize) -> bool{v: $wk1(v, n)}
-    requires $wk0(n)
+#[flux::sig(fn (n:usize) -> bool{v: $wk1(v)[n]}
+    requires $wk0()[n]
 )]
 fn is_power_of_two(n: usize) -> bool {
     // n.count_ones() == 1
@@ -685,11 +684,11 @@ fn assert(_: bool) {}
 
 #[flux::trusted]
 #[flux::vars(
-    $wk0(capacity) = [];
+    $wk0(capacity) = [true];
     $wk1(v, capacity) = [capacity <= v, size(v)];
 )]
-#[flux::sig(fn (capacity: usize) -> usize{v: $wk1(v, capacity)}
-    requires $wk0(capacity)
+#[flux::sig(fn (capacity: usize) -> usize{v: $wk1(v)[capacity]}
+    requires $wk0()[capacity]
 )]
 fn real_capacity(capacity: usize) -> usize {
     cmp::max(capacity + 1, MINIMUM_CAPACITY + 1).next_power_of_two()
@@ -697,11 +696,11 @@ fn real_capacity(capacity: usize) -> usize {
 
 #[flux::trusted]
 #[flux::vars(
-    $wk0(old_cap, used_cap, additional) = [];
+    $wk0(old_cap, used_cap, additional) = [true];
     $wk1(v, old_cap, used_cap, additional) = [used_cap + additional <= v, pow2(v), old_cap < v => 2 * old_cap <= v];
 )]
-#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: $wk1(v, old_cap, used_cap, additional) }
-            requires $wk0(old_cap, used_cap, additional)
+#[flux::sig(fn(old_cap: usize, used_cap: usize, additional: usize) -> usize{v: $wk1(v)[old_cap, used_cap, additional] }
+            requires $wk0()[old_cap, used_cap, additional]
 )]
 fn new_capacity(_old_cap: usize, used_cap: usize, additional: usize) -> usize {
     used_cap
