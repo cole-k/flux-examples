@@ -562,7 +562,14 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.front(), Some(&2));
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T) ensures self: VecDeque<T, A>)]
+    #[flux::vars(
+        $wk0(s) = [true];
+        $wk1(v, s) = [true];
+    )]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T)
+                requires $wk0()[s]
+                ensures self: VecDeque<T, A>{v: $wk1(v)[s]}
+    )]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -589,7 +596,14 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(3, *buf.back().unwrap());
     /// ```
     //#[stable(feature = "rust1", since = "1.0.0")]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T) ensures self: VecDeque<T, A>)]
+    #[flux::vars(
+        $wk0(s) = [true];
+        $wk1(v, s) = [true];
+    )]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s], value: T)
+                requires $wk0()[s]
+                ensures self: VecDeque<T, A>{v: $wk1(v)[s]}
+    )]
     pub fn push_back(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -604,7 +618,14 @@ impl<T, A: Allocator> VecDeque<T, A> {
     // be called in cold paths.
     // This may panic or abort
     #[inline(never)]
-    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s]) ensures self: VecDeque<T, A>)]
+    #[flux::vars(
+        $wk0(s) = [true];
+        $wk1(v, s) = [true];
+    )]
+    #[flux::sig(fn (self: &strg VecDeque<T,A>[@s])
+                requires $wk0()[s]
+                ensures self: VecDeque<T, A>{v: $wk1(v)[s]}
+    )]
     fn grow(&mut self) {
         // Extend or possibly remove this assertion when valid use-cases for growing the
         // buffer without it being full emerge
